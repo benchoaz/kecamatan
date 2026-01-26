@@ -1,0 +1,132 @@
+/* ==========================================================================
+   Shared Menu Page Styles - Teal Theme
+   To be included in all menu index pages (Pemerintahan, Ekbang, Kesra, Trantibum)
+   ========================================================================== */
+
+/* Content Header */
+.content-header .header-title h1 {
+    color: #1f2937 !important;
+    font-weight: 700;
+    font-size: 28px;
+}
+
+.content-header .header-title p {
+    font-size: 14px;
+}
+
+/* Section Titles */
+.section-title h5 {
+    color: #1f2937 !important;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.title-accent {
+    width: 40px;
+    height: 4px;
+    background: #14b8a6;
+    border-radius: 2px;
+    margin-top: 4px;
+}
+
+/* Menu Cards */
+.menu-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menu-card:hover {
+    transform: translateY(-5px);
+    border-color: #14b8a6;
+    box-shadow: 0 10px 30px -10px rgba(20, 184, 166, 0.3);
+}
+
+.menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.menu-key {
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: rgba(31, 41, 55, 0.1);
+}
+
+.menu-icon-circle {
+    width: 48px;
+    height: 48px;
+    background: rgba(20, 184, 166, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #14b8a6;
+    font-size: 1.5rem;
+}
+
+.menu-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.menu-desc {
+    font-size: 0.85rem;
+    color: #6b7280;
+    line-height: 1.4;
+    margin-top: 0.5rem;
+}
+
+.menu-footer {
+    padding: 0.75rem 1.5rem;
+    background: #f9fafb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #e5e7eb;
+    color: #14b8a6;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.menu-card-link {
+    text-decoration: none;
+    display: block;
+    height: 100%;
+}
+
+/* Status Cards */
+.status-card {
+    background: rgba(248, 250, 252, 0.8);
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    transition: transform 0.2s;
+}
+
+.status-card.status-success {
+    border-left: 4px solid #10b981;
+}
+
+.status-card.status-danger {
+    border-left: 4px solid #ef4444;
+}
+
+.status-card.status-warning {
+    border-left: 4px solid #f59e0b;
+}
+
+.status-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(20, 184, 166, 0.1);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #14b8a6;
+    font-size: 1.2rem;
+}
