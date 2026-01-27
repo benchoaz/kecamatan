@@ -10,7 +10,8 @@
                 <h4 class="fw-bold mb-1">Manajemen Pengguna</h4>
                 <p class="text-muted small">Kelola hak akses operator kecamatan dan desa</p>
             </div>
-            <a href="{{ route('kecamatan.users.create') }}" class="btn btn-primary d-flex align-items-center gap-2">
+            <a href="{{ route('kecamatan.users.create') }}" class="btn btn-primary d-flex align-items-center gap-2"
+                style="background-color: #4f46e5; border-color: #4f46e5; color: white;">
                 <i class="fas fa-user-plus"></i>
                 <span>Tambah User Baru</span>
             </a>

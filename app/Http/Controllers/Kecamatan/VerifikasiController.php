@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Kecamatan;
 
+use App\Http\Controllers\Controller;
+use App\Models\Desa;
 use App\Models\Submission;
-use App\Services\SubmissionService;
 use App\Services\MasterDataService;
+use App\Services\SubmissionService;
 use Illuminate\Http\Request;
 
 class VerifikasiController extends Controller
@@ -27,11 +29,9 @@ class VerifikasiController extends Controller
 
         $query = Submission::with(['desa', 'menu', 'aspek', 'submittedBy']);
 
-        // Filter by Status (Defaults for Inbox)
         if ($request->has('status')) {
             $query->where('status', $request->status);
         } else {
-            // Default: Show what can be processed by CURRENT user
             if ($user->isSuperAdmin()) {
                 $query->whereIn('status', [Submission::STATUS_REVIEWED, Submission::STATUS_APPROVED]);
             } else {
@@ -39,7 +39,6 @@ class VerifikasiController extends Controller
             }
         }
 
-        // Search/Filters
         if ($request->desa_id)
             $query->where('desa_id', $request->desa_id);
         if ($request->menu_id)
@@ -49,7 +48,7 @@ class VerifikasiController extends Controller
 
         $submissions = $query->latest()->paginate(10);
 
-        $desas = \App\Models\Desa::all();
+        $desas = Desa::all();
         $menus = $this->masterData->getAllMenus();
 
         return view('kecamatan.verifikasi.index', compact('submissions', 'desas', 'menus'));

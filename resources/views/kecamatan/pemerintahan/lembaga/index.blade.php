@@ -3,67 +3,71 @@
 @section('title', 'Lembaga & Organisasi Kemasyarakatan Desa')
 
 @section('content')
-    <div class="content-header mb-4">
-        <div class="header-breadcrumb">
-            <a href="{{ route('kecamatan.dashboard') }}" class="text-primary"><i class="fas fa-arrow-left"></i> Kembali ke
-                Dashboard</a>
+    <div class="content-header mb-5">
+        <div class="d-flex align-items-center gap-2 mb-2">
+            <a href="{{ auth()->user()->desa_id ? route('desa.pemerintahan.index') : route('kecamatan.pemerintahan.index') }}"
+                class="btn btn-xs btn-light rounded-pill px-3 text-secondary text-decoration-none border shadow-sm">
+                <i class="fas fa-arrow-left-long me-2"></i> Kembali ke Menu Utama
+            </a>
         </div>
-        <div class="header-title d-flex justify-content-between align-items-center w-100">
+        <div class="d-flex justify-content-between align-items-end">
             <div>
-                <h1>Lembaga & Organisasi Desa</h1>
-                <p class="text-muted">
+                <h2 class="fw-bold text-primary-900 mb-1">Registrasi Lembaga Desa</h2>
+                <p class="text-tertiary mb-0">
                     @if($desa_id)
-                        Daftar Legalitas PKK, Karang Taruna, LPM, Posyandu, dan Lainnya
+                        <i class="fas fa-sitemap me-1"></i> Daftar Legalitas PKK, Karang Taruna, LPM, Posyandu, dan Lainnya.
                     @else
-                        Pilih Desa untuk Melihat Detail Administrasi Lembaga
+                        <i class="fas fa-map-location-dot me-1"></i> Pilih Desa untuk Melihat Detail Administrasi Lembaga.
                     @endif
                 </p>
             </div>
             @if($desa_id)
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addLembagaModal">
-                    <i class="fas fa-plus me-2"></i> Tambah Lembaga
+                <button class="btn btn-brand-600 text-white rounded-pill px-4 shadow-premium" data-bs-toggle="modal"
+                    data-bs-target="#addLembagaModal">
+                    <i class="fas fa-plus-circle me-2"></i> Tambah Lembaga
                 </button>
             @endif
-
         </div>
     </div>
 
     @if(!$desa_id)
-        <div class="card bg-white border-gray-200 shadow-sm rounded-4 overflow-hidden">
+        <div class="card border-0 shadow-premium rounded-4 overflow-hidden">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-light text-muted small fw-bold">
+                    <thead class="bg-primary-900 text-white small fw-bold">
                         <tr>
-                            <th class="ps-4" style="width: 50px;">No</th>
-                            <th>Nama Desa</th>
-                            <th>Lembaga Terdaftar</th>
-                            <th class="text-center">Jumlah Lembaga</th>
-                            <th class="text-end pe-4">Aksi</th>
+                            <th class="ps-4 py-3" style="width: 70px;">NO</th>
+                            <th class="py-3">NAMA DESA</th>
+                            <th class="py-3">LEMBAGA TERDAFTAR</th>
+                            <th class="text-center py-3">JUMLAH</th>
+                            <th class="text-end pe-4 py-3">KENDALI</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="bg-white">
                         @foreach($desas as $index => $desa)
                             <tr>
-                                <td class="ps-4 text-muted small">{{ $index + 1 }}</td>
-                                <td class="fw-bold text-slate-700"> Desa {{ $desa->nama_desa }}</td>
+                                <td class="ps-4 text-secondary small fw-medium">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</td>
+                                <td class="fw-bold text-primary-900"> Desa {{ $desa->nama_desa }}</td>
                                 <td>
-                                    @forelse($desa->lembaga->take(5) as $l)
-                                        <span class="badge bg-primary-soft text-primary me-1 mb-1"
-                                            style="font-size: 0.65rem;">{{ $l->nama_lembaga }}</span>
-                                    @empty
-                                        <span class="text-muted small italic">Belum ada data</span>
-                                    @endforelse
-                                    @if($desa->lembaga->count() > 5)
-                                        <span class="text-muted small">...</span>
-                                    @endif
+                                    <div class="d-flex flex-wrap gap-1">
+                                        @forelse($desa->lembaga->take(3) as $l)
+                                            <span class="badge rounded-pill bg-brand-50 text-brand-600 px-2 py-1"
+                                                style="font-size: 0.7rem;">{{ $l->nama_lembaga }}</span>
+                                        @empty
+                                            <span class="text-tertiary small italic text-muted">Belum ada data</span>
+                                        @endforelse
+                                        @if($desa->lembaga->count() > 3)
+                                            <span class="text-tertiary small">+{{ $desa->lembaga->count() - 3 }} lainnya</span>
+                                        @endif
+                                    </div>
                                 </td>
-                                <td class="text-center fw-bold">
+                                <td class="text-center fw-bold text-primary-900">
                                     {{ $desa->lembaga->count() }}
                                 </td>
                                 <td class="text-end pe-4">
                                     <a href="{{ url()->current() }}?desa_id={{ $desa->id }}"
-                                        class="btn btn-sm btn-outline-primary rounded-pill px-3">
-                                        Lihat Detail <i class="fas fa-arrow-right ms-1"></i>
+                                        class="btn btn-sm btn-brand-600 text-white rounded-pill px-4 shadow-sm">
+                                        Detail <i class="fas fa-chevron-right ms-2 small"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -73,54 +77,66 @@
             </div>
         </div>
     @else
-        <div class="card bg-white border-gray-200 shadow-sm rounded-4 overflow-hidden">
+        <div class="card border-0 shadow-premium rounded-4 overflow-hidden">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-light text-muted small">
+                    <thead class="bg-primary-900 text-white small fw-bold">
                         <tr>
-                            <th class="ps-4">Nama Lembaga / Tipe</th>
-                            <th>Ketua</th>
-                            <th>Tahun Formasi</th>
-                            <th>Legalitas (No SK)</th>
-                            <th>Status Akreditasi/Legal</th>
-                            <th class="text-end pe-4">Aksi</th>
+                            <th class="ps-4 py-3">NAMA LEMBAGA / TIPE</th>
+                            <th class="py-3">KETUA</th>
+                            <th class="py-3">TAHUN FORMASI</th>
+                            <th class="py-3">LEGALITAS (SK)</th>
+                            <th class="py-3">STATUS</th>
+                            <th class="text-end pe-4 py-3">AKSI</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="bg-white">
                         @forelse($lembagas as $l)
                             <tr>
-                                <td class="ps-4 text-slate-700">
+                                <td class="ps-4 text-primary-900">
                                     <div class="fw-bold">{{ $l->nama_lembaga }}</div>
-                                    <span class="badge bg-primary-soft text-primary text-uppercase" style="font-size: 0.65rem;">
+                                    <span class="badge rounded-pill bg-brand-50 text-brand-600 text-uppercase"
+                                        style="font-size: 0.65rem;">
                                         {{ $l->tipe_lembaga }}
                                     </span>
                                 </td>
-                                <td>{{ $l->ketua ?? '-' }}</td>
-                                <td>{{ $l->tahun_pembentukan ?? '-' }}</td>
+                                <td class="text-secondary fw-medium">{{ $l->ketua ?? '-' }}</td>
+                                <td class="text-secondary">{{ $l->tahun_pembentukan ?? '-' }}</td>
                                 <td>
-                                    <div class="small fw-500">{{ $l->nomor_sk ?? 'Belum ada SK' }}</div>
-                                    @if($l->file_sk)
-                                        <a href="#" class="btn btn-xs btn-outline-info mt-1">
-                                            <i class="fas fa-file-pdf"></i> Lihat SK
-                                        </a>
-                                    @endif
+                                    <div class="d-flex flex-column">
+                                        <span class="small fw-semibold text-primary-900">{{ $l->nomor_sk ?? 'Belum ada SK' }}</span>
+                                        @if($l->file_sk)
+                                            <a href="#" class="text-brand-600 small mt-1 text-decoration-none fw-bold">
+                                                <i class="fas fa-file-pdf me-1"></i> Buka SK
+                                            </a>
+                                        @endif
+                                    </div>
                                 </td>
                                 <td>
                                     @if($l->is_active)
-                                        <span class="badge bg-success-soft text-success">Aktif</span>
+                                        <span class="badge rounded-pill bg-success-50 text-success-600 px-3">AKTIF</span>
                                     @else
-                                        <span class="badge bg-danger-soft text-danger">Tidak Aktif</span>
+                                        <span class="badge rounded-pill bg-danger-50 text-danger-600 px-3">NONAKTIF</span>
                                     @endif
                                 </td>
                                 <td class="text-end pe-4">
-                                    <button class="btn btn-icon btn-sm"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-light btn-sm rounded-circle shadow-sm"
+                                        style="width: 32px; height: 32px;">
+                                        <i class="fas fa-edit text-secondary"></i>
+                                    </button>
                                 </td>
                             </tr>
                         @empty
                             <tr>
                                 <td colspan="6" class="text-center py-5">
-                                    <i class="fas fa-sitemap fa-3x mb-3 text-muted"></i>
-                                    <p class="text-muted">Data organisasi desa belum diinput.</p>
+                                    <div class="empty-state">
+                                        <div class="bg-primary-50 text-primary-200 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                                            style="width: 80px; height: 80px;">
+                                            <i class="fas fa-sitemap fa-3x"></i>
+                                        </div>
+                                        <h5 class="text-primary-900 fw-bold">Data lembaga desa belum diinput.</h5>
+                                        <p class="text-tertiary">Silakan tambahkan data lembaga baru untuk desa ini.</p>
+                                    </div>
                                 </td>
                             </tr>
                         @endforelse

@@ -130,36 +130,50 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     // -------------------------------------------------------------------------
-    // Auto-Logout Logic (30 Seconds Inactivity)
+    // Page Transitions & Loading Bar
     // -------------------------------------------------------------------------
-    let inactivityTime = function () {
-        let time;
-        const timeoutPeriod = 30000; // 30 seconds
+    const loadingBar = document.createElement('div');
+    loadingBar.id = 'page-loading-bar';
+    document.body.appendChild(loadingBar);
 
-        window.onload = resetTimer;
-        // DOM Events
-        document.addEventListener('mousemove', resetTimer);
-        document.addEventListener('keydown', resetTimer);
-        document.addEventListener('scroll', resetTimer);
-        document.addEventListener('click', resetTimer);
+    function startLoading() {
+        loadingBar.style.width = '0%';
+        loadingBar.style.opacity = '1';
+        setTimeout(() => {
+            loadingBar.style.width = '70%';
+        }, 10);
+    }
 
-        function logout() {
-            console.log("Logout triggered from inactivity timer.");
-            const form = document.getElementById('logout-form-header') ||
-                document.getElementById('logout-form-sidebar') ||
-                document.getElementById('logout-form');
-            if (form) {
-                form.submit();
-            } else {
-                window.location.href = '/logout';
-            }
+    function completeLoading() {
+        loadingBar.style.width = '100%';
+        setTimeout(() => {
+            loadingBar.style.opacity = '0';
+            setTimeout(() => {
+                loadingBar.style.width = '0%';
+            }, 500);
+        }, 300);
+    }
+
+    // Capture all link clicks for the loading effect
+    document.addEventListener('click', function (e) {
+        const link = e.target.closest('a');
+        if (link &&
+            link.href &&
+            !link.href.startsWith('javascript') &&
+            !link.href.includes('#') &&
+            !link.getAttribute('target') &&
+            link.hostname === window.location.hostname) {
+
+            // Only show loader for actual page navigations
+            startLoading();
         }
+    });
 
-        function resetTimer() {
-            clearTimeout(time);
-            time = setTimeout(logout, timeoutPeriod);
-        }
-    };
+    // Handle back/forward button
+    window.addEventListener('pageshow', function (event) {
+        completeLoading();
+    });
 
-    inactivityTime();
+    // Complete loader on initial load
+    completeLoading();
 });

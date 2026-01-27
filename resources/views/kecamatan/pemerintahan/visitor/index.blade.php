@@ -3,36 +3,44 @@
 @section('title', 'Buku Tamu Kecamatan')
 
 @section('content')
-    <div class="content-header mb-4">
-        <div class="header-title">
-            <h1 class="text-white">Buku Tamu Kecamatan</h1>
-            <p class="text-muted">Registrasi & Pemantauan Pengunjung</p>
+    <div class="content-header mb-5">
+        <div class="d-flex align-items-center gap-2 mb-2">
+            <a href="{{ route('kecamatan.pemerintahan.index') }}"
+                class="btn btn-xs btn-light rounded-pill px-3 text-secondary text-decoration-none border shadow-sm">
+                <i class="fas fa-arrow-left-long me-2"></i> Kembali ke Menu Utama
+            </a>
+        </div>
+        <div class="d-flex justify-content-between align-items-end">
+            <div>
+                <h2 class="fw-bold text-primary-900 mb-1">Registri Buku Tamu</h2>
+                <p class="text-tertiary mb-0">
+                    <i class="fas fa-clipboard-list me-1"></i> Pendataan administrasi pengunjung kantor kecamatan.
+                </p>
+            </div>
         </div>
     </div>
 
     <div class="row g-4">
         <!-- Form Registrasi -->
         <div class="col-md-4">
-            <div class="card bg-slate-800 border-slate-700 h-100">
-                <div class="card-header border-slate-700 bg-slate-800/50">
-                    <h5 class="card-title text-white mb-0">Registrasi Pengunjung</h5>
+            <div class="card border-0 shadow-premium rounded-4 h-100 overflow-hidden">
+                <div class="card-header bg-primary-900 text-white py-3 px-4">
+                    <h5 class="card-title mb-0 fw-bold">Registrasi Pengunjung</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     <form action="{{ route('kecamatan.pemerintahan.visitor.store') }}" method="POST">
                         @csrf
                         <div class="mb-3">
-                            <label class="form-label text-slate-300">Nama Lengkap</label>
-                            <input type="text" name="nama" class="form-control bg-slate-900 border-slate-700 text-white"
-                                required>
+                            <label class="form-label fw-semibold text-primary-900">Nama Lengkap</label>
+                            <input type="text" name="nama" class="form-control rounded-3 border-gray-200" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label text-slate-300">NIK (Opsional)</label>
-                            <input type="text" name="nik" class="form-control bg-slate-900 border-slate-700 text-white"
-                                maxlength="16">
+                            <label class="form-label fw-semibold text-primary-900">NIK (Opsional)</label>
+                            <input type="text" name="nik" class="form-control rounded-3 border-gray-200" maxlength="16">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label text-slate-300">Asal Desa (Kecamatan)</label>
-                            <select name="desa_asal_id" class="form-select bg-slate-900 border-slate-700 text-white">
+                            <label class="form-label fw-semibold text-primary-900">Asal Desa (Kecamatan)</label>
+                            <select name="desa_asal_id" class="form-select rounded-3 border-gray-200">
                                 <option value="">-- Luar Kecamatan --</option>
                                 @foreach($desas as $desa)
                                     <option value="{{ $desa->id }}">{{ $desa->nama_desa }}</option>
@@ -40,14 +48,12 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label text-slate-300">Alamat (Jika Luar Kecamatan)</label>
-                            <input type="text" name="alamat_luar"
-                                class="form-control bg-slate-900 border-slate-700 text-white">
+                            <label class="form-label fw-semibold text-primary-900">Alamat (Jika Luar Kecamatan)</label>
+                            <input type="text" name="alamat_luar" class="form-control rounded-3 border-gray-200">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label text-slate-300">Tujuan Bidang</label>
-                            <select name="tujuan_bidang" class="form-select bg-slate-900 border-slate-700 text-white"
-                                required>
+                            <label class="form-label fw-semibold text-primary-900">Tujuan Bidang</label>
+                            <select name="tujuan_bidang" class="form-select rounded-3 border-gray-200" required>
                                 <option value="Pemerintahan">Pemerintahan</option>
                                 <option value="Ekbang">Ekbang</option>
                                 <option value="Kesra">Kesra</option>
@@ -57,11 +63,14 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label text-slate-300">Keperluan</label>
-                            <textarea name="keperluan" class="form-control bg-slate-900 border-slate-700 text-white"
-                                rows="3" required></textarea>
+                            <label class="form-label fw-semibold text-primary-900">Keperluan</label>
+                            <textarea name="keperluan" class="form-control rounded-3 border-gray-200" rows="3"
+                                required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Daftarkan Pengunjung</button>
+                        <button type="submit"
+                            class="btn btn-brand-600 text-white w-100 rounded-pill py-2 fw-bold shadow-sm">
+                            <i class="fas fa-user-plus me-2"></i> Daftar Pengunjung
+                        </button>
                     </form>
                 </div>
             </div>
@@ -69,70 +78,84 @@
 
         <!-- Tabel Monitoring -->
         <div class="col-md-8">
-            <div class="card bg-slate-800 border-slate-700 h-100">
-                <div class="card-header border-slate-700 bg-slate-800/50 d-flex justify-content-between align-items-center">
-                    <h5 class="card-title text-white mb-0">Antrian & Riwayat Hari Ini</h5>
-                    <span class="badge bg-primary">{{ $visitors->where('created_at', '>=', today())->count() }}
+            <div class="card border-0 shadow-premium rounded-4 h-100 overflow-hidden">
+                <div class="card-header bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
+                    <h5 class="card-title text-primary-900 mb-0 fw-bold">Antrian & Riwayat Hari Ini</h5>
+                    <span
+                        class="badge rounded-pill bg-brand-50 text-brand-600 px-3 py-2 fw-bold">{{ $visitors->where('created_at', '>=', today())->count() }}
                         Pengunjung</span>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-dark table-hover mb-0">
-                            <thead>
-                                <tr class="border-slate-700">
-                                    <th>Nama</th>
-                                    <th>Asal</th>
-                                    <th>Tujuan</th>
-                                    <th>Status</th>
-                                    <th>Jam</th>
-                                    <th>Aksi</th>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-primary-900 text-white small fw-bold">
+                            <tr>
+                                <th class="ps-4">NAMA & KEPERLUAN</th>
+                                <th>ASAL</th>
+                                <th>TUJUAN</th>
+                                <th class="text-center">STATUS</th>
+                                <th>JAM</th>
+                                <th class="text-end pe-4">KENDALI</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                            @forelse($visitors as $visitor)
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="fw-bold text-primary-900">{{ $visitor->nama }}</div>
+                                        <small class="text-tertiary">{{ $visitor->keperluan }}</small>
+                                    </td>
+                                    <td class="text-secondary fw-medium">
+                                        {{ $visitor->desaAsal->nama_desa ?? $visitor->alamat_luar }}</td>
+                                    <td><span
+                                            class="badge rounded-pill bg-brand-50 text-brand-600 px-3">{{ $visitor->tujuan_bidang }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        @if($visitor->status == 'menunggu')
+                                            <span class="badge rounded-pill bg-amber-50 text-amber-600 px-3">MENUNGGU</span>
+                                        @elseif($visitor->status == 'dilayani')
+                                            <span class="badge rounded-pill bg-sky-50 text-sky-600 px-3">DILAYANI</span>
+                                        @else
+                                            <span class="badge rounded-pill bg-emerald-50 text-emerald-600 px-3">SELESAI</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-secondary fw-bold">{{ $visitor->jam_datang->format('H:i') }}</td>
+                                    <td class="text-end pe-4">
+                                        @if($visitor->status != 'selesai')
+                                            <form action="{{ route('kecamatan.pemerintahan.visitor.update', $visitor->id) }}"
+                                                method="POST" class="d-inline">
+                                                @csrf
+                                                @method('PATCH')
+                                                @if($visitor->status == 'menunggu')
+                                                    <input type="hidden" name="status" value="dilayani">
+                                                    <button class="btn btn-sm btn-sky-500 text-white rounded-pill px-3 shadow-sm">
+                                                        Layani <i class="fas fa-chevron-right ms-1"></i>
+                                                    </button>
+                                                @else
+                                                    <input type="hidden" name="status" value="selesai">
+                                                    <button class="btn btn-sm btn-emerald-500 text-white rounded-pill px-3 shadow-sm">
+                                                        Selesai <i class="fas fa-check ms-1"></i>
+                                                    </button>
+                                                @endif
+                                            </form>
+                                        @endif
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody class="border-slate-700">
-                                @forelse($visitors as $visitor)
-                                    <tr class="align-middle border-slate-700">
-                                        <td>
-                                            <div class="fw-bold">{{ $visitor->nama }}</div>
-                                            <div class="small text-slate-400">{{ $visitor->keperluan }}</div>
-                                        </td>
-                                        <td>{{ $visitor->desaAsal->nama_desa ?? $visitor->alamat_luar }}</td>
-                                        <td><span class="badge bg-slate-700">{{ $visitor->tujuan_bidang }}</span></td>
-                                        <td>
-                                            @if($visitor->status == 'menunggu')
-                                                <span class="badge bg-warning text-dark">Menunggu</span>
-                                            @elseif($visitor->status == 'dilayani')
-                                                <span class="badge bg-info">Dilayani</span>
-                                            @else
-                                                <span class="badge bg-success">Selesai</span>
-                                            @endif
-                                        </td>
-                                        <td>{{ $visitor->jam_datang->format('H:i') }}</td>
-                                        <td>
-                                            @if($visitor->status != 'selesai')
-                                                <form action="{{ route('kecamatan.pemerintahan.visitor.update', $visitor->id) }}"
-                                                    method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    @if($visitor->status == 'menunggu')
-                                                        <input type="hidden" name="status" value="dilayani">
-                                                        <button class="btn btn-sm btn-outline-info">Layani</button>
-                                                    @else
-                                                        <input type="hidden" name="status" value="selesai">
-                                                        <button class="btn btn-sm btn-outline-success">Selesai</button>
-                                                    @endif
-                                                </form>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6" class="text-center py-4 text-slate-500">Belum ada pengunjung hari ini.
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="text-center py-5">
+                                        <div class="empty-state">
+                                            <div class="bg-primary-50 text-primary-200 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                                                style="width: 80px; height: 80px;">
+                                                <i class="fas fa-users fa-2x"></i>
+                                            </div>
+                                            <h5 class="text-primary-900 fw-bold">Belum ada pengunjung.</h5>
+                                            <p class="text-tertiary">Hari ini belum ada tamu yang terdaftar.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

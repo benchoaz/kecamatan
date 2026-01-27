@@ -11,7 +11,7 @@
                 <p class="text-muted small">Fondasi referensi wilayah untuk seluruh modul aplikasi</p>
             </div>
             <button type="button" class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="modal"
-                data-bs-target="#addDesaModal">
+                data-bs-target="#addDesaModal" style="background-color: #4f46e5; border-color: #4f46e5; color: white;">
                 <i class="fas fa-plus-circle"></i>
                 <span>Tambah Desa Baru</span>
             </button>
@@ -119,7 +119,7 @@
                                 <td class="pe-4 text-end">
                                     <button type="button" class="btn btn-sm btn-icon btn-light rounded-circle me-1"
                                         onclick="editDesa('{{ $desa->id }}', '{{ $desa->nama_desa }}', '{{ $desa->status }}', '{{ $desa->kode_desa }}')"
-                                        title="Edit Data">
+                                        title="Edit Data" style="background-color: #3b82f6; color: white; border: none;">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                     <form action="{{ route('kecamatan.master.desa.destroy', $desa->id) }}" method="POST"
@@ -128,7 +128,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-icon btn-light rounded-circle text-danger"
-                                            title="Nonaktifkan">
+                                            title="Nonaktifkan" style="background-color: #ef4444; color: white; border: none;">
                                             <i class="fas fa-power-off"></i>
                                         </button>
                                     </form>
@@ -189,7 +189,7 @@
                     </div>
                     <div class="modal-footer border-0 p-4 pt-0">
                         <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary px-4">Simpan Desa</button>
+                        <button type="submit" class="btn btn-primary px-4" style="background-color: #4f46e5; border-color: #4f46e5; color: white;">Simpan Desa</button>
                     </div>
                 </form>
             </div>

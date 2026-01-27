@@ -1,4 +1,4 @@
-@extends('layouts.desa')
+@extends(auth()->user()->desa_id ? 'layouts.desa' : 'layouts.kecamatan')
 
 @section('title', 'Seksi Ekonomi & Pembangunan')
 
@@ -82,7 +82,7 @@
     <div class="row g-4">
         <!-- A: Dana Desa -->
         <div class="col-md-4 col-lg-3">
-            <a href="{{ route('desa.ekbang.dana-desa.index') }}" class="menu-card-link">
+            <a href="{{ $isOperator ? route('desa.ekbang.dana-desa.index') : route('kecamatan.ekbang.dana-desa.index') }}" class="menu-card-link">
                 <div class="card menu-card h-100">
                     <div class="card-body">
                         <div class="menu-header">
@@ -98,7 +98,7 @@
 
         <!-- B: Fisik -->
         <div class="col-md-4 col-lg-3">
-            <a href="{{ route('desa.ekbang.fisik.index') }}" class="menu-card-link">
+            <a href="{{ $isOperator ? route('desa.ekbang.fisik.index') : route('kecamatan.ekbang.fisik.index') }}" class="menu-card-link">
                 <div class="card menu-card h-100">
                     <div class="card-body">
                         <div class="menu-header">
@@ -114,7 +114,7 @@
 
         <!-- C: Realisasi -->
         <div class="col-md-4 col-lg-3">
-            <a href="{{ route('desa.ekbang.realisasi.index') }}" class="menu-card-link">
+            <a href="{{ $isOperator ? route('desa.ekbang.realisasi.index') : route('kecamatan.ekbang.realisasi.index') }}" class="menu-card-link">
                 <div class="card menu-card h-100">
                     <div class="card-body">
                         <div class="menu-header">
@@ -130,7 +130,7 @@
 
         <!-- D: Kepatuhan -->
         <div class="col-md-4 col-lg-3">
-            <a href="{{ route('desa.ekbang.kepatuhan.index') }}" class="menu-card-link">
+            <a href="{{ $isOperator ? route('desa.ekbang.kepatuhan.index') : route('kecamatan.ekbang.kepatuhan.index') }}" class="menu-card-link">
                 <div class="card menu-card h-100">
                     <div class="card-body">
                         <div class="menu-header">
@@ -146,7 +146,7 @@
 
         <!-- E: Audit -->
         <div class="col-md-4 col-lg-3">
-            <a href="{{ route('desa.ekbang.audit.index') }}" class="menu-card-link">
+            <a href="{{ $isOperator ? route('desa.ekbang.audit.index') : route('kecamatan.ekbang.audit.index') }}" class="menu-card-link">
                 <div class="card menu-card h-100">
                     <div class="card-body">
                         <div class="menu-header">
@@ -199,7 +199,7 @@
                                     <span class="badge {{ $sClass }}">{{ strtoupper($recent->status) }}</span>
                                 </td>
                                 <td class="text-end pe-4">
-                                    <a href="{{ route('desa.submissions.edit', $recent->id) }}" class="btn btn-sm btn-icon">
+                                    <a href="{{ $isOperator ? route('desa.submissions.edit', $recent->id) : route('kecamatan.verifikasi.show', $recent->uuid) }}" class="btn btn-sm btn-icon">
                                         <i class="fas fa-arrow-right"></i>
                                     </a>
                                 </td>

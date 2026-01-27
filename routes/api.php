@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-use App\Http\Controllers\SubmissionController;
+use App\Http\Controllers\Desa\SubmissionController;
 
 Route::apiResource('submissions', SubmissionController::class);
 Route::post('submissions/{id}/status', [SubmissionController::class, 'changeStatus']);

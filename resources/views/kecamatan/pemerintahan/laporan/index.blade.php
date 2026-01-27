@@ -2,30 +2,33 @@
 
 @section('title', 'Monitoring LKPJ & LPPD Desa')
 
-    @section('content')
-        <div class="content-header mb-4">
-            <div class="header-breadcrumb">
-                <a href="{{ route('kecamatan.dashboard') }}" class="text-primary"><i class="fas fa-arrow-left"></i> Kembali ke
-                    Dashboard</a>
-            </div>
-            <div class="header-title d-flex justify-content-between align-items-center w-100">
-                <div>
-                <h1>LKPJ & LPPD Desa</h1>
-                <p class="text-muted">
+@section('content')
+    <div class="content-header mb-5">
+        <div class="d-flex align-items-center gap-2 mb-2">
+            <a href="{{ auth()->user()->desa_id ? route('desa.pemerintahan.index') : route('kecamatan.pemerintahan.index') }}"
+                class="btn btn-xs btn-light rounded-pill px-3 text-secondary text-decoration-none border shadow-sm">
+                <i class="fas fa-arrow-left-long me-2"></i> Kembali ke Menu Utama
+            </a>
+        </div>
+        <div class="d-flex justify-content-between align-items-end">
+            <div>
+                <h2 class="fw-bold text-primary-900 mb-1">Monitoring LKPJ & LPPD Desa</h2>
+                <p class="text-tertiary mb-0">
                     @if($desa_id)
-                        Laporan Keterangan Penyelenggaraan Pemerintahan Desa
+                        <i class="fas fa-file-signature me-1"></i> Laporan Keterangan Penyelenggaraan Pemerintahan Desa.
                     @else
-                        Pilih Desa untuk Melihat Status Penyampaian Laporan
+                        <i class="fas fa-map-location-dot me-1"></i> Pilih Desa untuk Melihat Status Penyampaian Laporan.
                     @endif
                 </p>
             </div>
             @if($desa_id)
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadLaporanModal">
+                <button class="btn btn-brand-600 text-white rounded-pill px-4 shadow-premium" data-bs-toggle="modal"
+                    data-bs-target="#uploadLaporanModal">
                     <i class="fas fa-upload me-2"></i> Arsipkan Laporan
                 </button>
             @endif
-            </div>
         </div>
+    </div>
 
     @if(!$desa_id)
         <div class="card bg-white border-gray-200 shadow-sm rounded-4 overflow-hidden mt-4">
@@ -45,10 +48,12 @@
                                 <td class="ps-4 text-muted small">{{ $index + 1 }}</td>
                                 <td class="fw-bold text-slate-700"> Desa {{ $desa->nama_desa }}</td>
                                 <td class="text-center">
-                                    <span class="badge bg-primary-soft text-primary px-3 py-2" style="font-size: 0.85rem;">{{ $desa->dokumens_count }} Laporan</span>
+                                    <span class="badge bg-primary-soft text-primary px-3 py-2"
+                                        style="font-size: 0.85rem;">{{ $desa->dokumens_count }} Laporan</span>
                                 </td>
                                 <td class="text-end pe-4">
-                                    <a href="{{ url()->current() }}?desa_id={{ $desa->id }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                    <a href="{{ url()->current() }}?desa_id={{ $desa->id }}"
+                                        class="btn btn-sm btn-outline-primary rounded-pill px-3">
                                         Lihat Detail <i class="fas fa-arrow-right ms-1"></i>
                                     </a>
                                 </td>
@@ -124,8 +129,9 @@
                         <h5 class="modal-title">Arsip Laporan Tahunan</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <form action="{{ route('pemerintahan.dokumen.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('kecamatan.pemerintahan.detail.dokumen.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
+                        <input type="hidden" name="desa_id" value="{{ $desa_id }}">
                         <div class="modal-body">
                             <div class="row g-3">
                                 <div class="col-12">
@@ -159,8 +165,7 @@
             </div>
         </div>
 
-    @endsection
-
+    @endif
 @endsection
 
 @push('styles')

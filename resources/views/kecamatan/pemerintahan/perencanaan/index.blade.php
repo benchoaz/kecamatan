@@ -3,24 +3,28 @@
 @section('title', 'Perencanaan Desa (Musrenbang)')
 
 @section('content')
-    <div class="content-header mb-4">
-        <div class="header-breadcrumb">
-            <a href="{{ route('kecamatan.dashboard') }}" class="text-primary"><i class="fas fa-arrow-left"></i> Kembali ke
-                Dashboard</a>
+    <div class="content-header mb-5">
+        <div class="d-flex align-items-center gap-2 mb-2">
+            <a href="{{ auth()->user()->desa_id ? route('desa.pemerintahan.index') : route('kecamatan.pemerintahan.index') }}"
+                class="btn btn-xs btn-light rounded-pill px-3 text-secondary text-decoration-none border shadow-sm">
+                <i class="fas fa-arrow-left-long me-2"></i> Kembali ke Menu Utama
+            </a>
         </div>
-        <div class="header-title d-flex justify-content-between align-items-center w-100">
+        <div class="d-flex justify-content-between align-items-end">
             <div>
-                <h1>Monev Perencanaan Desa</h1>
-                <p class="text-muted">
+                <h2 class="fw-bold text-primary-900 mb-1">Monev Perencanaan Desa</h2>
+                <p class="text-tertiary mb-0">
                     @if($desa_id)
-                        Evaluasi Pelaksanaan Musrenbang Desa & Usulan Prioritas
+                        <i class="fas fa-calendar-check me-1"></i> Evaluasi Pelaksanaan Musrenbang Desa & Usulan Prioritas.
                     @else
-                        Dashboard Monitoring Kepatuhan Perencanaan & Penganggaran Desa
+                        <i class="fas fa-map-location-dot me-1"></i> Dashboard Monitoring Kepatuhan Perencanaan & Penganggaran
+                        Desa.
                     @endif
                 </p>
             </div>
             @if($desa_id && auth()->user()->isOperatorDesa())
-                <button class="btn btn-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#addPerencanaanModal">
+                <button class="btn btn-brand-600 text-white rounded-pill px-4 shadow-premium" data-bs-toggle="modal"
+                    data-bs-target="#addPerencanaanModal">
                     <i class="fas fa-calendar-plus me-2"></i> Input Musrenbang
                 </button>
             @endif
@@ -47,7 +51,9 @@
                                 <td class="fw-bold text-slate-700"> Desa {{ $desa->nama_desa }}</td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-2">
-                                        <span class="badge rounded-pill {{ $desa->perencanaan_count > 0 ? 'bg-success' : 'bg-light text-muted' }}" title="Musdes/RKP">
+                                        <span
+                                            class="badge rounded-pill {{ $desa->perencanaan_count > 0 ? 'bg-success' : 'bg-light text-muted' }}"
+                                            title="Musdes/RKP">
                                             <i class="fas fa-check-circle me-1"></i> RKP
                                         </span>
                                         <span class="badge rounded-pill bg-light text-muted" title="APBDes">
@@ -198,6 +204,7 @@
                 <form action="{{ route('kecamatan.pemerintahan.detail.perencanaan.store') }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
+                    <input type="hidden" name="desa_id" value="{{ $desa_id }}">
                     <div class="modal-body">
                         <div class="row g-4 mb-4">
                             <div class="col-md-4">

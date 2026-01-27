@@ -4,278 +4,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Kecamatan SAE</title>
+    <title>Login - {{ appProfile()->app_name }}</title>
+
+    <!-- Tailwind CSS + DaisyUI -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.6.0/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Google Fonts - Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+
     <style>
         body {
-            background: radial-gradient(circle at top right, #1e293b 0%, #0f172a 100%);
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             font-family: 'Poppins', sans-serif;
-            overflow: hidden;
-            margin: 0;
         }
 
-        .login-container {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            max-width: 420px;
-            padding: 20px;
+        .login-card-blur {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
-        .login-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 24px;
-            padding: 48px 40px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        .premium-shadow {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
         }
 
-        .login-header {
-            text-align: center;
-            margin-bottom: 35px;
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
         }
 
-        .login-logo {
-            width: 72px;
-            height: 72px;
-            background: rgba(20, 184, 166, 0.1);
-            border: 1px solid rgba(20, 184, 166, 0.2);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 32px;
-            color: #14b8a6;
-            box-shadow: 0 0 40px rgba(20, 184, 166, 0.2);
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .login-title {
-            color: #ffffff;
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-
-        .login-subtitle {
-            color: #94a3b8;
-            font-size: 14px;
-            font-weight: 400;
-        }
-
-        .login-form .form-group {
-            margin-bottom: 24px;
-        }
-
-        .login-form label {
-            display: block;
-            color: #94a3b8;
-            font-size: 13px;
-            margin-bottom: 10px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .input-group-custom {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .input-group-custom i {
-            position: absolute;
-            left: 18px;
-            color: #64748b;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-
-        .login-input {
-            width: 100%;
-            padding: 14px 18px 14px 52px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            color: #ffffff;
-            font-size: 15px;
-            transition: all 0.3s ease;
-        }
-
-        .login-input::placeholder {
-            color: #475569;
-        }
-
-        .login-input:focus {
-            outline: none;
-            border-color: #14b8a6;
-            box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.15);
-            background: rgba(15, 23, 42, 0.82);
-        }
-
-        .login-input:focus+i {
-            color: #14b8a6;
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
-        }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 18px rgba(20, 184, 166, 0.4);
-            filter: brightness(1.1);
-        }
-
-        .login-btn:active {
-            transform: translateY(0);
-        }
-
-        .alert-error {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            color: #fca5a5;
-            padding: 14px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .back-home {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 25px;
-            color: #64748b;
-            text-decoration: none;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-
-        .back-home:hover {
-            color: #14b8a6;
-        }
-
-        /* Ambient Lights */
-        .ambient-light-1 {
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(20, 184, 166, 0.12) 0%, rgba(20, 184, 166, 0) 70%);
-            top: -100px;
-            right: -100px;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .ambient-light-2 {
-            position: absolute;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(20, 184, 166, 0.08) 0%, rgba(20, 184, 166, 0) 70%);
-            bottom: -50px;
-            left: -50px;
-            z-index: 1;
-            pointer-events: none;
+        .side-image-overlay {
+            background: linear-gradient(135deg, rgba(13, 148, 136, 0.8) 0%, rgba(30, 41, 59, 0.8) 100%);
         }
     </style>
 </head>
 
-<body>
-    <div class="ambient-light-1"></div>
-    <div class="ambient-light-2"></div>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
 
-    <div class="login-container">
-        <div class="login-card">
-            <div class="login-header">
-                <div class="login-logo">
-                    <i class="fas fa-landmark"></i>
+    <!-- Background Decoration -->
+    <div
+        class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 bg-gradient-to-br from-slate-50 via-white to-teal-50/40">
+        <div class="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-teal-200/20 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-[-10%] left-[-10%] w-[30%] h-[30%] bg-blue-200/20 rounded-full blur-[120px]"></div>
+    </div>
+
+    <div
+        class="container max-w-5xl mx-auto flex flex-col md:flex-row bg-white rounded-3xl overflow-hidden premium-shadow min-h-[650px] fade-in-up">
+
+        <!-- Left Side: Visual & Info (Hidden on small screens) -->
+        <div class="md:w-1/2 relative hidden md:block">
+            <img src="{{ asset('media/login_side_image.png') }}" alt="Login Visual"
+                class="absolute inset-0 w-full h-full object-cover">
+            <div class="absolute inset-0 side-image-overlay flex flex-col justify-center p-12 text-white">
+                <div class="mb-8 rotate-[-5deg]">
+                    <div
+                        class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fas fa-landmark text-white text-3xl"></i>
+                    </div>
                 </div>
-                <h2 class="login-title">Kecamatan SAE</h2>
-                <p class="login-subtitle">Akses Internal Petugas & ASN</p>
+                <h1 class="text-4xl font-bold mb-4 leading-tight">Selamat Datang di Portal Internal <span
+                        class="text-teal-300">{{ appProfile()->app_name }}</span></h1>
+                <p class="text-teal-50/80 mb-8 max-w-md leading-relaxed">
+                    {{ appProfile()->tagline ?? 'Sistem administrasi terpadu untuk efisiensi pelayanan masyarakat.' }}
+                </p>
+                <div class="flex items-center gap-4 mt-auto">
+                    <div class="flex -space-x-3">
+                        <div
+                            class="w-8 h-8 rounded-full border-2 border-white/30 bg-teal-500 overflow-hidden flex items-center justify-center text-[10px] font-bold">
+                            ASN</div>
+                        <div
+                            class="w-8 h-8 rounded-full border-2 border-white/30 bg-slate-700 overflow-hidden flex items-center justify-center text-[10px] font-bold">
+                            KAS</div>
+                        <div
+                            class="w-8 h-8 rounded-full border-2 border-white/30 bg-blue-600 overflow-hidden flex items-center justify-center text-[10px] font-bold">
+                            ADM</div>
+                    </div>
+                    <span class="text-xs text-teal-200/80">Sistem Informasi Manajemen
+                        {{ appProfile()->region_name }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Login Form -->
+        <div class="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center bg-white">
+            <div class="mb-10 text-center md:text-left">
+                <!-- Mobile Logo -->
+                <div class="md:hidden flex justify-center mb-6">
+                    <div
+                        class="w-14 h-14 bg-teal-600 rounded-2xl flex items-center justify-center shadow-lg shadow-teal-600/20">
+                        <i class="fas fa-landmark text-white text-2xl"></i>
+                    </div>
+                </div>
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Masuk ke Sistem</h2>
+                <p class="text-slate-500">Kelola administrasi kewilayahan dengan lebih mudah</p>
             </div>
 
+            <!-- Notifications -->
             @if (session('logout_success'))
-                <div class="alert px-3 py-3 rounded-3 mb-4"
-                    style="background: rgba(20, 184, 166, 0.1); border: 1px solid rgba(20, 184, 166, 0.2); color: #14b8a6; font-size: 14px; display: flex; align-items: center; gap: 12px;">
-                    <i class="fas fa-check-circle" style="font-size: 18px;"></i>
-                    <div>
-                        <strong>Logout Berhasil</strong>
-                        <p class="mb-0 small">Anda telah berhasil keluar dari aplikasi. Terima kasih.</p>
+                <div
+                    class="alert bg-teal-50 border border-teal-100 text-teal-700 mb-6 rounded-2xl py-3 px-4 flex items-center gap-3">
+                    <i class="fas fa-check-circle text-teal-500"></i>
+                    <div class="text-sm font-medium">Logout Berhasil! <span
+                            class="block text-xs font-normal opacity-80 mt-0.5">Sesi Anda telah berakhir dengan aman.</span>
                     </div>
                 </div>
             @endif
 
             @if ($errors->any())
-                <div class="alert-error">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <div>
+                <div
+                    class="alert bg-rose-50 border border-rose-100 text-rose-700 mb-6 rounded-2xl py-3 px-4 flex items-center gap-3">
+                    <i class="fas fa-exclamation-circle text-rose-500"></i>
+                    <div class="text-sm">
+                        <span class="font-bold">Gagal Masuk</span>
                         @foreach ($errors->all() as $error)
-                            <div>{{ $error }}</div>
+                            <div class="text-xs mt-0.5">{{ $error }}</div>
                         @endforeach
                     </div>
                 </div>
             @endif
 
-            <form class="login-form" method="POST" action="{{ route('login') }}">
+            <form action="{{ route('login') }}" method="POST" class="space-y-6">
                 @csrf
-                <div class="form-group">
-                    <label>Username</label>
-                    <div class="input-group-custom">
-                        <i class="fas fa-user"></i>
-                        <input type="text" name="username" class="login-input" placeholder="Masukkan username anda"
-                            value="{{ old('username') }}" required autofocus>
+                <div class="form-control">
+                    <label class="label mb-1">
+                        <span class="label-text font-semibold text-slate-700">Username</span>
+                    </label>
+                    <div class="relative group">
+                        <div
+                            class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none group-focus-within:text-teal-600 transition-colors text-slate-400">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <input type="text" name="username" placeholder="admin_kec" value="{{ old('username') }}"
+                            class="input input-bordered w-full pl-11 bg-slate-50 border-slate-200 focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-100 transition-all rounded-2xl h-14"
+                            required autofocus />
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Password</label>
-                    <div class="input-group-custom">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" name="password" class="login-input" placeholder="Masukkan password anda"
-                            required>
+                <div class="form-control">
+                    <label class="label mb-1">
+                        <span class="label-text font-semibold text-slate-700">Password</span>
+                    </label>
+                    <div class="relative group">
+                        <div
+                            class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none group-focus-within:text-teal-600 transition-colors text-slate-400">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <input type="password" name="password" placeholder="••••••••"
+                            class="input input-bordered w-full pl-11 bg-slate-50 border-slate-200 focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-100 transition-all rounded-2xl h-14"
+                            required />
                     </div>
                 </div>
 
-                <button type="submit" class="login-btn">
-                    <span>Sign In</span>
-                    <i class="fas fa-arrow-right"></i>
+                <div class="flex items-center justify-between py-1">
+                    <label class="label cursor-pointer justify-start gap-3">
+                        <input type="checkbox" class="checkbox checkbox-sm checkbox-teal rounded-md" />
+                        <span class="label-text text-slate-500 text-sm">Ingat saya</span>
+                    </label>
+                    <a href="#" class="text-sm font-medium text-teal-600 hover:text-teal-700 hover:underline">Lupa
+                        password?</a>
+                </div>
+
+                <button type="submit"
+                    class="btn bg-teal-600 hover:bg-teal-700 text-white border-none w-full h-14 rounded-2xl shadow-lg shadow-teal-600/20 text-base font-semibold group">
+                    <span>Masuk ke Dashboard</span>
+                    <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
                 </button>
             </form>
-            <a href="{{ url('/') }}" class="back-home">
-                <i class="fas fa-arrow-left"></i> Kembali ke Beranda
-            </a>
+
+            <div class="mt-8 text-center">
+                <a href="{{ url('/') }}"
+                    class="text-sm font-medium text-slate-500 hover:text-teal-600 transition-colors flex items-center justify-center gap-2">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+                </a>
+            </div>
+
+            <p class="mt-auto pt-8 text-center text-[10px] text-slate-400 uppercase tracking-widest">
+                Internal Gov System • Version 2.0
+            </p>
         </div>
     </div>
+
 </body>
 
 </html>

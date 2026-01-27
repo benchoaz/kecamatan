@@ -1,24 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Kecamatan;
 
+use App\Http\Controllers\Controller;
+use App\Models\AuditLog;
+use App\Models\Desa;
 use App\Models\Submission;
 use App\Models\Verifikasi;
-use App\Models\AuditLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class KasiKesraController extends Controller
+class KesraController extends Controller
 {
-    /**
-     * Kasi Kesra Dashboard
-     * Displays summary of social welfare reports and administrative compliance.
-     */
     public function index()
     {
-        if (!auth()->user()->isSuperAdmin() && !auth()->user()->isOperatorKecamatan()) {
-            abort(403, 'Akses Terbatas: Anda tidak memiliki izin untuk modul Kesra.');
-        }
+        $user = auth()->user();
+        abort_unless($user->isSuperAdmin() || $user->isOperatorKecamatan(), 403);
 
         $stats = [
             'waiting' => Submission::where('status', Submission::STATUS_SUBMITTED)
@@ -38,9 +35,6 @@ class KasiKesraController extends Controller
         return view('kecamatan.kesra.dashboard', compact('stats', 'recentSubmissions'));
     }
 
-    /**
-     * Verifikasi Program Sosial & Bansos
-     */
     public function bansosIndex()
     {
         $desa_id = request('desa_id');
@@ -57,7 +51,7 @@ class KasiKesraController extends Controller
                 ->latest()
                 ->get();
         } else {
-            $desas = \App\Models\Desa::withCount([
+            $desas = Desa::withCount([
                 'submissions' => function ($q) {
                     $q->whereHas('aspek', function ($q) {
                         $q->where('kode_aspek', 'kes_sosial');
@@ -76,9 +70,6 @@ class KasiKesraController extends Controller
         ]);
     }
 
-    /**
-     * Monitoring Pendidikan & Kepemudaan
-     */
     public function pendidikanIndex()
     {
         $desa_id = request('desa_id');
@@ -95,7 +86,7 @@ class KasiKesraController extends Controller
                 ->latest()
                 ->get();
         } else {
-            $desas = \App\Models\Desa::withCount([
+            $desas = Desa::withCount([
                 'submissions' => function ($q) {
                     $q->whereHas('aspek', function ($q) {
                         $q->where('kode_aspek', 'kes_pendidikan');
@@ -114,9 +105,6 @@ class KasiKesraController extends Controller
         ]);
     }
 
-    /**
-     * Monitoring Kesehatan & KB
-     */
     public function kesehatanIndex()
     {
         $desa_id = request('desa_id');
@@ -131,7 +119,7 @@ class KasiKesraController extends Controller
                 ->latest()
                 ->get();
         } else {
-            $desas = \App\Models\Desa::withCount([
+            $desas = Desa::withCount([
                 'submissions' => function ($q) {
                     $q->whereIn('aspek_id', [12, 13]);
                 }
@@ -148,9 +136,6 @@ class KasiKesraController extends Controller
         ]);
     }
 
-    /**
-     * Kehidupan Sosial, Budaya & Keagamaan
-     */
     public function sosialBudayaIndex()
     {
         $submissions = Submission::where('menu_id', 3)
@@ -165,9 +150,6 @@ class KasiKesraController extends Controller
         ]);
     }
 
-    /**
-     * Rekomendasi ke Camat
-     */
     public function rekomendasiIndex()
     {
         $submissions = Submission::where('menu_id', 3)
@@ -179,9 +161,6 @@ class KasiKesraController extends Controller
         return view('kecamatan.kesra.rekomendasi.index', compact('submissions'));
     }
 
-    /**
-     * Workflow: Review Action (Return or Recommend)
-     */
     public function process(Request $request, $id)
     {
         $submission = Submission::findOrFail($id);
@@ -192,9 +171,8 @@ class KasiKesraController extends Controller
         ]);
 
         $newStatus = ($validated['action'] === 'return') ? Submission::STATUS_RETURNED : Submission::STATUS_REVIEWED;
-        if (!auth()->user()->isSuperAdmin() && !auth()->user()->isOperatorKecamatan()) {
-            abort(403, 'Akses Terbatas: Anda tidak memiliki izin untuk memproses laporan.');
-        }
+
+        abort_unless(auth()->user()->isSuperAdmin() || auth()->user()->isOperatorKecamatan(), 403);
         abort_unless($submission->status === Submission::STATUS_SUBMITTED, 422, 'Laporan tidak dalam status menunggu telaah.');
 
         DB::beginTransaction();

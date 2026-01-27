@@ -122,7 +122,8 @@
 
                     <div class="d-flex justify-content-end gap-3 mb-5">
                         <a href="{{ route('kecamatan.users.index') }}" class="btn btn-light px-4">Batal</a>
-                        <button type="submit" class="btn btn-primary px-5 d-flex align-items-center gap-2">
+                        <button type="submit" class="btn btn-primary px-5 d-flex align-items-center gap-2"
+                            style="background-color: #4f46e5; border-color: #4f46e5; color: white;">
                             <i class="fas fa-save"></i>
                             <span>Simpan Akun</span>
                         </button>

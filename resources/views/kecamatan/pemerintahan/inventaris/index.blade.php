@@ -3,25 +3,28 @@
 @section('title', 'Inventaris & Aset Desa')
 
 @section('content')
-    <div class="content-header mb-4">
-        <div class="header-breadcrumb">
-            <a href="{{ route('kecamatan.dashboard') }}" class="text-primary"><i class="fas fa-arrow-left"></i> Kembali ke
-                Dashboard</a>
+    <div class="content-header mb-5">
+        <div class="d-flex align-items-center gap-2 mb-2">
+            <a href="{{ auth()->user()->desa_id ? route('desa.pemerintahan.index') : route('kecamatan.pemerintahan.index') }}"
+                class="btn btn-xs btn-light rounded-pill px-3 text-secondary text-decoration-none border shadow-sm">
+                <i class="fas fa-arrow-left-long me-2"></i> Kembali ke Menu Utama
+            </a>
         </div>
-        <div class="header-title d-flex justify-content-between align-items-center w-100">
+        <div class="d-flex justify-content-between align-items-end">
             <div>
-                <h1>Inventaris & Aset Desa</h1>
-                <p class="text-muted">
+                <h2 class="fw-bold text-primary-900 mb-1">Inventaris & Aset Desa</h2>
+                <p class="text-tertiary mb-0">
                     @if($desa_id)
-                        Pendataan Barang Milik Desa & Tanah Kas Desa
+                        <i class="fas fa-boxes-stacked me-1"></i> Pendataan Barang Milik Desa & Tanah Kas Desa.
                     @else
-                        Pilih Desa untuk Melihat Detail Administrasi Aset
+                        <i class="fas fa-map-location-dot me-1"></i> Pilih Desa untuk Melihat Detail Administrasi Aset.
                     @endif
                 </p>
             </div>
             @if($desa_id)
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addInventarisModal">
-                    <i class="fas fa-plus me-2"></i> Tambah Aset
+                <button class="btn btn-brand-600 text-white rounded-pill px-4 shadow-premium" data-bs-toggle="modal"
+                    data-bs-target="#addInventarisModal">
+                    <i class="fas fa-plus-circle me-2"></i> Tambah Aset
                 </button>
             @endif
         </div>
@@ -168,6 +171,7 @@
                 </div>
                 <form action="{{ route('kecamatan.pemerintahan.detail.inventaris.store') }}" method="POST">
                     @csrf
+                    <input type="hidden" name="desa_id" value="{{ $desa_id }}">
                     <div class="modal-body">
                         <div class="row g-3">
                             <div class="col-md-6">

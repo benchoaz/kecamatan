@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Dashboard Desa') - Kecamatan SAE</title>
+    <title>@yield('title', 'Dashboard Desa') - {{ appProfile()->app_name }}</title>
 
     <!-- Fonts - Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,6 +27,28 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+    <style>
+        .ticker-move-internal {
+            display: inline-block;
+            white-space: nowrap;
+            padding-right: 100%;
+            animation: ticker 30s linear infinite;
+        }
+
+        .hover\:pause-animation:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes ticker {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+    </style>
     @stack('styles')
 </head>
 
@@ -42,6 +64,39 @@
 
             <!-- Page Content -->
             <div class="page-content">
+                @if(isset($internalAnnouncements) && $internalAnnouncements->count() > 0)
+                    <div class="px-4 mt-3">
+                        @foreach($internalAnnouncements as $ann)
+                            @if($ann->display_mode == 'ticker')
+                                <div class="bg-blue-50/50 border border-blue-100 rounded-3 overflow-hidden py-1 mb-2">
+                                    <div class="d-flex align-items-center">
+                                        <div class="px-3 border-end border-blue-100 text-[10px] fw-bold text-blue-500 uppercase tracking-tighter">
+                                            INFO KECAMATAN
+                                        </div>
+                                        <div class="flex-grow-1 overflow-hidden whitespace-nowrap">
+                                            <div class="ticker-move-internal hover:pause-animation">
+                                                <span class="text-slate-600 small fw-medium px-3">
+                                                    {{ $ann->content }} &nbsp;&bull;&nbsp; {{ $ann->title }}
+                                                </span>
+                                                <span class="text-slate-600 small fw-medium px-3">
+                                                    {{ $ann->content }} &nbsp;&bull;&nbsp; {{ $ann->title }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="alert {{ $ann->priority == 'important' ? 'alert-danger border-0 shadow-sm' : 'alert-primary border-0 shadow-sm' }} d-flex align-items-center py-2 px-3 rounded-4 mb-3">
+                                    <i class="fas {{ $ann->priority == 'important' ? 'fa-exclamation-circle' : 'fa-info-circle' }} me-2"></i>
+                                    <div class="flex-grow-1">
+                                        <strong class="small">{{ $ann->title }}:</strong> 
+                                        <span class="small">{{ $ann->content }}</span>
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                @endif
                 @if(session('success'))
                     <div class="alert alert-success mt-4 mx-4">
                         <i class="fas fa-check-circle me-2"></i>

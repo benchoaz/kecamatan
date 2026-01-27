@@ -3,75 +3,93 @@
 @section('title', $title ?? 'Administrasi Perangkat Desa')
 
 @section('content')
-    <div class="content-header mb-4">
-        <div class="header-breadcrumb">
-            <a href="{{ route('kecamatan.dashboard') }}" class="text-primary"><i class="fas fa-arrow-left"></i> Kembali ke
-                Dashboard</a>
+    <div class="content-header mb-5">
+        <div class="d-flex align-items-center gap-2 mb-2">
+            <a href="{{ auth()->user()->desa_id ? route('desa.pemerintahan.index') : route('kecamatan.pemerintahan.index') }}"
+                class="btn btn-xs btn-light rounded-pill px-3 text-secondary text-decoration-none border shadow-sm">
+                <i class="fas fa-arrow-left-long me-2"></i> Kembali ke Menu Utama
+            </a>
         </div>
-        <div class="header-title d-flex justify-content-between align-items-center w-100">
+        <div class="d-flex justify-content-between align-items-end">
             <div>
-                <h1>{{ $title ?? 'Administrasi Perangkat Desa' }}</h1>
-                <p class="text-muted">
+                <h2 class="fw-bold text-primary-900 mb-1">{{ $title ?? 'Administrasi Perangkat Desa' }}</h2>
+                <p class="text-tertiary mb-0">
                     @if($desa_id)
-                        Data Riwayat & Legalitas {{ $title ?? 'Perangkat Desa' }}
+                        <i class="fas fa-circle-info me-1"></i> Manajemen data riwayat, legalitas, dan kontak personil desa.
                     @else
-                        Pilih Desa untuk Melihat Detail Administrasi
+                        <i class="fas fa-map-location-dot me-1"></i> Pilih desa dibawah ini untuk melakukan monitoring
+                        administratif.
                     @endif
                 </p>
             </div>
             @if($desa_id)
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPersonilModal">
-                    <i class="fas fa-plus me-2"></i> Tambah Personil
+                <button class="btn btn-brand-600 text-white rounded-pill px-4 shadow-premium" data-bs-toggle="modal"
+                    data-bs-target="#addPersonilModal">
+                    <i class="fas fa-plus-circle me-2"></i> Tambah Data Personil
                 </button>
             @endif
         </div>
     </div>
 
     @if(!$desa_id)
-        <div class="card bg-white border-gray-200 shadow-sm rounded-4 overflow-hidden">
+        <div class="card border-0 shadow-premium rounded-4 overflow-hidden">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-light text-muted small fw-bold">
+                    <thead class="bg-primary-900 text-white small fw-bold">
                         <tr>
-                            <th class="ps-4" style="width: 50px;">No</th>
-                            <th>Nama Desa</th>
+                            <th class="ps-4 py-3" style="width: 70px;">NO</th>
+                            <th class="py-3">NAMA DESA</th>
                             @if(isset($kategori) && $kategori == 'bpd')
-                                <th class="text-center">Jumlah Anggota BPD</th>
+                                <th class="text-center py-3">ANGGOTA BPD</th>
                             @else
-                                <th class="text-center">Jumlah Kades</th>
-                                <th class="text-center">Jumlah Perangkat</th>
+                                <th class="text-center py-3">KEPALA DESA</th>
+                                <th class="text-center py-3">PERANGKAT</th>
                             @endif
-                            <th class="text-center">Total Personil</th>
-                            <th class="text-end pe-4">Aksi</th>
+                            <th class="text-center py-3">TOTAL</th>
+                            <th class="text-end pe-4 py-3">KENDALI</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="bg-white">
                         @foreach($desas as $index => $desa)
                             <tr>
-                                <td class="ps-4 text-muted small">{{ $index + 1 }}</td>
-                                <td class="fw-bold text-slate-700"> Desa {{ $desa->nama_desa }}</td>
+                                <td class="ps-4 text-secondary small fw-medium">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="bg-brand-50 text-brand-600 rounded-3 d-flex align-items-center justify-content-center"
+                                            style="width: 42px; height: 42px;">
+                                            <i class="fas fa-map-location-dot"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold text-primary-900">Desa {{ $desa->nama_desa }}</div>
+                                            <small class="text-tertiary">Kecamatan Besuk</small>
+                                        </div>
+                                    </div>
+                                </td>
                                 @if(isset($kategori) && $kategori == 'bpd')
                                     <td class="text-center">
-                                        <span class="badge bg-primary-soft text-primary">{{ $desa->bpd_count }}</span>
+                                        <span class="badge rounded-pill bg-brand-50 text-brand-600 px-3">{{ $desa->bpd_count }}
+                                            Orang</span>
                                     </td>
-                                    <td class="text-center fw-bold">
+                                    <td class="text-center fw-bold text-primary-900">
                                         {{ $desa->bpd_count }}
                                     </td>
                                 @else
                                     <td class="text-center">
-                                        <span class="badge bg-primary-soft text-primary">{{ $desa->kades_count }}</span>
+                                        <span
+                                            class="badge rounded-pill bg-emerald-50 text-emerald-600 px-3 fw-bold">{{ $desa->kades_count }}</span>
                                     </td>
                                     <td class="text-center">
-                                        <span class="badge bg-slate-100 text-slate-700">{{ $desa->perangkat_count }}</span>
+                                        <span
+                                            class="badge rounded-pill bg-brand-50 text-brand-600 px-3 fw-bold">{{ $desa->perangkat_count }}</span>
                                     </td>
-                                    <td class="text-center fw-bold">
+                                    <td class="text-center fw-bold text-primary-900">
                                         {{ $desa->kades_count + $desa->perangkat_count }}
                                     </td>
                                 @endif
                                 <td class="text-end pe-4">
                                     <a href="{{ url()->current() }}?desa_id={{ $desa->id }}"
-                                        class="btn btn-sm btn-outline-primary rounded-pill px-3">
-                                        Cek Detail <i class="fas fa-arrow-right ms-1"></i>
+                                        class="btn btn-sm btn-brand-600 text-white rounded-pill px-4 shadow-sm">
+                                        Detail <i class="fas fa-chevron-right ms-2 small"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -81,59 +99,92 @@
             </div>
         </div>
     @else
-        <div class="card bg-white border-gray-200 shadow-sm">
+        <div class="card border-0 shadow-premium rounded-4 overflow-hidden">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-light text-muted small">
+                    <thead class="bg-primary-900 text-white small fw-bold">
                         <tr>
-                            <th class="ps-4">Nama / NIK</th>
-                            <th>Jabatan</th>
-                            <th>Masa Jabatan</th>
-                            <th>Legalitas (SK)</th>
-                            <th>Status</th>
-                            <th class="text-end pe-4">Aksi</th>
+                            <th class="ps-4 py-3">FOTO & IDENTITAS</th>
+                            <th class="py-3">JABATAN</th>
+                            <th class="py-3">MASA JABATAN</th>
+                            <th class="py-3">LEGALITAS (SK)</th>
+                            <th class="py-3">KONTAK</th>
+                            <th class="text-end pe-4 py-3">AKSI</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="bg-white">
                         @forelse($personils as $p)
                             <tr>
                                 <td class="ps-4">
-                                    <div class="fw-bold">{{ $p->nama }}</div>
-                                    <small class="text-muted">{{ $p->nik }}</small>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="personil-photo">
+                                            @if($p->foto)
+                                                <img src="{{ route('files.show', ['uuid' => 'local', 'filename' => str_replace('/', '_', $p->foto)]) }}"
+                                                    alt="Foto {{ $p->nama }}" class="rounded-circle object-fit-cover"
+                                                    style="width: 48px; height: 48px; border: 2px solid var(--brand-100);">
+                                            @else
+                                                <div class="rounded-circle bg-brand-50 text-brand-600 d-flex align-items-center justify-content-center fw-bold shadow-sm"
+                                                    style="width: 48px; height: 48px;">
+                                                    {{ strtoupper(substr($p->nama, 0, 1)) }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold text-primary-900">{{ $p->nama }}</div>
+                                            <small class="text-tertiary">NIK: {{ $p->nik }}</small>
+                                        </div>
+                                    </div>
                                 </td>
-                                <td><span class="badge bg-light text-dark border">{{ $p->jabatan }}</span></td>
                                 <td>
-                                    <div class="small">
-                                        {{ $p->masa_jabatan_mulai ? $p->masa_jabatan_mulai->format('d/m/Y') : '' }}
-                                        <i class="fas fa-arrow-right mx-1 text-muted"></i>
+                                    <span class="badge bg-brand-50 text-brand-600 border-0 px-3 fw-semibold">
+                                        {{ $p->jabatan }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="small text-primary-700 fw-medium">
+                                        {{ $p->masa_jabatan_mulai ? $p->masa_jabatan_mulai->format('d/m/Y') : '-' }}
+                                        <span class="text-tertiary mx-1">s/d</span>
                                         {{ $p->masa_jabatan_selesai ? $p->masa_jabatan_selesai->format('d/m/Y') : 'Sekarang' }}
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="small fw-500">No: {{ $p->nomor_sk ?? '-' }}</div>
-                                    @if($p->file_sk)
-                                        <a href="#" class="btn btn-xs btn-outline-primary mt-1">
-                                            <i class="fas fa-file-pdf"></i> Lihat SK
-                                        </a>
-                                    @endif
+                                    <div class="d-flex flex-column">
+                                        <small class="text-tertiary">No. SK:</small>
+                                        <span class="small fw-semibold text-primary-900">{{ $p->nomor_sk ?? '-' }}</span>
+                                        @if($p->file_sk)
+                                            <a href="{{ route('files.show', ['uuid' => 'local', 'filename' => str_replace('/', '_', $p->file_sk)]) }}"
+                                                target="_blank" class="text-brand-600 small mt-1 text-decoration-none fw-bold">
+                                                <i class="fas fa-file-pdf me-1"></i> Buka Dokumen
+                                            </a>
+                                        @endif
+                                    </div>
                                 </td>
                                 <td>
-                                    @if($p->is_active)
-                                        <span class="badge bg-success-soft text-success">Aktif</span>
+                                    @if($p->no_hp)
+                                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $p->no_hp) }}" target="_blank"
+                                            class="btn btn-xs btn-success rounded-pill px-3 shadow-sm">
+                                            <i class="fab fa-whatsapp me-1"></i> WhatsApp
+                                        </a>
                                     @else
-                                        <span class="badge bg-danger-soft text-danger">Tidak Aktif</span>
+                                        <span class="text-tertiary small">Tidak ada nomor</span>
                                     @endif
                                 </td>
                                 <td class="text-end pe-4">
                                     <div class="dropdown">
-                                        <button class="btn btn-icon" data-bs-toggle="dropdown">
-                                            <i class="fas fa-ellipsis-v"></i>
+                                        <button class="btn btn-light btn-sm rounded-circle shadow-sm" data-bs-toggle="dropdown"
+                                            style="width: 32px; height: 32px;">
+                                            <i class="fas fa-ellipsis-vertical text-secondary"></i>
                                         </button>
-                                        <ul class="dropdown-menu dropdown-menu-end">
-                                            <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i> Edit Data</a>
+                                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-3">
+                                            <li><a class="dropdown-item py-2" href="#"><i
+                                                        class="fas fa-user-edit me-2 text-brand-600"></i> Edit Profil</a></li>
+                                            <li><a class="dropdown-item py-2" href="#"><i
+                                                        class="fas fa-history me-2 text-primary-400"></i> Riwayat SK</a></li>
+                                            <li>
+                                                <hr class="dropdown-divider opacity-50">
                                             </li>
-                                            <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-user-minus me-2"></i>
-                                                    Nonaktifkan</a></li>
+                                            <li><a class="dropdown-item py-2 text-danger" href="#"><i
+                                                        class="fas fa-user-slash me-2"></i> Nonaktifkan</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -142,8 +193,12 @@
                             <tr>
                                 <td colspan="6" class="text-center py-5">
                                     <div class="empty-state">
-                                        <i class="fas fa-users fa-3x mb-3 text-muted"></i>
-                                        <p>Data belum tersedia untuk desa ini.</p>
+                                        <div class="bg-primary-50 text-primary-200 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                                            style="width: 80px; height: 80px;">
+                                            <i class="fas fa-users-slash fa-2x"></i>
+                                        </div>
+                                        <h5 class="text-primary-900 fw-bold">Belum Ada Data</h5>
+                                        <p class="text-tertiary">Silakan tambahkan data personil baru untuk desa ini.</p>
                                     </div>
                                 </td>
                             </tr>
@@ -156,29 +211,59 @@
 
     <!-- Simple Placeholder Modal for Demo -->
     <div class="modal fade" id="addPersonilModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Tambah Data Personil</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-primary-900 text-white rounded-top-4 py-3 px-4">
+                    <h5 class="modal-title fw-bold">Tambah Data Personil</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <form action="{{ route('kecamatan.pemerintahan.detail.personil.store') }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="kategori" value="{{ $kategori ?? 'perangkat' }}">
-                    <div class="modal-body">
-                        <div class="row g-3">
+                    <input type="hidden" name="desa_id" value="{{ $desa_id }}">
+
+                    <div class="modal-body p-4">
+                        <div class="row g-4">
+                            <!-- Foto Section -->
+                            <div class="col-12 text-center mb-2">
+                                <div class="position-relative d-inline-block">
+                                    <div class="rounded-circle border-dashed border-2 border-primary-200 d-flex align-items-center justify-content-center bg-primary-50"
+                                        style="width: 120px; height: 120px;">
+                                        <i class="fas fa-camera fa-2x text-primary-300"></i>
+                                    </div>
+                                    <label for="fotoInput"
+                                        class="position-absolute bottom-0 end-0 bg-brand-600 text-white rounded-circle shadow-sm d-flex align-items-center justify-content-center"
+                                        style="width: 36px; height: 36px; cursor: pointer;">
+                                        <i class="fas fa-plus"></i>
+                                        <input type="file" id="fotoInput" name="foto" class="d-none" accept="image/*">
+                                    </label>
+                                </div>
+                                <div class="mt-2 small text-tertiary">Pas Foto (JPG/PNG, Max 1MB)</div>
+                            </div>
+
                             <div class="col-md-6">
-                                <label class="form-label">Nama Lengkap</label>
-                                <input type="text" name="nama" class="form-control" required>
+                                <label class="form-label fw-semibold text-primary-900">Nama Lengkap</label>
+                                <input type="text" name="nama" class="form-control rounded-3 border-gray-200"
+                                    placeholder="Contoh: Budi Santoso, S.T" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">NIK (16 Digit)</label>
-                                <input type="text" name="nik" class="form-control" maxlength="16" required>
+                                <label class="form-label fw-semibold text-primary-900">NIK (16 Digit)</label>
+                                <input type="text" name="nik" class="form-control rounded-3 border-gray-200" maxlength="16"
+                                    placeholder="Masukkan 16 digit NIK" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Jabatan</label>
-                                <select name="jabatan" class="form-select" required>
+                                <label class="form-label fw-semibold text-primary-900">Nomor Telepon / WhatsApp</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0 text-success"><i
+                                            class="fab fa-whatsapp"></i></span>
+                                    <input type="text" name="no_hp" class="form-control rounded-3 border-start-0 ps-0"
+                                        placeholder="Contoh: 08123456789">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-primary-900">Jabatan</label>
+                                <select name="jabatan" class="form-select rounded-3 border-gray-200" required>
                                     @if(($kategori ?? 'perangkat') == 'perangkat')
                                         <option value="Kepala Desa">Kepala Desa</option>
                                         <option value="Sekretaris Desa">Sekretaris Desa</option>
@@ -198,22 +283,29 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Nomor SK</label>
-                                <input type="text" name="nomor_sk" class="form-control">
+                                <label class="form-label fw-semibold text-primary-900">Mulai Menjabat</label>
+                                <input type="date" name="masa_jabatan_mulai" class="form-control rounded-3 border-gray-200">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Mulai Menjabat</label>
-                                <input type="date" name="masa_jabatan_mulai" class="form-control">
+                                <label class="form-label fw-semibold text-primary-900">Nomor SK</label>
+                                <input type="text" name="nomor_sk" class="form-control rounded-3 border-gray-200"
+                                    placeholder="Contoh: 188/02/426.411.02/2024">
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Unggah Surat Keputusan (PDF)</label>
-                                <input type="file" name="file_sk" class="form-control" accept="application/pdf">
+                            <div class="col-12">
+                                <label class="form-label fw-semibold text-primary-900">Dokumen SK (PDF)</label>
+                                <div class="input-group">
+                                    <input type="file" name="file_sk" class="form-control rounded-3"
+                                        accept="application/pdf">
+                                    <span class="input-group-text bg-light text-muted small">Max 2MB</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan Data</button>
+                    <div class="modal-footer border-0 p-4 pt-0">
+                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-toggle="modal"
+                            data-bs-target="#addPersonilModal">Gagalkan</button>
+                        <button type="submit" class="btn btn-brand-600 text-white rounded-pill px-5 shadow-sm">Simpan
+                            Data</button>
                     </div>
                 </form>
             </div>

@@ -3,8 +3,9 @@
         <div class="logo">
             <div class="logo-icon text-success"><i class="fas fa-home"></i></div>
             <div class="logo-text">
-                <span class="logo-title">OPERATOR</span>
-                <span class="logo-subtitle">Sistem Informasi Desa</span>
+                <span
+                    class="logo-title fw-bold">{{ auth()->user()->desa ? auth()->user()->desa->nama_desa : 'OPERATOR' }}</span>
+                <span class="logo-subtitle tracking-wider">{{ strtoupper(appProfile()->app_name) }}</span>
             </div>
         </div>
         <button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button>
