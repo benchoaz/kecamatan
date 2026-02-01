@@ -20,7 +20,7 @@ class DashboardController extends Controller
             'jumlah_desa' => Desa::count(),
             'pengunjung_hari_ini' => PengunjungKecamatan::hariIni()->count(),
             'total_penduduk' => 12847, // Placeholder
-            'laporan_masuk' => Submission::whereMonth('created_at', now()->month)->count(),
+            'laporan_masuk' => Submission::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count(),
         ];
 
         $activities = AuditLog::with('user')

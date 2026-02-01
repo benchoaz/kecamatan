@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - {{ appProfile()->app_name }}</title>
+    @if(appProfile()->logo_path)
+        <link rel="icon" href="{{ asset('storage/' . appProfile()->logo_path) }}" type="image/png">
+    @endif
 
     <!-- Tailwind CSS + DaisyUI -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.6.0/dist/full.min.css" rel="stylesheet" type="text/css" />
@@ -73,10 +76,13 @@
             <img src="{{ asset('media/login_side_image.png') }}" alt="Login Visual"
                 class="absolute inset-0 w-full h-full object-cover">
             <div class="absolute inset-0 side-image-overlay flex flex-col justify-center p-12 text-white">
-                <div class="mb-8 rotate-[-5deg]">
-                    <div
-                        class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6">
-                        <i class="fas fa-landmark text-white text-3xl"></i>
+                <div class="mb-8">
+                    <div class="w-28 h-28 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-xl border border-white/20">
+                        @if(appProfile()->logo_path)
+                            <img src="{{ asset('storage/' . appProfile()->logo_path) }}" class="w-20 h-20 object-contain" alt="Logo">
+                        @else
+                            <i class="fas fa-landmark text-white text-5xl"></i>
+                        @endif
                     </div>
                 </div>
                 <h1 class="text-4xl font-bold mb-4 leading-tight">Selamat Datang di Portal Internal <span
@@ -108,8 +114,13 @@
                 <!-- Mobile Logo -->
                 <div class="md:hidden flex justify-center mb-6">
                     <div
-                        class="w-14 h-14 bg-teal-600 rounded-2xl flex items-center justify-center shadow-lg shadow-teal-600/20">
-                        <i class="fas fa-landmark text-white text-2xl"></i>
+                        class="w-20 h-20 bg-teal-600 rounded-2xl flex items-center justify-center shadow-lg shadow-teal-600/20 p-2">
+                        @if(appProfile()->logo_path)
+                            <img src="{{ asset('storage/' . appProfile()->logo_path) }}"
+                                class="w-full h-full object-contain bg-white rounded-xl p-1" alt="Logo">
+                        @else
+                            <i class="fas fa-landmark text-white text-3xl"></i>
+                        @endif
                     </div>
                 </div>
                 <h2 class="text-3xl font-bold text-slate-800 mb-2">Masuk ke Sistem</h2>

@@ -8,11 +8,14 @@ use App\Http\Controllers\Kecamatan\TrantibumController;
 use App\Http\Controllers\Kecamatan\VerifikasiController;
 use App\Http\Controllers\Kecamatan\LaporanController;
 use App\Http\Controllers\Kecamatan\UserManagementController;
+use App\Http\Controllers\Kecamatan\PembangunanController;
+use App\Http\Controllers\Kecamatan\ReferenceDataController;
 use App\Http\Controllers\Master\DesaMasterController;
+use App\Http\Controllers\ApplicationProfileController;
 use App\Http\Controllers\Pemerintahan\AparaturController; // Keep for now or move
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth'])->prefix('kecamatan')->name('kecamatan.')->group(function () {
+Route::middleware(['auth', 'role:Operator Kecamatan,Super Admin'])->prefix('kecamatan')->name('kecamatan.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Verification & Approval
@@ -27,10 +30,6 @@ Route::middleware(['auth'])->prefix('kecamatan')->name('kecamatan.')->group(func
         Route::get('/', [PemerintahanController::class, 'index'])->name('index');
         Route::get('/export-audit', [PemerintahanController::class, 'exportAudit'])->name('export');
 
-        // Visitor Registry (Buku Tamu)
-        Route::get('/visitor', [PemerintahanController::class, 'visitorIndex'])->name('visitor.index');
-        Route::post('/visitor', [PemerintahanController::class, 'visitorStore'])->name('visitor.store');
-        Route::patch('/visitor/{id}', [PemerintahanController::class, 'visitorUpdate'])->name('visitor.update');
 
         // Administrative Governance Modules (Detailed Monitoring)
         Route::prefix('detail')->name('detail.')->group(function () {
@@ -50,6 +49,7 @@ Route::middleware(['auth'])->prefix('kecamatan')->name('kecamatan.')->group(func
             Route::post('/inventaris', [PemerintahanController::class, 'inventarisStore'])->name('inventaris.store');
             Route::get('/dokumen', [PemerintahanController::class, 'dokumenIndex'])->name('dokumen.index');
             Route::post('/dokumen', [PemerintahanController::class, 'dokumenStore'])->name('dokumen.store');
+            Route::get('/peraturan', [PemerintahanController::class, 'peraturanIndex'])->name('peraturan.index');
         });
 
         // Sub-Modul: Data Kepala Desa & Perangkat
@@ -57,9 +57,16 @@ Route::middleware(['auth'])->prefix('kecamatan')->name('kecamatan.')->group(func
         Route::post('aparatur/{id}/verify', [AparaturController::class, 'verify'])->name('aparatur.verify');
     });
 
+    // System Settings
+    Route::get('/settings/profile', [ApplicationProfileController::class, 'index'])->name('settings.profile');
+    Route::put('/settings/profile', [ApplicationProfileController::class, 'update'])->name('settings.profile.update');
+    Route::get('/settings/features', [ApplicationProfileController::class, 'features'])->name('settings.features');
+    Route::post('/settings/features/toggle', [ApplicationProfileController::class, 'toggleFeature'])->name('settings.profile.toggle-feature');
+
     // Ekbang (Monitoring Side)
-    Route::prefix('ekbang')->name('ekbang.')->group(function () {
+    Route::middleware(['menu.toggle:ekbang'])->prefix('ekbang')->name('ekbang.')->group(function () {
         Route::get('/', [EkbangController::class, 'index'])->name('index');
+        Route::get('/export-audit', [EkbangController::class, 'exportAudit'])->name('export');
         Route::get('/dana-desa', [EkbangController::class, 'danaDesa'])->name('dana-desa.index');
         Route::get('/fisik', [EkbangController::class, 'fisik'])->name('fisik.index');
         Route::get('/realisasi', [EkbangController::class, 'realisasi'])->name('realisasi.index');
@@ -67,9 +74,34 @@ Route::middleware(['auth'])->prefix('kecamatan')->name('kecamatan.')->group(func
         Route::get('/audit', [EkbangController::class, 'audit'])->name('audit.index');
     });
 
+    // Pembangunan & BLT (Monitoring Side)
+    Route::middleware(['menu.toggle:ekbang'])->prefix('pembangunan')->name('pembangunan.')->group(function () {
+        Route::get('/', [PembangunanController::class, 'index'])->name('index');
+        Route::get('/blt', [PembangunanController::class, 'bltIndex'])->name('blt.index');
+        Route::get('/{id}', [PembangunanController::class, 'show'])->name('show');
+        Route::post('/{id}/monitoring/{type}', [PembangunanController::class, 'updateMonitoring'])->name('update-monitoring');
+
+        // Reference Data (SSH & SBU)
+        Route::prefix('referensi')->name('referensi.')->group(function () {
+            Route::prefix('ssh')->name('ssh.')->group(function () {
+                Route::get('/', [ReferenceDataController::class, 'sshIndex'])->name('index');
+                Route::post('/', [ReferenceDataController::class, 'sshStore'])->name('store');
+                Route::put('/{id}', [ReferenceDataController::class, 'sshUpdate'])->name('update');
+                Route::delete('/{id}', [ReferenceDataController::class, 'sshDestroy'])->name('destroy');
+            });
+            Route::prefix('sbu')->name('sbu.')->group(function () {
+                Route::get('/', [ReferenceDataController::class, 'sbuIndex'])->name('index');
+                Route::post('/', [ReferenceDataController::class, 'sbuStore'])->name('store');
+                Route::put('/{id}', [ReferenceDataController::class, 'sbuUpdate'])->name('update');
+                Route::delete('/{id}', [ReferenceDataController::class, 'sbuDestroy'])->name('destroy');
+            });
+        });
+    });
+
     // Kesejahteraan Rakyat
     Route::prefix('kesra')->name('kesra.')->group(function () {
         Route::get('/', [KesraController::class, 'index'])->name('index');
+        Route::get('/export-audit', [KesraController::class, 'exportAudit'])->name('export');
         Route::get('/bansos', [KesraController::class, 'bansosIndex'])->name('bansos.index');
         Route::get('/pendidikan', [KesraController::class, 'pendidikanIndex'])->name('pendidikan.index');
         Route::get('/kesehatan', [KesraController::class, 'kesehatanIndex'])->name('kesehatan.index');
@@ -81,6 +113,7 @@ Route::middleware(['auth'])->prefix('kecamatan')->name('kecamatan.')->group(func
     // Trantibum
     Route::prefix('trantibum')->name('trantibum.')->group(function () {
         Route::get('/', [TrantibumController::class, 'index'])->name('index');
+        Route::get('/export-audit', [TrantibumController::class, 'exportAudit'])->name('export');
         Route::get('/{id}', [TrantibumController::class, 'show'])->name('show');
     });
 

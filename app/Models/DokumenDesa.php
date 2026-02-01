@@ -25,4 +25,20 @@ class DokumenDesa extends Model
     {
         return $this->belongsTo(Desa::class);
     }
+
+    public function isEditable()
+    {
+        return in_array($this->status, ['draft', 'dikembalikan']);
+    }
+
+    public function getStatusLabelAttribute()
+    {
+        return match ($this->status) {
+            'draft' => 'Draft',
+            'dikirim' => 'Verifikasi Kecamatan',
+            'dikembalikan' => 'Perlu Revisi',
+            'diterima' => 'Terverifikasi',
+            default => 'Draft'
+        };
+    }
 }

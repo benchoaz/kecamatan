@@ -44,7 +44,7 @@ class PemerintahanController extends Controller
             'E' => ['title' => 'Monitoring LKPJ & LPPD', 'icon' => 'fa-file-signature', 'route' => 'kecamatan.pemerintahan.detail.laporan.index', 'desc' => 'Pemantauan status penyampaian & kelengkapan laporan tahunan.'],
             'F' => ['title' => 'Administrasi Inventaris', 'icon' => 'fa-boxes-stacked', 'route' => 'kecamatan.pemerintahan.detail.inventaris.index', 'desc' => 'Pendataan status administrasi aset barang & tanah milik desa.'],
             'G' => ['title' => 'Arsip Dokumen Perencanaan', 'icon' => 'fa-folder-open', 'route' => 'kecamatan.pemerintahan.detail.dokumen.index', 'desc' => 'Penyimpanan referensi dokumen RPJMDes & RKPDes (Tanpa APBDes).'],
-            'H' => ['title' => 'Registri Buku Tamu', 'icon' => 'fa-clipboard-list', 'route' => 'kecamatan.pemerintahan.visitor.index', 'desc' => 'Pendataan administrasi pengunjung kantor kecamatan.'],
+            'H' => ['title' => 'Inventaris Peraturan Desa', 'icon' => 'fa-gavel', 'route' => 'kecamatan.pemerintahan.detail.peraturan.index', 'desc' => 'Daftar produk hukum & peraturan desa yang telah ditetapkan.'],
         ];
 
         $healthMetrics = $desa_id ? $this->calculateHealth($desa_id) : null;
@@ -63,10 +63,13 @@ class PemerintahanController extends Controller
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'nik' => 'required|digits:16',
+            'tempat_lahir' => 'nullable|string|max:255',
+            'tanggal_lahir' => 'required|date',
             'no_hp' => 'nullable|string|max:20',
             'jabatan' => 'required|string',
             'kategori' => 'required|in:perangkat,bpd',
             'nomor_sk' => 'nullable|string|max:255',
+            'tanggal_sk' => 'nullable|date',
             'masa_jabatan_mulai' => 'nullable|date',
             'file_sk' => 'nullable|file|mimes:pdf|max:2048',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:1024',
@@ -121,7 +124,9 @@ class PemerintahanController extends Controller
             ])->orderBy('nama_desa')->get();
         }
 
-        return view('kecamatan.pemerintahan.personil.index', compact('personils', 'desa_id', 'desas'));
+        return view('kecamatan.pemerintahan.personil.index', compact('personils', 'desa_id', 'desas') + [
+            'store_route' => route('kecamatan.pemerintahan.detail.personil.store')
+        ]);
     }
 
     public function bpdIndex()
@@ -303,7 +308,45 @@ class PemerintahanController extends Controller
             ])->orderBy('nama_desa')->get();
         }
 
-        return view('kecamatan.pemerintahan.dokumen.index', compact('dokumens', 'desa_id', 'desas'));
+        return view('kecamatan.pemerintahan.dokumen.index', [
+            'dokumens' => $dokumens,
+            'desa_id' => $desa_id,
+            'desas' => $desas,
+            'title' => 'Arsip Dokumen Perencanaan',
+            'tipe_filter' => 'RPJMDes & RKPDes',
+            'desc' => 'Monitoring Dokumen RPJMDes (6 Tahunan) & RKPDes (Tahunan).',
+            'desc_pilih_desa' => 'Pilih Desa untuk Memantau Kelengkapan Dokumen Perencanaan (RPJMDes/RKPDes).'
+        ]);
+    }
+
+    public function peraturanIndex()
+    {
+        $desa_id = request('desa_id');
+        $dokumens = [];
+        $desas = [];
+
+        if ($desa_id) {
+            $dokumens = DokumenDesa::where('desa_id', $desa_id)
+                ->where('tipe_dokumen', 'Peraturan Desa')
+                ->orderBy('tahun', 'desc')
+                ->get();
+        } else {
+            $desas = Desa::withCount([
+                'dokumens' => function ($q) {
+                    $q->where('tipe_dokumen', 'Peraturan Desa');
+                }
+            ])->orderBy('nama_desa')->get();
+        }
+
+        return view('kecamatan.pemerintahan.dokumen.index', [
+            'dokumens' => $dokumens,
+            'desa_id' => $desa_id,
+            'desas' => $desas,
+            'title' => 'Inventaris Peraturan Desa',
+            'tipe_filter' => 'Peraturan Desa',
+            'desc' => 'Daftar produk hukum & peraturan desa yang telah ditetapkan.',
+            'desc_pilih_desa' => 'Pilih Desa untuk Memantau Kelengkapan Peraturan Desa.'
+        ]);
     }
 
     public function dokumenStore(Request $request)
@@ -378,44 +421,6 @@ class PemerintahanController extends Controller
         return back()->with('success', 'Data lembaga berhasil disimpan.');
     }
 
-    public function visitorIndex()
-    {
-        $visitors = PengunjungKecamatan::with('desaAsal')
-            ->orderBy('status', 'desc')
-            ->orderBy('jam_datang', 'desc')
-            ->take(100)
-            ->get();
-
-        $desas = Desa::orderBy('nama_desa')->get();
-        return view('kecamatan.pemerintahan.visitor.index', compact('visitors', 'desas'));
-    }
-
-    public function visitorStore(Request $request)
-    {
-        $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'nik' => 'nullable|digits:16',
-            'desa_asal_id' => 'nullable|exists:desa,id',
-            'alamat_luar' => 'nullable|string|max:255',
-            'no_hp' => 'nullable|string|max:15',
-            'tujuan_bidang' => 'required|string',
-            'keperluan' => 'required|string',
-        ]);
-
-        PengunjungKecamatan::create($validated);
-        return back()->with('success', 'Pengunjung berhasil didaftarkan.');
-    }
-
-    public function visitorUpdate(Request $request, $id)
-    {
-        $visitor = PengunjungKecamatan::findOrFail($id);
-        $validated = $request->validate([
-            'status' => 'required|in:menunggu,dilayani,selesai'
-        ]);
-
-        $visitor->update($validated);
-        return back()->with('success', 'Status pengunjung berhasil diperbarui.');
-    }
 
     public function exportAudit()
     {

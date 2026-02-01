@@ -1,6 +1,6 @@
 @extends('layouts.kecamatan')
 
-@section('title', 'Arsip Dokumen Perencanaan Desa')
+@section('title', $title ?? 'Arsip Dokumen Perencanaan Desa')
 
 @section('content')
     <div class="content-header mb-5">
@@ -12,12 +12,14 @@
         </div>
         <div class="d-flex justify-content-between align-items-end">
             <div>
-                <h2 class="fw-bold text-primary-900 mb-1">Arsip Dokumen Perencanaan</h2>
+                <h2 class="fw-bold text-primary-900 mb-1">{{ $title ?? 'Arsip Dokumen Perencanaan' }}</h2>
                 <p class="text-tertiary mb-0">
                     @if($desa_id)
-                        <i class="fas fa-folder-open me-1"></i> Monitoring Dokumen RPJMDes (6 Tahunan) & RKPDes (Tahunan).
+                        <i class="fas fa-folder-open me-1"></i>
+                        {{ $desc ?? 'Monitoring kelengkapan dokumen administratif desa.' }}
                     @else
-                        <i class="fas fa-map-location-dot me-1"></i> Pilih Desa untuk Memantau Kelengkapan Dokumen Perencanaan.
+                        <i class="fas fa-map-location-dot me-1"></i>
+                        {{ $desc_pilih_desa ?? 'Pilih Desa untuk Memantau Kelengkapan Dokumen.' }}
                     @endif
                 </p>
             </div>
@@ -77,7 +79,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="fw-bold text-slate-800 mb-0">Daftar Dokumen Digital</h5>
                             <span class="badge bg-slate-100 text-slate-600 px-3 py-2 border rounded-pill small">
-                                Filter: Semua Dokumen Desa
+                                Filter: {{ $tipe_filter ?? 'Semua Dokumen' }}
                             </span>
                         </div>
                     </div>
@@ -112,7 +114,13 @@
                                         </td>
                                         <td>
                                             <div class="fw-bold text-slate-800">
-                                                {{ $d->tipe_dokumen == 'RPJMDes' ? 'Rencana Pembangunan Jangka Menengah Desa' : 'Rencana Kerja Pemerintah Desa' }}
+                                                @if($d->tipe_dokumen == 'RPJMDes')
+                                                    Rencana Pembangunan Jangka Menengah Desa
+                                                @elseif($d->tipe_dokumen == 'RKPDes')
+                                                    Rencana Kerja Pemerintah Desa
+                                                @else
+                                                    {{ $d->tipe_dokumen }}
+                                                @endif
                                             </div>
                                             <div class="small text-slate-400">ID: DOC-{{ $d->id }}-{{ $d->tahun }}</div>
                                         </td>
@@ -144,7 +152,7 @@
                                                 </div>
                                                 <h5 class="text-slate-800 fw-bold">Belum Ada Arsip</h5>
                                                 <p class="text-slate-500 small mx-auto" style="max-width: 300px;">
-                                                    Desa ini belum mengunggah dokumen digital perencanaan pembangunan.
+                                                    Desa ini belum mengunggah dokumen digital {{ strtolower($tipe_filter ?? 'perencanaan pembangunan') }}.
                                                 </p>
                                             </div>
                                         </td>
@@ -163,7 +171,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg rounded-4">
                 <div class="modal-header border-bottom border-slate-100 p-4">
-                    <h5 class="modal-title fw-bold text-slate-800">Pengarsipan Dokumen Inti</h5>
+                    <h5 class="modal-title fw-bold text-slate-800">Pengarsipan {{ $tipe_filter ?? 'Dokumen Inti' }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form action="{{ route('kecamatan.pemerintahan.detail.dokumen.store') }}" method="POST"
@@ -175,22 +183,33 @@
                             <div class="col-12">
                                 <label class="form-label fw-bold text-slate-700">Jenis Dokumen</label>
                                 <div class="d-flex gap-3">
-                                    <div class="flex-fill">
-                                        <input type="radio" class="btn-check" name="tipe_dokumen" id="type_rpjm"
-                                            value="RPJMDes" checked>
-                                        <label class="btn btn-outline-indigo w-100 py-3 rounded-4" for="type_rpjm">
-                                            <i class="fas fa-calendar-days mb-1 d-block opacity-50"></i>
-                                            RPJMDes
-                                        </label>
-                                    </div>
-                                    <div class="flex-fill">
-                                        <input type="radio" class="btn-check" name="tipe_dokumen" id="type_rkp"
-                                            value="RKPDes">
-                                        <label class="btn btn-outline-teal w-100 py-3 rounded-4" for="type_rkp">
-                                            <i class="fas fa-calendar-check mb-1 d-block opacity-50"></i>
-                                            RKPDes
-                                        </label>
-                                    </div>
+                                    @if(isset($tipe_filter) && $tipe_filter == 'Peraturan Desa')
+                                        <div class="flex-fill">
+                                            <input type="radio" class="btn-check" name="tipe_dokumen" id="type_perdes"
+                                                value="Peraturan Desa" checked>
+                                            <label class="btn btn-outline-primary w-100 py-3 rounded-4" for="type_perdes">
+                                                <i class="fas fa-gavel mb-1 d-block opacity-50"></i>
+                                                Peraturan Desa
+                                            </label>
+                                        </div>
+                                    @else
+                                        <div class="flex-fill">
+                                            <input type="radio" class="btn-check" name="tipe_dokumen" id="type_rpjm"
+                                                value="RPJMDes" checked>
+                                            <label class="btn btn-outline-indigo w-100 py-3 rounded-4" for="type_rpjm">
+                                                <i class="fas fa-calendar-days mb-1 d-block opacity-50"></i>
+                                                RPJMDes
+                                            </label>
+                                        </div>
+                                        <div class="flex-fill">
+                                            <input type="radio" class="btn-check" name="tipe_dokumen" id="type_rkp"
+                                                value="RKPDes">
+                                            <label class="btn btn-outline-teal w-100 py-3 rounded-4" for="type_rkp">
+                                                <i class="fas fa-calendar-check mb-1 d-block opacity-50"></i>
+                                                RKPDes
+                                            </label>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                             <div class="col-md-12">

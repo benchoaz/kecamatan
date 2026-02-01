@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Kecamatan;
 use App\Http\Controllers\Controller;
 use App\Models\PublicService;
 use App\Models\PelayananFaq;
+use App\Models\PengunjungKecamatan;
+use App\Models\Desa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -129,5 +131,47 @@ class PelayananController extends Controller
         ];
 
         return view('kecamatan.pelayanan.statistics', compact('stats'));
+    }
+
+    /**
+     * Buku Tamu (Moved from Pemerintahan)
+     */
+    public function visitorIndex()
+    {
+        $visitors = PengunjungKecamatan::with('desaAsal')
+            ->orderBy('status', 'desc')
+            ->orderBy('jam_datang', 'desc')
+            ->take(100)
+            ->get();
+
+        $desas = Desa::orderBy('nama_desa')->get();
+        return view('kecamatan.pelayanan.visitor.index', compact('visitors', 'desas'));
+    }
+
+    public function visitorStore(Request $request)
+    {
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'nik' => 'nullable|digits:16',
+            'desa_asal_id' => 'nullable|exists:desa,id',
+            'alamat_luar' => 'nullable|string|max:255',
+            'no_hp' => 'nullable|string|max:15',
+            'tujuan_bidang' => 'required|string',
+            'keperluan' => 'required|string',
+        ]);
+
+        PengunjungKecamatan::create($validated);
+        return back()->with('success', 'Pengunjung berhasil didaftarkan.');
+    }
+
+    public function visitorUpdate(Request $request, $id)
+    {
+        $visitor = PengunjungKecamatan::findOrFail($id);
+        $validated = $request->validate([
+            'status' => 'required|in:menunggu,dilayani,selesai'
+        ]);
+
+        $visitor->update($validated);
+        return back()->with('success', 'Status pengunjung berhasil diperbarui.');
     }
 }

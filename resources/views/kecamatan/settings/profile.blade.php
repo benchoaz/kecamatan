@@ -43,17 +43,21 @@
 
                             <div class="row g-4">
                                 <div class="col-md-6">
-                                    <label class="form-label text-slate-700 fw-semibold">Nama Aplikasi</label>
+                                    <label class="form-label text-slate-700 fw-semibold">Nama Branding Utama</label>
                                     <input type="text" name="app_name" value="{{ old('app_name', $profile->app_name) }}"
                                         class="form-control form-control-lg bg-slate-50 border-slate-200 rounded-3"
-                                        required>
+                                        placeholder="Contoh: Dashboard SAE" required>
+                                    <div class="form-text text-[11px] text-slate-400 mt-1">Muncul sebagai Judul Tab Browser
+                                        dan Branding Sistem.</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label text-slate-700 fw-semibold">Nama Wilayah</label>
+                                    <label class="form-label text-slate-700 fw-semibold">Nama Resmi Wilayah</label>
                                     <input type="text" name="region_name"
                                         value="{{ old('region_name', $profile->region_name) }}"
                                         class="form-control form-control-lg bg-slate-50 border-slate-200 rounded-3"
-                                        required>
+                                        placeholder="Contoh: Kecamatan Besuk" required>
+                                    <div class="form-text text-[11px] text-slate-400 mt-1">Muncul sebagai identitas wilayah
+                                        pada sidebar dan laporan.</div>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label text-slate-700 fw-semibold">Tingkat Wilayah</label>
@@ -78,7 +82,7 @@
                                                 @if($profile->logo_path)
                                                     <img src="{{ asset('storage/' . $profile->logo_path) }}"
                                                         class="img-fluid rounded-3 shadow-sm mb-3 d-block mx-auto"
-                                                        style="max-height: 60px;">
+                                                        style="max-height: 80px; width: auto; max-width: 100%;">
                                                 @else
                                                     <div class="bg-white p-3 rounded-3 shadow-sm mb-3 border d-inline-block">
                                                         <i class="fas fa-landmark text-slate-200 fa-2x"></i>
@@ -90,8 +94,13 @@
                                             <div class="col-md-10 ps-md-4">
                                                 <label class="form-label text-slate-700 fw-semibold">Ganti Logo
                                                     Wilayah</label>
-                                                <input type="file" name="logo"
-                                                    class="form-control bg-white border-slate-200 rounded-3">
+                                                <input type="file" name="logo_path"
+                                                    class="form-control bg-white border-slate-200 rounded-3 @error('logo_path') is-invalid @enderror">
+                                                @error('logo_path')
+                                                    <div class="invalid-feedback d-block">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
                                                 <p class="text-[11px] text-slate-400 mt-2 mb-0 italic">Format JPG/PNG,
                                                     maksimal 2MB.</p>
                                             </div>
@@ -112,9 +121,11 @@
                                             <div class="col-md-4">
                                                 <label class="form-label text-slate-700 small fw-bold">Visual UMKM</label>
                                                 @if($profile->image_umkm)
-                                                    <img src="{{ asset('storage/' . $profile->image_umkm) }}"
-                                                        class="w-100 rounded-3 shadow-sm mb-2 object-cover"
-                                                        style="height: 120px;">
+                                                    <div
+                                                        class="mb-2 rounded-3 overflow-hidden shadow-sm position-relative ratio ratio-16x9">
+                                                        <img src="{{ asset('storage/' . $profile->image_umkm) }}"
+                                                            class="object-fit-cover w-100 h-100" alt="Visual UMKM">
+                                                    </div>
                                                 @endif
                                                 <input type="file" name="image_umkm"
                                                     class="form-control form-control-sm border-slate-200">
@@ -123,9 +134,11 @@
                                                 <label class="form-label text-slate-700 small fw-bold">Visual
                                                     Pariwisata</label>
                                                 @if($profile->image_pariwisata)
-                                                    <img src="{{ asset('storage/' . $profile->image_pariwisata) }}"
-                                                        class="w-100 rounded-3 shadow-sm mb-2 object-cover"
-                                                        style="height: 120px;">
+                                                    <div
+                                                        class="mb-2 rounded-3 overflow-hidden shadow-sm position-relative ratio ratio-16x9">
+                                                        <img src="{{ asset('storage/' . $profile->image_pariwisata) }}"
+                                                            class="object-fit-cover w-100 h-100" alt="Visual Pariwisata">
+                                                    </div>
                                                 @endif
                                                 <input type="file" name="image_pariwisata"
                                                     class="form-control form-control-sm border-slate-200">
@@ -134,9 +147,11 @@
                                                 <label class="form-label text-slate-700 small fw-bold">Visual Festival
                                                     Budaya</label>
                                                 @if($profile->image_festival)
-                                                    <img src="{{ asset('storage/' . $profile->image_festival) }}"
-                                                        class="w-100 rounded-3 shadow-sm mb-2 object-cover"
-                                                        style="height: 120px;">
+                                                    <div
+                                                        class="mb-2 rounded-3 overflow-hidden shadow-sm position-relative ratio ratio-16x9">
+                                                        <img src="{{ asset('storage/' . $profile->image_festival) }}"
+                                                            class="object-fit-cover w-100 h-100" alt="Visual Festival">
+                                                    </div>
                                                 @endif
                                                 <input type="file" name="image_festival"
                                                     class="form-control form-control-sm border-slate-200">

@@ -68,16 +68,12 @@ class EkbangController extends Controller
         $desa_id = $user->desa_id;
         abort_unless($desa_id !== null, 403);
 
-        $projects = Submission::where('desa_id', $desa_id)
-            ->whereHas('aspek', function ($q) {
-                $q->where('kode_aspek', 'ekb_fisik');
-            })
+        $pembangunans = \App\Models\PembangunanDesa::where('desa_id', $desa_id)
+            ->with(['masterKegiatan.subBidang.bidang', 'dokumenSpjs'])
             ->latest()
             ->get();
 
-        $isOperator = true;
-
-        return view('kecamatan.ekbang.fisik.index', compact('projects', 'desa_id', 'isOperator'));
+        return view('desa.pembangunan.modern_index', compact('pembangunans', 'desa_id', 'isOperator'));
     }
 
     public function realisasi()
@@ -132,6 +128,46 @@ class EkbangController extends Controller
         $isOperator = true;
 
         return view('kecamatan.ekbang.audit.index', compact('auditLogs', 'desa_id', 'isOperator'));
+    }
+
+    public function predictDocs(Request $request, \App\Services\SpjRuleEngine $engine)
+    {
+        $kegiatanData = $request->only(['nama_kegiatan', 'jenis_kegiatan', 'pagu_anggaran']);
+        $components = $request->input('components', []);
+
+        $docs = $engine->getRecommendedDocuments($kegiatanData, $components);
+
+        return response()->json([
+            'status' => 'success',
+            'documents' => $docs,
+            'message' => 'Sistem menemukan ' . count($docs) . ' dokumen yang disarankan.'
+        ]);
+    }
+
+    public function estimateTax(Request $request, \App\Services\TaxAssistant $assistant)
+    {
+        $komponenId = $request->input('komponen_id');
+        $nilai = $request->input('nilai', 0);
+
+        $komponen = \App\Models\MasterKomponenBelanja::find($komponenId);
+        if (!$komponen)
+            return response()->json(['status' => 'error', 'message' => 'Komponen tidak ditemukan'], 404);
+
+        $estimation = $assistant->getTaxEstimation($komponen, $nilai);
+
+        return response()->json([
+            'status' => 'success',
+            'estimation' => $estimation
+        ]);
+    }
+
+    public function create()
+    {
+        $user = auth()->user();
+        $desa_id = $user->desa_id;
+        abort_unless($desa_id !== null, 403);
+
+        return view('desa.pembangunan.modern_create', compact('desa_id'));
     }
 
     protected function calculateHealth($desa_id)

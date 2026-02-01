@@ -73,6 +73,30 @@
         </div>
     </div>
 
+    <!-- Tools & Exports Section -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <a href="{{ route('kecamatan.trantibum.export', ['desa_id' => request('desa_id')]) }}"
+                class="text-decoration-none">
+                <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden"
+                    style="transition: all 0.3s ease; border: 2px dashed #099279 !important; background: #ecfcf9;">
+                    <div class="card-body p-4 d-flex flex-column align-items-center justify-content-center text-center">
+                        <div class="bg-emerald-100 text-emerald-600 rounded-circle p-4 mb-3">
+                            <i class="fas fa-box-archive fa-3x"></i>
+                        </div>
+                        <h5 class="fw-bold text-slate-800 mb-2">Paket Audit Trantibum</h5>
+                        <p class="text-slate-500 small mb-0">Export Dokumen Trantibum (PDF ZIP)</p>
+                    </div>
+                    <div class="card-footer border-0 p-3 d-flex justify-content-between align-items-center"
+                        style="background: #099268;">
+                        <span class="text-white fw-bold small uppercase">Unduh Paket Audit</span>
+                        <i class="fas fa-download text-white"></i>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
     <div class="section-header-premium mb-4">
         <h4><i class="fas fa-tower-observation me-3 text-indigo-600"></i>Laporan Masuk Seluruh Wilayah</h4>
         <div class="section-divider"></div>

@@ -18,7 +18,7 @@ class DesaScope implements Scope
             $user = Auth::user();
 
             // Apply only for Operator Desa
-            if ($user->hasRole('operator_desa') && $user->desa_id) {
+            if ($user->isOperatorDesa() && $user->desa_id) {
                 $builder->where('desa_id', $user->desa_id);
             }
         }

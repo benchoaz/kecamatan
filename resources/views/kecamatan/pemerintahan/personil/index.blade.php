@@ -1,4 +1,4 @@
-@extends('layouts.kecamatan')
+@extends(auth()->user()->desa_id ? 'layouts.desa' : 'layouts.kecamatan')
 
 @section('title', $title ?? 'Administrasi Perangkat Desa')
 
@@ -144,8 +144,20 @@
                                     <div class="small text-primary-700 fw-medium">
                                         {{ $p->masa_jabatan_mulai ? $p->masa_jabatan_mulai->format('d/m/Y') : '-' }}
                                         <span class="text-tertiary mx-1">s/d</span>
-                                        {{ $p->masa_jabatan_selesai ? $p->masa_jabatan_selesai->format('d/m/Y') : 'Sekarang' }}
+                                        <span
+                                            class="{{ $p->masa_jabatan_selesai && $p->masa_jabatan_selesai->isPast() ? 'text-danger fw-bold' : '' }}">
+                                            {{ $p->masa_jabatan_selesai ? $p->masa_jabatan_selesai->format('d/m/Y') : 'Sekarang' }}
+                                        </span>
                                     </div>
+                                    @if($p->kategori == 'perangkat')
+                                        <div class="x-small text-tertiary mt-1">
+                                            @if(str_contains(strtolower($p->jabatan), 'kepala desa'))
+                                                <i class="fas fa-clock-rotate-left me-1"></i> Sesuai Aturan 8 Thn
+                                            @else
+                                                <i class="fas fa-user-clock me-1"></i> Pensiun Usia 60 Thn
+                                            @endif
+                                        </div>
+                                    @endif
                                 </td>
                                 <td>
                                     <div class="d-flex flex-column">
@@ -217,8 +229,7 @@
                     <h5 class="modal-title fw-bold">Tambah Data Personil</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="{{ route('kecamatan.pemerintahan.detail.personil.store') }}" method="POST"
-                    enctype="multipart/form-data">
+                <form action="{{ $store_route }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="kategori" value="{{ $kategori ?? 'perangkat' }}">
                     <input type="hidden" name="desa_id" value="{{ $desa_id }}">
@@ -251,6 +262,16 @@
                                 <label class="form-label fw-semibold text-primary-900">NIK (16 Digit)</label>
                                 <input type="text" name="nik" class="form-control rounded-3 border-gray-200" maxlength="16"
                                     placeholder="Masukkan 16 digit NIK" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-primary-900">Tempat Lahir</label>
+                                <input type="text" name="tempat_lahir" class="form-control rounded-3 border-gray-200"
+                                    placeholder="Contoh: Probolinggo">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-primary-900">Tanggal Lahir</label>
+                                <input type="date" name="tanggal_lahir" class="form-control rounded-3 border-gray-200"
+                                    required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold text-primary-900">Nomor Telepon / WhatsApp</label>
@@ -290,6 +311,10 @@
                                 <label class="form-label fw-semibold text-primary-900">Nomor SK</label>
                                 <input type="text" name="nomor_sk" class="form-control rounded-3 border-gray-200"
                                     placeholder="Contoh: 188/02/426.411.02/2024">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-primary-900">Tanggal SK</label>
+                                <input type="date" name="tanggal_sk" class="form-control rounded-3 border-gray-200">
                             </div>
                             <div class="col-12">
                                 <label class="form-label fw-semibold text-primary-900">Dokumen SK (PDF)</label>

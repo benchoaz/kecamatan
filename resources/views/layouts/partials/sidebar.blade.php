@@ -3,7 +3,13 @@
     <div class="sidebar-header">
         <div class="logo">
             <div class="logo-icon">
-                <i class="fas fa-landmark"></i>
+                @php $profile = \App\Models\AppProfile::first(); @endphp
+                @if($profile && $profile->logo_path)
+                    <img src="{{ asset('storage/' . $profile->logo_path) }}" alt="Logo" class="img-fluid"
+                        style="max-height: 40px; border-radius: 6px;">
+                @else
+                    <i class="fas fa-landmark"></i>
+                @endif
             </div>
             <div class="logo-text">
                 <span class="logo-title">Dashboard</span>
@@ -19,7 +25,7 @@
     <nav class="sidebar-nav">
         <!-- Dashboard -->
         <div class="nav-section">
-            <span class="nav-section-title">Menu Utama</span>
+            <span class="nav-section-title">Menu Utama [UID:{{ auth()->id() }}|D:{{ auth()->user()->desa_id }}]</span>
             <ul class="nav-menu">
                 <li class="nav-item">
                     <a href="{{ route('dashboard') }}"
@@ -103,31 +109,44 @@
                 <div class="nav-section">
                     <span class="nav-section-title">Seksi</span>
                     <ul class="nav-menu">
-                        <!-- Pemerintahan -->
-                        <li class="nav-item has-submenu {{ request()->is('pemerintahan*') ? 'open' : '' }}">
-                            <a href="#" class="nav-link {{ request()->is('pemerintahan*') ? 'active' : '' }}">
-                                <span class="nav-icon"><i class="fas fa-building-columns"></i></span>
-                                <span class="nav-text">Administrasi Desa</span>
-                                <span class="nav-arrow"><i class="fas fa-chevron-right"></i></span>
-                            </a>
-                            <ul class="nav-submenu">
-                                <li><a href="{{ route('kecamatan.pemerintahan.index') }}" class="nav-sublink">Buku Induk
-                                        Desa</a></li>
-                                @can('pemerintahan.manage_visitors')
-                                    <li><a href="{{ route('kecamatan.pemerintahan.visitor.index') }}" class="nav-sublink">Buku
-                                            Tamu</a></li>
-                                @endcan
-                            </ul>
-                        </li>
 
-                        <!-- Ekonomi & Pembangunan -->
-                        <li class="nav-item {{ request()->is('ekbang*') ? 'open' : '' }}">
-                            <a href="{{ route('kecamatan.ekbang.index') }}"
-                                class="nav-link {{ request()->is('kecamatan/ekbang*') ? 'active' : '' }}">
-                                <span class="nav-icon"><i class="fas fa-hand-holding-dollar"></i></span>
-                                <span class="nav-text">Ekonomi & Pembangunan</span>
-                            </a>
-                        </li>
+                        {{-- MODE DESA: Link langsung ke Administrasi --}}
+                        @if(auth()->user()->desa_id)
+                            <li class="nav-item">
+                                <a href="{{ route('desa.administrasi.index') }}"
+                                    class="nav-link {{ request()->routeIs('desa.administrasi.*') ? 'active' : '' }}">
+                                    <span class="nav-icon"><i class="fas fa-folder-open"></i></span>
+                                    <span class="nav-text">Administrasi Desa</span>
+                                </a>
+                            </li>
+
+                            {{-- MODE KECAMATAN: Dropdown Menu --}}
+                        @else
+                            <!-- Pemerintahan -->
+                            <li class="nav-item has-submenu {{ request()->is('pemerintahan*') ? 'open' : '' }}">
+                                <a href="#" class="nav-link {{ request()->is('pemerintahan*') ? 'active' : '' }}">
+                                    <span class="nav-icon"><i class="fas fa-building-columns"></i></span>
+                                    <span class="nav-text">Administrasi Desa</span>
+                                    <span class="nav-arrow"><i class="fas fa-chevron-right"></i></span>
+                                </a>
+                                <ul class="nav-submenu">
+                                    <li><a href="{{ route('kecamatan.pemerintahan.index') }}" class="nav-sublink">Buku Induk
+                                            Desa</a></li>
+                                </ul>
+                            </li>
+                        @endif
+
+
+                        <!-- Ekonomi & Pembangunan (Kecamatan Domain Check) -->
+                        @if(auth()->user()->isOperatorKecamatan() || auth()->user()->isSuperAdmin())
+                            <li class="nav-item {{ request()->is('ekbang*') ? 'open' : '' }}">
+                                <a href="{{ route('kecamatan.ekbang.index') }}"
+                                    class="nav-link {{ request()->is('kecamatan/ekbang*') ? 'active' : '' }}">
+                                    <span class="nav-icon"><i class="fas fa-hand-holding-dollar"></i></span>
+                                    <span class="nav-text">Ekonomi & Pembangunan (Monitoring)</span>
+                                </a>
+                            </li>
+                        @endif
 
                         @can('musrenbang.create')
                             <li class="nav-item">

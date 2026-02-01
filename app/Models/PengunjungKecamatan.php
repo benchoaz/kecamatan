@@ -27,6 +27,6 @@ class PengunjungKecamatan extends Model
 
     public function scopeHariIni($query)
     {
-        return $query->whereDate('jam_datang', today());
+        return $query->whereBetween('jam_datang', [today()->startOfDay(), today()->endOfDay()]);
     }
 }

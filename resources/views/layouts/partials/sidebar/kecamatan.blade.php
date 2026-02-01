@@ -1,7 +1,14 @@
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="logo">
-            <div class="logo-icon bg-brand-600 text-white shadow-premium"><i class="fas fa-landmark"></i></div>
+            <div class="logo-icon bg-brand-600 text-white shadow-premium">
+                @if(appProfile()->logo_path)
+                    <img src="{{ asset('storage/' . appProfile()->logo_path) }}" class="img-fluid rounded-1"
+                        style="max-height: 24px;">
+                @else
+                    <i class="fas fa-landmark"></i>
+                @endif
+            </div>
             <div class="logo-text">
                 <span class="logo-title fw-bold text-uppercase">{{ appProfile()->region_level }}</span>
                 <span class="logo-subtitle tracking-wider">{{ strtoupper(appProfile()->region_name) }}</span>
@@ -49,6 +56,13 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('kecamatan.pelayanan.visitor.index') }}"
+                        class="nav-link {{ request()->is('kecamatan/pelayanan/visitor*') ? 'active' : '' }}">
+                        <span class="nav-icon"><i class="fas fa-clipboard-user"></i></span>
+                        <span class="nav-text">Buku Tamu</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ route('kecamatan.pelayanan.faq.index') }}"
                         class="nav-link {{ request()->is('kecamatan/pelayanan/faq*') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="fas fa-robot"></i></span>
@@ -84,13 +98,35 @@
                     </a>
                 </li>
 
-                <!-- Ekonomi & Pembangunan -->
-                <li class="nav-item">
-                    <a href="{{ route('kecamatan.ekbang.index') }}"
-                        class="nav-link {{ request()->is('kecamatan/ekbang*') ? 'active' : '' }}">
+                <!-- Ekonomi & Pembangunan (Integrated Dropdown) -->
+                <li
+                    class="nav-item has-submenu {{ request()->is('kecamatan/pembangunan*') || request()->is('kecamatan/ekbang*') ? 'open' : '' }}">
+                    <a href="javascript:void(0)" class="nav-link submenu-toggle"
+                        onclick="this.parentElement.classList.toggle('open')">
                         <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
-                        <span class="nav-text">Pembangunan & Ekonomi</span>
+                        <span class="nav-text">Ekonomi & Pembangunan</span>
+                        <span class="ms-auto small"><i class="fas fa-chevron-down submenu-arrow"></i></span>
                     </a>
+                    <ul class="nav-submenu">
+                        <li class="nav-submenu-item">
+                            <a href="{{ route('kecamatan.pembangunan.index') }}"
+                                class="nav-submenu-link {{ request()->routeIs('kecamatan.pembangunan.index') || request()->routeIs('kecamatan.pembangunan.show') ? 'active' : '' }}">
+                                <i class="fas fa-display me-2 small"></i> Monitoring Utama
+                            </a>
+                        </li>
+                        <li class="nav-submenu-item">
+                            <a href="{{ route('kecamatan.pembangunan.referensi.ssh.index') }}"
+                                class="nav-submenu-link {{ request()->is('kecamatan/pembangunan/referensi/ssh*') ? 'active' : '' }}">
+                                <i class="fas fa-tags me-2 small"></i> Master SSH
+                            </a>
+                        </li>
+                        <li class="nav-submenu-item">
+                            <a href="{{ route('kecamatan.pembangunan.referensi.sbu.index') }}"
+                                class="nav-submenu-link {{ request()->is('kecamatan/pembangunan/referensi/sbu*') ? 'active' : '' }}">
+                                <i class="fas fa-file-invoice-dollar me-2 small"></i> Master SBU
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
                 <!-- Kesejahteraan Rakyat -->
@@ -145,6 +181,13 @@
                             class="nav-link {{ request()->routeIs('kecamatan.settings.profile') ? 'active' : '' }}">
                             <span class="nav-icon"><i class="fas fa-sliders"></i></span>
                             <span class="nav-text">Pengaturan Aplikasi</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('kecamatan.settings.features') }}"
+                            class="nav-link {{ request()->routeIs('kecamatan.settings.features') ? 'active' : '' }}">
+                            <span class="nav-icon"><i class="fas fa-toggle-on"></i></span>
+                            <span class="nav-text">Manajemen Fitur</span>
                         </a>
                     </li>
                     <li class="nav-item">

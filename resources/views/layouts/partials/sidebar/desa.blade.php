@@ -1,65 +1,135 @@
-<aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <div class="logo">
-            <div class="logo-icon text-success"><i class="fas fa-home"></i></div>
-            <div class="logo-text">
-                <span
-                    class="logo-title fw-bold">{{ auth()->user()->desa ? auth()->user()->desa->nama_desa : 'OPERATOR' }}</span>
-                <span class="logo-subtitle tracking-wider">{{ strtoupper(appProfile()->app_name) }}</span>
-            </div>
+<!-- Sidebar -->
+<aside class="desa-sidebar" id="desaSidebar">
+    <div class="desa-sidebar-header">
+        <div class="desa-sidebar-logo">
+            {{ auth()->user()->desa->nama_desa ?? 'Operator Desa' }}
         </div>
-        <button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button>
+        <div class="desa-sidebar-subtitle">{{ appProfile()->region_name }}</div>
     </div>
 
-    <nav class="sidebar-nav">
-        <div class="nav-section">
-            <span class="nav-section-title">Menu Utama</span>
-            <ul class="nav-menu">
-                <li class="nav-item">
+    <nav class="desa-sidebar-nav">
+        <div class="desa-nav-section">
+            <div class="desa-nav-title">Menu Utama</div>
+            <ul class="desa-nav-menu">
+                <li class="desa-nav-item">
                     <a href="{{ route('desa.dashboard') }}"
-                        class="nav-link {{ request()->is('desa/dashboard*') ? 'active' : '' }}">
-                        <span class="nav-icon"><i class="fas fa-th-large"></i></span>
-                        <span class="nav-text">Dashboard Desa</span>
+                        class="desa-nav-link {{ request()->routeIs('desa.dashboard') ? 'active' : '' }}">
+                        <i class="desa-nav-icon fas fa-home"></i>
+                        <span>Dashboard</span>
                     </a>
                 </li>
             </ul>
         </div>
 
-        <div class="nav-section">
-            <span class="nav-section-title">Pembangunan</span>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="{{ route('desa.ekbang.index') }}"
-                        class="nav-link {{ request()->is('desa/ekbang*') ? 'active' : '' }}">
-                        <span class="nav-icon"><i class="fas fa-road"></i></span>
-                        <span class="nav-text">Input Progres Fisik</span>
+        <div class="desa-nav-section">
+            <div class="desa-nav-title">Administrasi</div>
+            <ul class="desa-nav-menu">
+                <li class="desa-nav-item">
+                    <a href="{{ route('desa.administrasi.index') }}"
+                        class="desa-nav-link {{ request()->routeIs('desa.administrasi.*') ? 'active' : '' }}">
+                        <i class="desa-nav-icon fas fa-folder-open"></i>
+                        <span>Administrasi Desa</span>
                     </a>
                 </li>
             </ul>
         </div>
 
-        <div class="nav-section">
-            <span class="nav-section-title">Pelaporan & Telaah</span>
-            <ul class="nav-menu">
-                <li class="nav-item">
+        <div class="desa-nav-section">
+            <div class="desa-nav-title">Perencanaan</div>
+            <ul class="desa-nav-menu">
+                <li class="desa-nav-item">
+                    <a href="{{ route('desa.musdes.index') }}"
+                        class="desa-nav-link {{ request()->routeIs('desa.musdes.*') ? 'active' : '' }}">
+                        <i class="desa-nav-icon fas fa-gavel"></i>
+                        <span>Musyawarah Desa</span>
+                    </a>
+                </li>
+                <li class="desa-nav-item">
+                    <a href="{{ route('desa.pemerintahan.detail.perencanaan.index') }}"
+                        class="desa-nav-link {{ request()->routeIs('desa.pemerintahan.detail.perencanaan.*') ? 'active' : '' }}">
+                        <i class="desa-nav-icon fas fa-file-invoice"></i>
+                        <span>Dokumen Perencanaan</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        @php
+            $ekbangMenu = \App\Models\Menu::where('kode_menu', 'ekbang')->first();
+        @endphp
+
+        @if($ekbangMenu && $ekbangMenu->is_active)
+            <div class="desa-nav-section">
+                <div class="desa-nav-title">Pembangunan & BLT</div>
+                <ul class="desa-nav-menu">
+                    <li class="desa-nav-item">
+                        <a href="{{ route('desa.pembangunan.pagu.index') }}"
+                            class="desa-nav-link {{ request()->routeIs('desa.pembangunan.pagu.*') ? 'active' : '' }}">
+                            <i class="desa-nav-icon fas fa-coins text-warning"></i>
+                            <span>Anggaran Desa</span>
+                        </a>
+                    </li>
+                    <li class="desa-nav-item">
+                        <a href="{{ route('desa.pembangunan.fisik.index') }}"
+                            class="desa-nav-link {{ request()->routeIs('desa.pembangunan.fisik.*') ? 'active' : '' }}">
+                            <i class="desa-nav-icon fas fa-trowel-bricks"></i>
+                            <span>Pembangunan Fisik</span>
+                        </a>
+                    </li>
+                    <li class="desa-nav-item">
+                        <a href="{{ route('desa.pembangunan.non-fisik.index') }}"
+                            class="desa-nav-link {{ request()->routeIs('desa.pembangunan.non-fisik.*') ? 'active' : '' }}">
+                            <i class="desa-nav-icon fas fa-users-gear"></i>
+                            <span>Kegiatan Non-Fisik</span>
+                        </a>
+                    </li>
+                    <li class="desa-nav-item">
+                        <a href="{{ route('desa.blt.index') }}"
+                            class="desa-nav-link {{ request()->routeIs('desa.blt.*') ? 'active' : '' }}">
+                            <i class="desa-nav-icon fas fa-hand-holding-dollar"></i>
+                            <span>BLT Desa</span>
+                        </a>
+                    </li>
+                    <li class="desa-nav-item">
+                        <a href="{{ route('desa.pembangunan.administrasi.index') }}"
+                            class="desa-nav-link {{ request()->routeIs('desa.pembangunan.administrasi.*') ? 'active' : '' }}">
+                            <i class="desa-nav-icon fas fa-file-signature text-info"></i>
+                            <span>Bantuan Administrasi Kegiatan</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        @endif
+
+        <div class="desa-nav-section">
+            <div class="desa-nav-title">Pelayanan</div>
+            <ul class="desa-nav-menu">
+                <li class="desa-nav-item">
+                    <a href="#" class="desa-nav-link {{ request()->routeIs('desa.pelayanan.*') ? 'active' : '' }}">
+                        <i class="desa-nav-icon fas fa-users"></i>
+                        <span>Pelayanan & Kegiatan</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="desa-nav-section">
+            <div class="desa-nav-title">Laporan & Arsip</div>
+            <ul class="desa-nav-menu">
+                <li class="desa-nav-item">
                     <a href="{{ route('desa.submissions.index') }}"
-                        class="nav-link {{ request()->is('desa/submissions*') ? 'active' : '' }}">
-                        <span class="nav-icon"><i class="fas fa-file-export"></i></span>
-                        <span class="nav-text">Kirim Laporan Baru</span>
+                        class="desa-nav-link {{ request()->routeIs('desa.submissions.*') ? 'active' : '' }}">
+                        <i class="desa-nav-icon fas fa-file-alt"></i>
+                        <span>Laporan</span>
+                    </a>
+                </li>
+                <li class="desa-nav-item">
+                    <a href="#" class="desa-nav-link {{ request()->routeIs('desa.riwayat.*') ? 'active' : '' }}">
+                        <i class="desa-nav-icon fas fa-history"></i>
+                        <span>Riwayat</span>
                     </a>
                 </li>
             </ul>
         </div>
     </nav>
-
-    <div class="sidebar-footer">
-        <div class="user-card">
-            <div class="user-avatar bg-success text-white"><i class="fas fa-user-check"></i></div>
-            <div class="user-info">
-                <span class="user-name text-truncate">{{ auth()->user()->nama_lengkap }}</span>
-                <span
-                    class="user-role small text-muted">{{ optional(auth()->user()->role)->nama_role ?? 'Operator Desa' }}</span>
-            </div>
-        </div>
-    </div>
 </aside>

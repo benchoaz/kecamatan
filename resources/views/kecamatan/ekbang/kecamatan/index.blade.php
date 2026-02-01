@@ -116,6 +116,30 @@
         </div>
     </div>
 
+    <!-- Tools & Exports Section -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <a href="{{ route('kecamatan.ekbang.export', ['desa_id' => request('desa_id')]) }}"
+                class="text-decoration-none">
+                <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden"
+                    style="transition: all 0.3s ease; border: 2px dashed #4f46e5 !important; background: #eef2ff;">
+                    <div class="card-body p-4 d-flex flex-column align-items-center justify-content-center text-center">
+                        <div class="bg-indigo-100 text-indigo-600 rounded-circle p-4 mb-3">
+                            <i class="fas fa-box-archive fa-3x"></i>
+                        </div>
+                        <h5 class="fw-bold text-slate-800 mb-2">Paket Audit Ekbang</h5>
+                        <p class="text-slate-500 small mb-0">Export Dokumen Pembangunan (PDF ZIP)</p>
+                    </div>
+                    <div class="card-footer border-0 p-3 d-flex justify-content-between align-items-center"
+                        style="background: #4f46e5;">
+                        <span class="text-white fw-bold small uppercase">Unduh Paket Audit</span>
+                        <i class="fas fa-download text-white"></i>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
     <!-- Monitoring Grid -->
     <div class="section-header-premium mb-4">
         <h4><i class="fas fa-tower-broadcast me-3 text-indigo-600"></i>Log Realisasi Pembangunan</h4>

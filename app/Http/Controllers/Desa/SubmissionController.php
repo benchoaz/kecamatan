@@ -3,192 +3,103 @@
 namespace App\Http\Controllers\Desa;
 
 use App\Http\Controllers\Controller;
-use App\Models\BuktiDukung;
-use App\Models\JawabanIndikator;
-use App\Models\Submission;
-use App\Repositories\Interfaces\SubmissionRepositoryInterface;
-use App\Services\MasterDataService;
-use App\Services\SubmissionService;
+use App\Models\Desa\DesaSubmission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class SubmissionController extends Controller
 {
-    protected $submissionService;
-    protected $submissionRepo;
-    protected $masterData;
-
-    public function __construct(
-        SubmissionService $submissionService,
-        SubmissionRepositoryInterface $submissionRepo,
-        MasterDataService $masterData
-    ) {
-        $this->submissionService = $submissionService;
-        $this->submissionRepo = $submissionRepo;
-        $this->masterData = $masterData;
-    }
-
-    public function index(Request $request)
+    public function index()
     {
-        abort_unless(auth()->user()->can('dashboard.view_desa'), 403);
-
-        $submissions = Submission::where('desa_id', auth()->user()->desa_id)
-            ->with(['menu', 'aspek', 'reviewedBy', 'approvedBy'])
+        $submissions = DesaSubmission::where('desa_id', auth()->user()->desa_id)
             ->latest()
             ->paginate(10);
 
-        return view('submissions.index', compact('submissions'));
+        return view('desa.submissions.index', compact('submissions'));
     }
 
-    public function create(Request $request)
+    public function create()
     {
-        abort_unless(auth()->user()->can('submission.create'), 403);
-
-        $menus = $this->masterData->getAllMenus();
-        $selectedMenuId = $request->get('menu_id');
-
-        return view('submissions.create', compact('menus', 'selectedMenuId'));
+        return view('desa.submissions.create');
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'menu_id' => 'required|exists:menu,id',
-            'aspek_id' => 'required|exists:aspek,id',
-            'tahun' => 'required|digits:4',
-            'periode' => 'required|in:bulanan,triwulan,semester,tahunan',
-            'indikator' => 'required|array',
-            'action' => 'required|in:draft,submit'
+        $validated = $request->validate([
+            'judul' => 'required|string|max:255',
+            'modul' => 'required|string|max:50',
+            'periode' => 'nullable|string|max:20',
         ]);
 
         DB::beginTransaction();
         try {
-            $user = auth()->user();
-
-            $submission = Submission::create([
-                'uuid' => Str::uuid(),
-                'desa_id' => $user->desa_id,
-                'menu_id' => $request->menu_id,
-                'aspek_id' => $request->aspek_id,
-                'tahun' => $request->tahun,
-                'periode' => $request->periode,
-                'bulan' => $request->bulan ?? null,
-                'submitted_by' => $user->id,
-                'status' => $request->action === 'submit' ? Submission::STATUS_SUBMITTED : Submission::STATUS_DRAFT,
-                'submitted_at' => $request->action === 'submit' ? now() : null,
+            $submission = DesaSubmission::create([
+                'desa_id' => auth()->user()->desa_id,
+                'judul' => $validated['judul'],
+                'modul' => $validated['modul'],
+                'periode' => $validated['periode'],
+                'status' => DesaSubmission::STATUS_DRAFT,
+                'created_by' => auth()->id(),
             ]);
 
-            foreach ($request->indikator as $indikatorId => $data) {
-                if (isset($data['nilai'])) {
-                    JawabanIndikator::create([
-                        'submission_id' => $submission->id,
-                        'indikator_id' => $indikatorId,
-                        'nilai' => $data['nilai'],
-                    ]);
-                }
-
-                if ($request->hasFile("indikator.{$indikatorId}.file")) {
-                    $file = $request->file("indikator.{$indikatorId}.file");
-                    $path = $file->store('bukti_dukung/' . $submission->uuid, 'local');
-
-                    BuktiDukung::create([
-                        'submission_id' => $submission->id,
-                        'indikator_id' => $indikatorId,
-                        'nama_file' => $file->getClientOriginalName(),
-                        'path_file' => $path,
-                        'tipe_file' => $file->getClientOriginalExtension(),
-                        'ukuran_bytes' => $file->getSize(),
-                        'uploaded_by' => $user->id
-                    ]);
-                }
-            }
-
             DB::commit();
-
-            $message = $request->action === 'submit' ? 'Laporan berhasil diajukan!' : 'Draft laporan berhasil disimpan.';
-            return redirect()->route('desa.dashboard')->with('success', $message);
-
+            return redirect()->route('desa.submissions.edit', $submission->id)
+                ->with('success', 'Draft laporan berhasil dibuat.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Gagal menyimpan: ' . $e->getMessage())->withInput();
+            return back()->with('error', 'Gagal membuat draft: ' . $e->getMessage());
         }
     }
 
-    public function edit(Submission $submission)
+    public function edit($id)
     {
-        if (!auth()->user()->can('submission.edit')) {
-            abort(403);
-        }
-
-        $menus = $this->masterData->getAllMenus();
-        $selectedMenuId = $submission->menu_id;
-        $submission->load(['jawabanIndikator', 'buktiDukung']);
-
-        return view('submissions.create', compact('menus', 'selectedMenuId', 'submission'));
-    }
-
-    public function update(Request $request, Submission $submission)
-    {
-        $request->validate([
-            'indikator' => 'required|array',
-            'action' => 'required|in:draft,submit'
-        ]);
+        $submission = DesaSubmission::where('desa_id', auth()->user()->desa_id)
+            ->findOrFail($id);
 
         if (!$submission->isEditable()) {
-            return back()->with('error', 'Laporan tidak dapat diedit saat status: ' . $submission->status);
+            abort(403, 'Laporan ini sudah dikunci dan tidak dapat diedit.');
         }
 
-        DB::beginTransaction();
-        try {
-            $user = auth()->user();
+        return view('desa.submissions.edit', compact('submission'));
+    }
 
-            $submission->update([
-                'status' => $request->action === 'submit' ? Submission::STATUS_SUBMITTED : Submission::STATUS_DRAFT,
-                'submitted_at' => $request->action === 'submit' ? now() : $submission->submitted_at,
-            ]);
+    public function submit(Request $request, $id)
+    {
+        $submission = DesaSubmission::where('desa_id', auth()->user()->desa_id)
+            ->findOrFail($id);
 
-            foreach ($request->indikator as $indikatorId => $data) {
-                if (isset($data['nilai'])) {
-                    JawabanIndikator::updateOrCreate(
-                        ['submission_id' => $submission->id, 'indikator_id' => $indikatorId],
-                        ['nilai' => $data['nilai']]
-                    );
-                }
-
-                if ($request->hasFile("indikator.{$indikatorId}.file")) {
-                    $file = $request->file("indikator.{$indikatorId}.file");
-                    $path = $file->store('bukti_dukung/' . $submission->uuid, 'local');
-
-                    BuktiDukung::create([
-                        'submission_id' => $submission->id,
-                        'indikator_id' => $indikatorId,
-                        'nama_file' => $file->getClientOriginalName(),
-                        'path_file' => $path,
-                        'tipe_file' => $file->getClientOriginalExtension(),
-                        'ukuran_bytes' => $file->getSize(),
-                        'uploaded_by' => $user->id
-                    ]);
-                }
-            }
-
-            DB::commit();
-            return redirect()->route('desa.dashboard')->with('success', 'Laporan berhasil diperbarui!');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Gagal update: ' . $e->getMessage());
+        if (!$submission->isEditable()) {
+            abort(403, 'Laporan tidak dapat dikirim.');
         }
+
+        // Simple validation: Ensure title is present or any other mandatory checks
+        if (empty($submission->judul)) {
+            return back()->with('error', 'Judul laporan wajib diisi.');
+        }
+
+        $submission->update([
+            'status' => DesaSubmission::STATUS_SUBMITTED,
+            'submitted_at' => now(),
+        ]);
+
+        // Audit Log logic would go here (e.g., AuditLog::create(...))
+
+        return redirect()->route('desa.submissions.index')
+            ->with('success', 'Laporan berhasil dikirim ke Kecamatan.');
     }
 
-    public function getAspek($menuId)
+    // Additional generic update method for saving draft details
+    public function update(Request $request, $id)
     {
-        $aspeks = $this->masterData->getAspekByMenu($menuId);
-        return response()->json($aspeks);
-    }
+        $submission = DesaSubmission::where('desa_id', auth()->user()->desa_id)
+            ->findOrFail($id);
 
-    public function getIndikator($aspekId)
-    {
-        $indikators = $this->masterData->getIndikatorByAspek($aspekId);
-        return response()->json($indikators);
+        if (!$submission->isEditable()) {
+            abort(403, 'Laporan tidak dapat diedit.');
+        }
+
+        $submission->update($request->only(['judul', 'periode']));
+
+        return back()->with('success', 'Perubahan disimpan.');
     }
 }

@@ -18,3 +18,12 @@ use App\Http\Controllers\Desa\SubmissionController;
 
 Route::apiResource('submissions', SubmissionController::class);
 Route::post('submissions/{id}/status', [SubmissionController::class, 'changeStatus']);
+
+// SPJ Template & Draft Routes
+Route::get('/spj-template/{id}/download', [\App\Http\Controllers\SpjTemplateController::class, 'downloadDraft'])->name('spj.download');
+Route::delete('/spj-template/{id}', [\App\Http\Controllers\SpjTemplateController::class, 'destroy'])->name('spj.destroy');
+
+// Real-time Assistant Routes (SAE Helper)
+Route::post('/assistant/predict-docs', [\App\Http\Controllers\Desa\PembangunanController::class, 'predictDocs']);
+Route::post('/assistant/estimate-tax', [\App\Http\Controllers\Desa\PembangunanController::class, 'estimateTax']);
+

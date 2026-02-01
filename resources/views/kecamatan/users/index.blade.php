@@ -97,27 +97,20 @@
                                     {{ $user->last_login ? $user->last_login->diffForHumans() : 'Belum pernah' }}
                                 </td>
                                 <td class="pe-4 text-end">
-                                    <div class="dropdown">
-                                        <button class="btn btn-sm btn-icon btn-light rounded-circle" data-bs-toggle="dropdown">
-                                            <i class="fas fa-ellipsis-v"></i>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-                                            <li><a class="dropdown-item py-2"
-                                                    href="{{ route('kecamatan.users.edit', $user->id) }}"><i
-                                                        class="fas fa-edit me-2 text-muted"></i> Ubah Data</a></li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li>
-                                                <form action="{{ route('kecamatan.users.destroy', $user->id) }}" method="POST"
-                                                    onsubmit="return confirm('Nonaktifkan akses user ini?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="dropdown-item py-2 text-danger"><i
-                                                            class="fas fa-power-off me-2"></i> Nonaktifkan</button>
-                                                </form>
-                                            </li>
-                                        </ul>
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a href="{{ route('kecamatan.users.edit', $user->id) }}"
+                                            class="btn btn-sm btn-warning text-white rounded-3 shadow-sm" title="Ubah Data">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('kecamatan.users.destroy', $user->id) }}" method="POST"
+                                            onsubmit="return confirm('Nonaktifkan akses user ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger rounded-3 shadow-sm"
+                                                title="Nonaktifkan">
+                                                <i class="fas fa-power-off"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>

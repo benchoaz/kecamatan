@@ -17,40 +17,40 @@ class MenuSeeder extends Seeder
             [
                 'kode_menu' => 'pemerintahan',
                 'nama_menu' => 'Pemerintahan',
-                'deskripsi' => 'Menu Bidang Pemerintahan dan Pelayanan',
-                'icon' => 'ri-government-line',
+                'deskripsi' => 'Pengelolaan data aparatur, kelembagaan, dan administrasi kependudukan desa.',
+                'icon' => 'fas fa-landmark',
                 'urutan' => 1,
                 'is_active' => true
             ],
             [
                 'kode_menu' => 'ekbang',
                 'nama_menu' => 'Ekonomi & Pembangunan',
-                'deskripsi' => 'Menu Bidang Ekonomi dan Pembangunan',
-                'icon' => 'ri-building-line',
+                'deskripsi' => 'Monitoring pembangunan fisik, realisasi APBDes, dan pemberdayaan ekonomi masyarakat.',
+                'icon' => 'fas fa-chart-line',
                 'urutan' => 2,
                 'is_active' => true
             ],
             [
                 'kode_menu' => 'kesra',
                 'nama_menu' => 'Kesejahteraan Rakyat',
-                'deskripsi' => 'Menu Bidang Kesejahteraan Rakyat',
-                'icon' => 'ri-heart-pulse-line',
+                'deskripsi' => 'Pengelolaan bantuan sosial, kegiatan keagamaan, pendidikan, dan kesehatan masyarakat.',
+                'icon' => 'fas fa-hand-holding-heart',
                 'urutan' => 3,
                 'is_active' => true
             ],
             [
                 'kode_menu' => 'trantibum',
                 'nama_menu' => 'Trantibum',
-                'deskripsi' => 'Menu Bidang Ketentraman dan Ketertiban Umum',
-                'icon' => 'ri-shield-star-line',
+                'deskripsi' => 'Monitoring ketentraman, ketertiban umum, dan perlindungan masyarakat di tingkat wilayah.',
+                'icon' => 'fas fa-shield-halved',
                 'urutan' => 4,
                 'is_active' => true
             ],
             [
                 'kode_menu' => 'analisa',
                 'nama_menu' => 'Analisa Data',
-                'deskripsi' => 'Dashboard Analisa dan Evaluasi Kecamatan SAE',
-                'icon' => 'ri-bar-chart-groupped-line',
+                'deskripsi' => 'Dashboard integrasi data untuk pemetaan potensi dan evaluasi kinerja pembangunan.',
+                'icon' => 'fas fa-magnifying-glass-chart',
                 'urutan' => 5,
                 'is_active' => true
             ],

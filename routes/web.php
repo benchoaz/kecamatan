@@ -2,7 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+require __DIR__ . '/debug.php';
+
 use App\Http\Controllers\AuthController;
+
 use App\Http\Controllers\FileController;
 
 /*
@@ -39,36 +42,45 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 
 // Generic Auth-Required Routes
 Route::middleware(['auth'])->group(function () {
+    // Generic Auth-Required Routes
     Route::get('/dashboard/stats', [DashboardController::class, 'stats'])->name('dashboard.stats');
     Route::get('/dashboard/chart-data', [DashboardController::class, 'chartData'])->name('dashboard.chart-data');
 
-    // Secure File Route
+    // Secure File Route (Protected by Auth, but FileController should handle specific permissions)
     Route::get('/files/{uuid}/{filename}', [FileController::class, 'show'])->name('files.show');
 
-    // System Settings (Admin Only)
-    Route::get('/kecamatan/settings/profile', [ApplicationProfileController::class, 'index'])->name('kecamatan.settings.profile');
-    Route::put('/kecamatan/settings/profile', [ApplicationProfileController::class, 'update'])->name('kecamatan.settings.profile.update');
+    // Kecamatan Domain Routes
+    Route::middleware(['role:Operator Kecamatan,Super Admin'])->group(function () {
+        // System Settings
+        Route::get('/kecamatan/settings/profile', [ApplicationProfileController::class, 'index'])->name('kecamatan.settings.profile');
+        Route::put('/kecamatan/settings/profile', [ApplicationProfileController::class, 'update'])->name('kecamatan.settings.profile.update');
 
-    // Pelayanan Domain
-    Route::prefix('kecamatan/pelayanan')->name('kecamatan.pelayanan.')->group(function () {
-        Route::get('/inbox', [\App\Http\Controllers\Kecamatan\PelayananController::class, 'inbox'])->name('inbox');
-        Route::get('/inbox/{id}', [\App\Http\Controllers\Kecamatan\PelayananController::class, 'show'])->name('show');
-        Route::put('/inbox/{id}/status', [\App\Http\Controllers\Kecamatan\PelayananController::class, 'updateStatus'])->name('update-status');
+        // Pelayanan Domain
+        Route::prefix('kecamatan/pelayanan')->name('kecamatan.pelayanan.')->group(function () {
+            Route::get('/inbox', [\App\Http\Controllers\Kecamatan\PelayananController::class, 'inbox'])->name('inbox');
+            Route::get('/inbox/{id}', [\App\Http\Controllers\Kecamatan\PelayananController::class, 'show'])->name('show');
+            Route::put('/inbox/{id}/status', [\App\Http\Controllers\Kecamatan\PelayananController::class, 'updateStatus'])->name('update-status');
 
-        Route::get('/faq', [\App\Http\Controllers\Kecamatan\PelayananController::class, 'faqIndex'])->name('faq.index');
-        Route::post('/faq', [\App\Http\Controllers\Kecamatan\PelayananController::class, 'faqStore'])->name('faq.store');
-        Route::put('/faq/{id}', [\App\Http\Controllers\Kecamatan\PelayananController::class, 'faqUpdate'])->name('faq.update');
+            Route::get('/faq', [\App\Http\Controllers\Kecamatan\PelayananController::class, 'faqIndex'])->name('faq.index');
+            Route::post('/faq', [\App\Http\Controllers\Kecamatan\PelayananController::class, 'faqStore'])->name('faq.store');
+            Route::put('/faq/{id}', [\App\Http\Controllers\Kecamatan\PelayananController::class, 'faqUpdate'])->name('faq.update');
 
-        Route::get('/statistics', [\App\Http\Controllers\Kecamatan\PelayananController::class, 'statistics'])->name('statistics');
-    });
+            Route::get('/statistics', [\App\Http\Controllers\Kecamatan\PelayananController::class, 'statistics'])->name('statistics');
 
-    // Pengumuman Domain
-    Route::prefix('kecamatan/announcements')->name('kecamatan.announcements.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Kecamatan\AnnouncementController::class, 'index'])->name('index');
-        Route::get('/create', [\App\Http\Controllers\Kecamatan\AnnouncementController::class, 'create'])->name('create');
-        Route::post('/', [\App\Http\Controllers\Kecamatan\AnnouncementController::class, 'store'])->name('store');
-        Route::get('/{announcement}/edit', [\App\Http\Controllers\Kecamatan\AnnouncementController::class, 'edit'])->name('edit');
-        Route::put('/{announcement}', [\App\Http\Controllers\Kecamatan\AnnouncementController::class, 'update'])->name('update');
-        Route::delete('/{announcement}', [\App\Http\Controllers\Kecamatan\AnnouncementController::class, 'destroy'])->name('destroy');
+            // Buku Tamu (Moved from Pemerintahan)
+            Route::get('/visitor', [\App\Http\Controllers\Kecamatan\PelayananController::class, 'visitorIndex'])->name('visitor.index');
+            Route::post('/visitor', [\App\Http\Controllers\Kecamatan\PelayananController::class, 'visitorStore'])->name('visitor.store');
+            Route::patch('/visitor/{id}', [\App\Http\Controllers\Kecamatan\PelayananController::class, 'visitorUpdate'])->name('visitor.update');
+        });
+
+        // Pengumuman Domain
+        Route::prefix('kecamatan/announcements')->name('kecamatan.announcements.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Kecamatan\AnnouncementController::class, 'index'])->name('index');
+            Route::get('/create', [\App\Http\Controllers\Kecamatan\AnnouncementController::class, 'create'])->name('create');
+            Route::post('/', [\App\Http\Controllers\Kecamatan\AnnouncementController::class, 'store'])->name('store');
+            Route::get('/{announcement}/edit', [\App\Http\Controllers\Kecamatan\AnnouncementController::class, 'edit'])->name('edit');
+            Route::put('/{announcement}', [\App\Http\Controllers\Kecamatan\AnnouncementController::class, 'update'])->name('update');
+            Route::delete('/{announcement}', [\App\Http\Controllers\Kecamatan\AnnouncementController::class, 'destroy'])->name('destroy');
+        });
     });
 });

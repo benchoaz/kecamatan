@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ appProfile()->app_name }} - {{ appProfile()->tagline ?? 'Pelayanan Profesional' }}</title>
+    @if(appProfile()->logo_path)
+        <link rel="icon" href="{{ asset('storage/' . appProfile()->logo_path) }}" type="image/png">
+    @endif
 
     <!-- Tailwind CSS + DaisyUI -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.6.0/dist/full.min.css" rel="stylesheet" type="text/css" />
@@ -31,10 +34,16 @@
     <div class="navbar bg-white shadow-md px-6 py-3 sticky top-0 z-50 border-b border-gray-200">
         <div class="navbar-start">
             <a href="/" class="flex items-center gap-3">
-                <div
-                    class="w-11 h-11 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center shadow-sm">
-                    <i class="fas fa-landmark text-white text-lg"></i>
-                </div>
+                @if(appProfile()->logo_path)
+                    <img src="{{ asset('storage/' . appProfile()->logo_path) }}" alt="Logo"
+                        class="w-12 h-12 object-contain rounded-lg bg-white shadow-sm p-1"
+                        style="max-height: 48px; width: auto;">
+                @else
+                    <div
+                        class="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center shadow-sm">
+                        <i class="fas fa-landmark text-white text-lg"></i>
+                    </div>
+                @endif
                 <div>
                     <div class="text-xs font-semibold text-gray-700 uppercase tracking-wide">
                         {{ strtoupper(appProfile()->region_name) }}
@@ -317,9 +326,9 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="text-center md:text-left">
                     <h4 class="text-white text-lg font-bold mb-1">
-                        Kecamatan <span class="text-teal-400">SAE</span>
+                        {{ appProfile()->region_name }}
                     </h4>
-                    <p class="text-xs text-gray-400">Pemerintah Kabupaten Pemerintah • Solusi Administrasi Terpadu</p>
+                    <p class="text-xs text-gray-400">{{ appProfile()->app_name }} • {{ appProfile()->tagline }}</p>
                 </div>
                 <div class="text-center md:text-right">
                     <p class="text-xs text-gray-400">Copyright © {{ date('Y') }} All Rights Reserved.</p>

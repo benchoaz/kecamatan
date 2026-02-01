@@ -16,8 +16,8 @@ class DesaSeeder extends Seeder
         $desa = [
             ['kode_desa' => '3513062001', 'nama_desa' => 'Alas Kandang', 'is_active' => true],
             ['kode_desa' => '3513062002', 'nama_desa' => 'Alas Nyiur', 'is_active' => true],
-            ['kode_desa' => '3513062003', 'nama_desa' => 'Alas Sumur', 'is_active' => true],
-            ['kode_desa' => '3513062004', 'nama_desa' => 'Alas Sumur Kulon', 'is_active' => true],
+            ['kode_desa' => '3513062003', 'nama_desa' => 'Alas Sumur Lor', 'is_active' => true],
+            ['kode_desa' => '3513062004', 'nama_desa' => 'Alas Tengah', 'is_active' => true],
             ['kode_desa' => '3513062005', 'nama_desa' => 'Bago', 'is_active' => true],
             ['kode_desa' => '3513062006', 'nama_desa' => 'Besuk Agung', 'is_active' => true],
             ['kode_desa' => '3513062007', 'nama_desa' => 'Besuk Kidul', 'is_active' => true],

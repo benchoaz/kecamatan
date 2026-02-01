@@ -23,9 +23,7 @@
 
         <!-- System Controls -->
         <div class="d-flex align-items-center gap-2 ps-3 border-start border-primary-50">
-            <button class="header-btn border-0 bg-transparent text-secondary" id="themeToggle">
-                <i class="fas fa-moon"></i>
-            </button>
+
 
             <button class="header-btn border-0 bg-transparent text-secondary position-relative">
                 <i class="fas fa-bell"></i>
@@ -72,7 +70,7 @@
                     </li>
                     <li>
                         <button type="button" class="gov-profile__item gov-profile__item--logout"
-                            onclick="if(confirm('Konfirmasi Keluar\n\nApakah Anda yakin ingin keluar dari aplikasi?')) { document.getElementById('logout-form-header').submit(); }">
+                            data-form-id="logout-form-header">
                             <i class="fas fa-power-off"></i> Keluar Aplikasi
                         </button>
                     </li>
@@ -90,12 +88,12 @@
 <!-- Profile Component Scripts -->
 <script src="{{ asset('js/components/profile.js') }}"></script>
 <script>
-// Failsafe: Close dropdown when clicking outside
-document.addEventListener('click', function(e) {
-    const profileDropdown = document.getElementById('govProfileDropdown');
-    if (profileDropdown && !e.target.closest('#govProfileDropdown')) {
-        profileDropdown.classList.remove('is-active');
-    }
-});
+    // Failsafe: Close dropdown when clicking outside
+    document.addEventListener('click', function (e) {
+        const profileDropdown = document.getElementById('govProfileDropdown');
+        if (profileDropdown && !e.target.closest('#govProfileDropdown')) {
+            profileDropdown.classList.remove('is-active');
+        }
+    });
 </script>
 @stack('scripts')

@@ -21,4 +21,20 @@ class LembagaDesa extends Model
     {
         static::addGlobalScope(new \App\Models\Scopes\DesaScope);
     }
+
+    public function isEditable()
+    {
+        return in_array($this->status, ['draft', 'dikembalikan']);
+    }
+
+    public function getStatusLabelAttribute()
+    {
+        return match ($this->status) {
+            'draft' => 'Draft',
+            'dikirim' => 'Verifikasi Kecamatan',
+            'dikembalikan' => 'Perlu Revisi',
+            'diterima' => 'Terverifikasi',
+            default => 'Draft'
+        };
+    }
 }

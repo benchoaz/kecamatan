@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="light">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard Monitoring') - {{ appProfile()->app_name }}</title>
+    @if(appProfile()->logo_path)
+        <link rel="icon" href="{{ asset('storage/' . appProfile()->logo_path) }}" type="image/png">
+    @endif
 
     <!-- Fonts - Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,7 +23,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css?v=2.1') }}">
     <link rel="stylesheet" href="{{ asset('css/buttons-fix.css') }}">
     <link rel="stylesheet" href="{{ asset('css/layout-fix.css') }}">
     <link rel="stylesheet" href="{{ asset('css/font-fix.css') }}">
@@ -103,7 +106,7 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('js/dashboard.js') }}"></script>
+    <script src="{{ asset('js/dashboard.js?v=2.1') }}"></script>
     @stack('scripts')
 </body>
 

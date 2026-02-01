@@ -65,7 +65,11 @@ class PemerintahanController extends Controller
             ->orderBy('jabatan')
             ->get();
 
-        return view('kecamatan.pemerintahan.personil.index', compact('personils', 'desa_id'));
+        return view('kecamatan.pemerintahan.personil.index', [
+            'personils' => $personils,
+            'desa_id' => $desa_id,
+            'store_route' => route('desa.pemerintahan.detail.personil.store') // Garis bawah: Link domain desa tidak melompat
+        ]);
     }
 
     public function bpdIndex()
@@ -331,7 +335,7 @@ class PemerintahanController extends Controller
         $hasKades = PersonilDesa::where('desa_id', $desa_id)->where('jabatan', 'Kepala Desa')->where('is_active', true)->exists();
         $hasSekdes = PersonilDesa::where('desa_id', $desa_id)->where('jabatan', 'Sekretaris Desa')->where('is_active', true)->exists();
         $hasBpd = PersonilDesa::where('desa_id', $desa_id)->where('kategori', 'bpd')->where('is_active', true)->exists();
-        $hasPerencanaan = PerencanaanDesa::where('desa_id', $desa_id)->where('tahun', date('Y'))->where('status_administrasi', '!=', 'draft')->exists();
+        $hasPerencanaan = PerencanaanDesa::where('desa_id', $desa_id)->where('tahun', date('Y'))->where('status', '!=', 'draft')->exists();
 
         $lastAssetUpdate = InventarisDesa::where('desa_id', $desa_id)->latest('updated_at')->first();
         $hasAssetUpdate = $lastAssetUpdate && $lastAssetUpdate->updated_at->diffInMonths(now()) < 12;

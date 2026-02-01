@@ -100,36 +100,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // -------------------------------------------------------------------------
-    // Theme Toggle
-    // -------------------------------------------------------------------------
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-        // Load saved theme
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        updateThemeIcon(savedTheme);
-
-        themeToggle.addEventListener('click', function () {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateThemeIcon(newTheme);
-        });
-    }
-
-    function updateThemeIcon(theme) {
-        const icon = themeToggle.querySelector('i');
-        if (theme === 'dark') {
-            icon.classList.remove('fa-moon');
-            icon.classList.add('fa-sun');
-        } else {
-            icon.classList.remove('fa-sun');
-            icon.classList.add('fa-moon');
-        }
-    }
-    // -------------------------------------------------------------------------
     // Page Transitions & Loading Bar
     // -------------------------------------------------------------------------
     const loadingBar = document.createElement('div');
@@ -176,4 +146,96 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Complete loader on initial load
     completeLoading();
+
+    // -------------------------------------------------------------------------
+    // Form Auto-Save Resilience (localStorage)
+    // -------------------------------------------------------------------------
+    class FormAutoSave {
+        constructor(formId) {
+            this.form = document.getElementById(formId);
+            if (!this.form) return;
+
+            this.storageKey = `autosave_${window.location.pathname}_${formId}`;
+            this.init();
+        }
+
+        init() {
+            // 1. Load existing data
+            this.restore();
+
+            // 2. Listen for changes
+            this.form.querySelectorAll('input, select, textarea').forEach(input => {
+                input.addEventListener('input', () => this.save());
+                input.addEventListener('change', () => this.save());
+            });
+
+            // 3. Clear on submit
+            this.form.addEventListener('submit', () => this.clear());
+        }
+
+        save() {
+            const formData = new FormData(this.form);
+            const data = {};
+            formData.forEach((value, key) => {
+                // Jangan simpan file
+                if (!(value instanceof File)) {
+                    data[key] = value;
+                }
+            });
+            localStorage.setItem(this.storageKey, JSON.stringify(data));
+        }
+
+        restore() {
+            const savedData = localStorage.getItem(this.storageKey);
+            if (!savedData) return;
+
+            const data = JSON.parse(savedData);
+            console.log('Restoring form data for:', this.storageKey);
+
+            Object.entries(data).forEach(([key, value]) => {
+                const input = this.form.querySelector(`[name="${key}"]`);
+                if (input) {
+                    if (input.type === 'radio' || input.type === 'checkbox') {
+                        const target = this.form.querySelector(`[name="${key}"][value="${value}"]`);
+                        if (target) target.checked = true;
+                    } else {
+                        input.value = value;
+                    }
+                }
+            });
+
+            // Show a subtle toast or alert
+            this.showRecoveryAlert();
+        }
+
+        showRecoveryAlert() {
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-info border-0 shadow-sm rounded-4 mb-4 d-flex align-items-center animate__animated animate__fadeInDown';
+            alert.innerHTML = `
+                <i class="fas fa-magic me-3"></i>
+                <div class="flex-grow-1 small">
+                    <strong>Data Terpelihara:</strong> Kami memulihkan data yang belum sempat Anda simpan sebelumnya.
+                </div>
+                <button type="button" class="btn-close ms-2" data-bs-dismiss="alert"></button>
+            `;
+            this.form.prepend(alert);
+        }
+
+        clear() {
+            localStorage.removeItem(this.storageKey);
+        }
+    }
+
+    // Initialize for specific forms
+    const pembangunanForm = document.querySelector('form[action*="pembangunan"]');
+    if (pembangunanForm) {
+        if (!pembangunanForm.id) pembangunanForm.id = 'pembangunanForm';
+        new FormAutoSave(pembangunanForm.id);
+    }
+
+    const bltForm = document.querySelector('form[action*="blt"]');
+    if (bltForm) {
+        if (!bltForm.id) bltForm.id = 'bltForm';
+        new FormAutoSave(bltForm.id);
+    }
 });
