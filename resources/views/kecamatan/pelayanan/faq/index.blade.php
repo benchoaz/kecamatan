@@ -69,7 +69,13 @@
                                         </p>
                                     </td>
                                     <td class="py-3 text-center">
-                                        @if($faq->is_active)
+                                        @if($faq->category == 'Darurat')
+                                            <span
+                                                class="badge bg-rose-100 text-rose-600 border border-rose-200 px-2 py-1 rounded-pill fw-bold"
+                                                style="font-size: 10px;">
+                                                <i class="fas fa-triangle-exclamation me-1"></i> DARURAT
+                                            </span>
+                                        @elseif($faq->is_active)
                                             <span class="text-emerald-500 text-[11px] fw-bold">
                                                 <i class="fas fa-circle me-1 fs-[6px] align-middle"></i> AKTIF
                                             </span>
@@ -88,81 +94,6 @@
                                     </td>
                                 </tr>
 
-                                <!-- Edit Modal Item -->
-                                <div class="modal fade" id="editFaqModal{{ $faq->id }}" tabindex="-1">
-                                    <div class="modal-dialog modal-dialog-centered modal-lg">
-                                        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-                                            <div class="modal-header bg-slate-50 py-3 px-4 border-bottom border-light">
-                                                <h5 class="modal-title fw-bold text-slate-900 fs-5">Ubah FAQ Administrasi</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                            </div>
-                                            <form action="{{ route('kecamatan.pelayanan.faq.update', $faq->id) }}"
-                                                method="POST">
-                                                @csrf @method('PUT')
-                                                <div class="modal-body p-4">
-                                                    <div class="row g-3">
-                                                        <div class="col-md-6">
-                                                            <label
-                                                                class="form-label small fw-bold text-slate-700">Kategori</label>
-                                                            <select name="category"
-                                                                class="form-select bg-slate-50 border-slate-200" required>
-                                                                <option {{ $faq->category == 'Kependudukan' ? 'selected' : '' }}>
-                                                                    Kependudukan (Info Umum)</option>
-                                                                <option {{ $faq->category == 'Pemerintahan' ? 'selected' : '' }}>
-                                                                    Pemerintahan</option>
-                                                                <option {{ $faq->category == 'Pembangunan' ? 'selected' : '' }}>
-                                                                    Pembangunan</option>
-                                                                <option {{ $faq->category == 'Umum' ? 'selected' : '' }}>Umum
-                                                                </option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <label class="form-label small fw-bold text-slate-700">Status
-                                                                Aktif</label>
-                                                            <select name="is_active"
-                                                                class="form-select bg-slate-50 border-slate-200" required>
-                                                                <option value="1" {{ $faq->is_active ? 'selected' : '' }}>Aktif
-                                                                </option>
-                                                                <option value="0" {{ !$faq->is_active ? 'selected' : '' }}>
-                                                                    Nonaktif</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-12">
-                                                            <label class="form-label small fw-bold text-slate-700">Kata Kunci
-                                                                (Keywords)</label>
-                                                            <input type="text" name="keywords"
-                                                                value="{{ old('keywords', $faq->keywords) }}"
-                                                                class="form-control bg-slate-50 border-slate-200" required>
-                                                            <p class="text-[10px] text-slate-400 mt-1 italic">Gunakan koma (,)
-                                                                sebagai pemisah.</p>
-                                                        </div>
-                                                        <div class="col-12">
-                                                            <label class="form-label small fw-bold text-slate-700">Pertanyaan
-                                                                Standar</label>
-                                                            <input type="text" name="question"
-                                                                value="{{ old('question', $faq->question) }}"
-                                                                class="form-control bg-slate-50 border-slate-200" required>
-                                                        </div>
-                                                        <div class="col-12">
-                                                            <label class="form-label small fw-bold text-slate-700">Jawaban
-                                                                Resmi</label>
-                                                            <textarea name="answer"
-                                                                class="form-control bg-slate-50 border-slate-200 h-32"
-                                                                required>{{ old('answer', $faq->answer) }}</textarea>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer bg-slate-50 py-3 px-4 border-top border-light">
-                                                    <button type="button"
-                                                        class="btn btn-link text-slate-400 text-decoration-none small fw-semibold"
-                                                        data-bs-dismiss="modal">Batal</button>
-                                                    <button type="submit"
-                                                        class="btn btn-primary px-4 fw-bold rounded-3">Simpan</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
                             @empty
                                 <tr>
                                     <td colspan="5" class="text-center py-5">
@@ -179,47 +110,124 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('modal')
+    <!-- Edit Modal Items -->
+    @foreach($faqs as $faq)
+        <div class="modal fade" id="editFaqModal{{ $faq->id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+                    <div class="modal-header bg-white py-3 px-4 border-bottom border-slate-100">
+                        <h5 class="modal-title fw-bold text-slate-900 fs-5">Ubah FAQ Administrasi</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form action="{{ route('kecamatan.pelayanan.faq.update', $faq->id) }}" method="POST">
+                        @csrf @method('PUT')
+                        <div class="modal-body p-4 bg-white">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold text-slate-700">Kategori</label>
+                                    <select name="category"
+                                        class="form-select bg-white border-slate-200 text-slate-900 fw-medium" required>
+                                        <option value="Darurat" {{ $faq->category == 'Darurat' ? 'selected' : '' }}
+                                            class="fw-bold text-rose-600">
+                                            ⚠️ DARURAT (PENTING)</option>
+                                        <option value="Kependudukan" {{ $faq->category == 'Kependudukan' ? 'selected' : '' }}>
+                                            Kependudukan (Info Umum)</option>
+                                        <option value="Pemerintahan" {{ $faq->category == 'Pemerintahan' ? 'selected' : '' }}>
+                                            Pemerintahan</option>
+                                        <option value="Pembangunan" {{ $faq->category == 'Pembangunan' ? 'selected' : '' }}>
+                                            Pembangunan</option>
+                                        <option value="Umum" {{ $faq->category == 'Umum' ? 'selected' : '' }}>Umum</option>
+                                        <option value="Adminduk" {{ $faq->category == 'Adminduk' ? 'selected' : '' }}>Adminduk
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold text-slate-700">Status Aktif</label>
+                                    <select name="is_active"
+                                        class="form-select bg-white border-slate-200 text-slate-900 fw-medium" required>
+                                        <option value="1" {{ $faq->is_active ? 'selected' : '' }}>Aktif</option>
+                                        <option value="0" {{ !$faq->is_active ? 'selected' : '' }}>Nonaktif</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold text-slate-700">Kata Kunci (Keywords)</label>
+                                    <input type="text" name="keywords" value="{{ old('keywords', $faq->keywords) }}"
+                                        class="form-control bg-white border-slate-200 text-slate-900 fw-medium" required>
+                                    <p class="text-[10px] text-slate-400 mt-1 italic">Gunakan koma (,) sebagai pemisah.</p>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold text-slate-700">Pertanyaan Standar</label>
+                                    <input type="text" name="question" value="{{ old('question', $faq->question) }}"
+                                        class="form-control bg-white border-slate-200 text-slate-900 fw-medium" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold text-slate-700">Jawaban Resmi</label>
+                                    <textarea name="answer"
+                                        class="form-control bg-white border-slate-200 text-slate-900 fw-medium h-32"
+                                        required>{{ old('answer', $faq->answer) }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-slate-50 py-3 px-4 border-top border-slate-100">
+                            <button type="button" class="btn btn-link text-slate-400 text-decoration-none small fw-semibold"
+                                data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-primary px-4 fw-bold rounded-3">Simpan Perubahan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endforeach
 
     <!-- Add Modal -->
-    <div class="modal fade" id="addFaqModal" tabindex="-1">
+    <div class="modal fade" id="addFaqModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-                <div class="modal-header bg-slate-50 py-3 px-4 border-bottom border-light">
+                <div class="modal-header bg-white py-3 px-4 border-bottom border-slate-100">
                     <h5 class="modal-title fw-bold text-slate-900 fs-5">Tambah FAQ Administrasi</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form action="{{ route('kecamatan.pelayanan.faq.store') }}" method="POST">
                     @csrf
-                    <div class="modal-body p-4">
+                    <div class="modal-body p-4 bg-white">
                         <div class="row g-3">
                             <div class="col-md-12">
                                 <label class="form-label small fw-bold text-slate-700">Kategori</label>
-                                <select name="category" class="form-select bg-slate-50 border-slate-200" required>
-                                    <option>Kependudukan (Info Umum)</option>
-                                    <option>Pemerintahan</option>
-                                    <option>Pembangunan</option>
-                                    <option>Umum</option>
+                                <select name="category"
+                                    class="form-select bg-white border-slate-200 text-slate-900 fw-medium" required>
+                                    <option value="Darurat" class="fw-bold text-rose-600">⚠️ DARURAT (PENTING)</option>
+                                    <option value="Adminduk">Adminduk</option>
+                                    <option value="Kependudukan">Kependudukan (Info Umum)</option>
+                                    <option value="Pemerintahan">Pemerintahan</option>
+                                    <option value="Pembangunan">Pembangunan</option>
+                                    <option value="Umum">Umum</option>
                                 </select>
                             </div>
                             <div class="col-12">
                                 <label class="form-label small fw-bold text-slate-700">Kata Kunci (Keywords)</label>
-                                <input type="text" name="keywords" class="form-control bg-slate-50 border-slate-200"
+                                <input type="text" name="keywords"
+                                    class="form-control bg-white border-slate-200 text-slate-900 fw-medium"
                                     placeholder="Contoh: syarat, domisili, ktp" required>
                                 <p class="text-[10px] text-slate-400 mt-1 italic">Gunakan koma (,) sebagai pemisah.</p>
                             </div>
                             <div class="col-12">
                                 <label class="form-label small fw-bold text-slate-700">Pertanyaan Standar</label>
-                                <input type="text" name="question" class="form-control bg-slate-50 border-slate-200"
+                                <input type="text" name="question"
+                                    class="form-control bg-white border-slate-200 text-slate-900 fw-medium"
                                     placeholder="Apa syarat..." required>
                             </div>
                             <div class="col-12">
                                 <label class="form-label small fw-bold text-slate-700">Jawaban Resmi</label>
-                                <textarea name="answer" class="form-control bg-slate-50 border-slate-200 h-32"
+                                <textarea name="answer"
+                                    class="form-control bg-white border-slate-200 text-slate-900 fw-medium h-32"
                                     placeholder="Tuliskan jawaban formal..." required></textarea>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer bg-slate-50 py-3 px-4 border-top border-light">
+                    <div class="modal-footer bg-slate-50 py-3 px-4 border-top border-slate-100">
                         <button type="button" class="btn btn-link text-slate-400 text-decoration-none small fw-semibold"
                             data-bs-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-primary px-4 fw-bold rounded-3">Simpan FAQ</button>

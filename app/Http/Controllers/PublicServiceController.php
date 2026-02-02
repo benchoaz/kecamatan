@@ -27,26 +27,30 @@ class PublicServiceController extends Controller
         }
 
         // 3. Security Keyword filtering (Soft redirection to SP4N-LAPOR)
-        $securityKeywords = ['korupsi', 'suap', 'pencurian', 'pidana', 'dana desa'];
-        foreach ($securityKeywords as $keyword) {
-            if (Str::contains(strtolower($request->uraian), $keyword)) {
-                return response()->json([
-                    'type' => 'security_referral',
-                    'message' => 'Informasi: Untuk laporan terkait indikasi tata kelola keuangan atau penyimpangan berat, disarankan menggunakan kanal resmi SP4N-LAPOR! demi perlindungan data Anda.',
-                    'link' => 'https://lapor.go.id'
-                ], 200);
-            }
-        }
+        $isHandoff = Str::startsWith($request->uraian, '[Diteruskan dari Bot FAQ]');
 
-        // 4. SIAK keyword filtering (Passive redirection)
-        $siakKeywords = ['ktp', 'kk', 'kartu keluarga', 'akta', 'capil', 'siak', 'domisili'];
-        foreach ($siakKeywords as $keyword) {
-            if (Str::contains(strtolower($request->uraian), $keyword)) {
-                return response()->json([
-                    'type' => 'siak_referral',
-                    'message' => 'Informasi: Untuk layanan kependudukan (KTP, KK, Akta), silakan merujuk ke portal resmi SIAK atau layanan Dispendukcapil Kabupaten.',
-                    'link' => 'https://siakterpusat.kemendagri.go.id'
-                ], 200);
+        if (!$isHandoff) {
+            $securityKeywords = ['korupsi', 'suap', 'pencurian', 'pidana', 'dana desa'];
+            foreach ($securityKeywords as $keyword) {
+                if (Str::contains(strtolower($request->uraian), $keyword)) {
+                    return response()->json([
+                        'type' => 'security_referral',
+                        'message' => 'Informasi: Untuk laporan terkait indikasi tata kelola keuangan atau penyimpangan berat, disarankan menggunakan kanal resmi SP4N-LAPOR! demi perlindungan data Anda.',
+                        'link' => 'https://lapor.go.id'
+                    ], 200);
+                }
+            }
+
+            // 4. SIAK keyword filtering (Passive redirection)
+            $siakKeywords = ['ktp', 'kk', 'kartu keluarga', 'akta', 'capil', 'siak', 'domisili'];
+            foreach ($siakKeywords as $keyword) {
+                if (Str::contains(strtolower($request->uraian), $keyword)) {
+                    return response()->json([
+                        'type' => 'siak_referral',
+                        'message' => 'Informasi: Untuk layanan kependudukan (KTP, KK, Akta), silakan merujuk ke portal resmi SIAK atau layanan Dispendukcapil Kabupaten.',
+                        'link' => 'https://siakterpusat.kemendagri.go.id'
+                    ], 200);
+                }
             }
         }
 
@@ -111,6 +115,178 @@ class PublicServiceController extends Controller
 
         return response()->json([
             'message' => 'Terima kasih. Laporan Anda telah kami terima dengan status "Menunggu Klarifikasi". Petugas kami akan melakukan tinjauan administratif secara selektif.'
+        ]);
+    }
+
+    public function faqSearch(Request $request)
+    {
+        $query = strtolower($request->query('q', ''));
+        if (empty($query)) {
+            return response()->json(['answer' => null]);
+        }
+
+        // 0. Priority Checklist: Darurat Category from Database (User Managed Override)
+        $emergencyFaqs = \App\Models\PelayananFaq::where('is_active', true)
+            ->where('category', 'Darurat')
+            ->get();
+
+        foreach ($emergencyFaqs as $faq) {
+            $keywords = explode(',', strtolower($faq->keywords));
+            foreach ($keywords as $kw) {
+                $trimmedKw = trim($kw);
+                if ($trimmedKw !== '' && str_contains($query, $trimmedKw)) {
+                    return response()->json([
+                        'found' => true,
+                        'is_emergency' => true,
+                        'answer' => $faq->answer
+                    ]);
+                }
+            }
+        }
+
+        // 1. Hardcoded Safety Fallbacks (If DB entry is missing or inactive)
+
+        // 1.1 Criminal Emergency
+        $criminalKeywords = [
+            'maling',
+            'pencurian',
+            'perampokan',
+            'dirampok',
+            'kriminal',
+            'kejahatan',
+            'kekerasan',
+            'curi',
+            'jambret',
+            'begal',
+            'penodongan',
+            'maling!',
+            'pencuri'
+        ];
+        foreach ($criminalKeywords as $ckw) {
+            if (str_contains($query, $ckw)) {
+                return response()->json([
+                    'found' => false,
+                    'is_emergency' => true,
+                    'answer' => "⚠️ Jika Anda mengalami atau melihat tindak pencurian atau kejahatan:\n\n1. Segera hubungi Kepolisian melalui nomor 110\n2. Atau laporkan langsung ke Polsek terdekat\n3. Mintalah Surat Tanda Lapor Polisi (STLP) jika diperlukan\n\nUtamakan keselamatan diri Anda."
+                ]);
+            }
+        }
+
+        // 1.2 Health Emergency
+        $healthKeywords = [
+            'pingsan',
+            'sesak napas',
+            'kejang',
+            'kecelakaan',
+            'luka berat',
+            'darah banyak',
+            'darurat kesehatan',
+            'sakit parah',
+            'serangan jantung',
+            'melahirkan',
+            'ambulan'
+        ];
+        foreach ($healthKeywords as $hkw) {
+            if (str_contains($query, $hkw)) {
+                return response()->json([
+                    'found' => false,
+                    'is_emergency' => true,
+                    'answer' => "⚠️ Jika terjadi keadaan darurat kesehatan:\n\n1. Segera hubungi layanan darurat medis (119) atau fasilitas kesehatan terdekat\n2. Jika memungkinkan, minta bantuan warga sekitar\n3. Jika korban tidak sadar atau luka berat, jangan dipindahkan sembarangan\n\nUtamakan keselamatan dan pertolongan pertama."
+                ]);
+            }
+        }
+
+        // 1.3 Social Conflict
+        $conflictKeywords = [
+            'keributan',
+            'tawuran',
+            'bentrok',
+            'perkelahian',
+            'ancaman',
+            'gangguan ketertiban',
+            'konflik warga',
+            'demo',
+            'unjuk rasa',
+            'rusuh'
+        ];
+        foreach ($conflictKeywords as $ckw) {
+            if (str_contains($query, $ckw)) {
+                return response()->json([
+                    'found' => false,
+                    'is_emergency' => true,
+                    'answer' => "⚠️ Jika terjadi konflik atau gangguan ketertiban:\n\n1. Hindari lokasi kejadian demi keselamatan\n2. Segera laporkan ke aparat keamanan setempat\n3. Jangan melakukan tindakan balasan atau provokasi\n\nMari jaga keamanan dan ketertiban bersama."
+                ]);
+            }
+        }
+
+        // 1.4 Natural Disaster
+        $disasterKeywords = [
+            'banjir',
+            'longsor',
+            'gempa',
+            'kebakaran',
+            'angin kencang',
+            'bencana alam',
+            'evakuasi',
+            'puting beliung',
+            'tsunami',
+            'gunung meletus',
+            'damkar'
+        ];
+        foreach ($disasterKeywords as $dkw) {
+            if (str_contains($query, $dkw)) {
+                return response()->json([
+                    'found' => false,
+                    'is_emergency' => true,
+                    'answer' => "⚠️ Jika terjadi bencana alam:\n\n1. Segera menjauh dari lokasi berbahaya\n2. Ikuti arahan petugas dan aparat setempat\n3. Siapkan dokumen penting dan kebutuhan darurat\n\nKeselamatan jiwa adalah yang utama.\nNO DARURAT PETUGAS DAMKAR 112"
+                ]);
+            }
+        }
+
+        // 1.5 General Backup
+        $generalEmergency = ['darurat', 'begal', 'bantuan'];
+        foreach ($generalEmergency as $ekw) {
+            if (str_contains($query, $ekw)) {
+                return response()->json([
+                    'found' => false,
+                    'is_emergency' => true,
+                    'answer' => "⚠️ **Peringatan Darurat Keamanan/Keselamatan!**\n\nLayanan ini hanya untuk informasi administrasi. Untuk situasi darurat, segera hubungi:\n- **Polisi/Keadaan Darurat**: 110\n- **Ambulans/Medis**: 119\n- **Pemadam Kebakaran**: 113\n\nTetap tenang dan cari tempat aman."
+                ]);
+            }
+        }
+
+        // 4. Strict FAQ Matching
+        // Phase A: Search by Question Title (Priority)
+        $matchingFaq = \App\Models\PelayananFaq::where('is_active', true)
+            ->whereRaw('LOWER(question) LIKE ?', ["%{$query}%"])
+            ->first();
+
+        // Phase B: Search by Keywords (Fallback)
+        if (!$matchingFaq) {
+            $matchingFaq = \App\Models\PelayananFaq::where('is_active', true)->get()->first(function ($faq) use ($query) {
+                $keywords = explode(',', strtolower($faq->keywords));
+                foreach ($keywords as $kw) {
+                    if (trim($kw) !== '' && (str_contains($query, trim($kw)) || str_contains(trim($kw), $query))) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+        }
+
+        // 3. Verbatim Response
+        if ($matchingFaq) {
+            return response()->json([
+                'found' => true,
+                'question' => $matchingFaq->question,
+                'answer' => $matchingFaq->answer // RETURN VERBATIM
+            ]);
+        }
+
+        // 4. Fallback (No interpretation)
+        return response()->json([
+            'found' => false,
+            'answer' => "Maaf, informasi terkait hal tersebut tidak ditemukan dalam database FAQ resmi kami. Silakan coba kata kunci lain (seperti: KTP, KK, Pindah) atau datang langsung ke kantor Kecamatan pada jam kerja."
         ]);
     }
 }

@@ -24,6 +24,29 @@ class TrantibumController extends Controller
         return view('kecamatan.trantibum.kecamatan.index', compact('allReports'));
     }
 
+    public function taganaIndex()
+    {
+        $user = auth()->user();
+        abort_unless($user->desa_id === null, 403);
+
+        $reports = Submission::whereHas('aspek', function ($q) {
+            $q->where('kode_aspek', 'tran_tagana');
+        })
+            ->with(['desa', 'jawabanIndikator.indikator'])
+            ->latest()
+            ->get();
+
+        return view('kecamatan.trantibum.kecamatan.tagana', compact('reports'));
+    }
+
+    public function emergencyIndex()
+    {
+        $user = auth()->user();
+        abort_unless($user->desa_id === null, 403);
+
+        return view('kecamatan.trantibum.kecamatan.darurat');
+    }
+
     public function show($id)
     {
         $report = Submission::with(['desa', 'aspek', 'jawabanIndikator', 'buktiDukung', 'verifikasi'])->findOrFail($id);

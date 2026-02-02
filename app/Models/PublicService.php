@@ -11,6 +11,11 @@ class PublicService extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'is_agreed' => 'boolean',
+        'handled_at' => 'datetime',
+    ];
+
     public function desa()
     {
         return $this->belongsTo(Desa::class);

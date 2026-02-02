@@ -95,7 +95,21 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.has-submenu > .nav-link').forEach(trigger => {
         trigger.addEventListener('click', function (e) {
             e.preventDefault();
-            this.parentElement.classList.toggle('open');
+            e.stopPropagation();
+
+            const parent = this.parentElement;
+            const isOpen = parent.classList.contains('open');
+
+            // Optional: Close other submenus (Accordion style)
+            document.querySelectorAll('.has-submenu.open').forEach(openedItem => {
+                if (openedItem !== parent) {
+                    openedItem.classList.remove('open');
+                }
+            });
+
+            // Toggle current
+            parent.classList.toggle('open');
+            console.log('Submenu toggle:', parent.querySelector('.nav-text').innerText, '->', !isOpen);
         });
     });
 

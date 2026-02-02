@@ -110,9 +110,10 @@ Route::middleware(['auth', 'role:Operator Kecamatan,Super Admin'])->prefix('keca
         Route::post('/process/{id}', [KesraController::class, 'process'])->name('process');
     });
 
-    // Trantibum
     Route::prefix('trantibum')->name('trantibum.')->group(function () {
         Route::get('/', [TrantibumController::class, 'index'])->name('index');
+        Route::get('/tagana', [TrantibumController::class, 'taganaIndex'])->name('tagana.index');
+        Route::get('/emergency', [TrantibumController::class, 'emergencyIndex'])->name('emergency.index');
         Route::get('/export-audit', [TrantibumController::class, 'exportAudit'])->name('export');
         Route::get('/{id}', [TrantibumController::class, 'show'])->name('show');
     });

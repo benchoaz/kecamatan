@@ -99,30 +99,28 @@
                 </li>
 
                 <!-- Ekonomi & Pembangunan (Integrated Dropdown) -->
-                <li
-                    class="nav-item has-submenu {{ request()->is('kecamatan/pembangunan*') || request()->is('kecamatan/ekbang*') ? 'open' : '' }}">
-                    <a href="javascript:void(0)" class="nav-link submenu-toggle"
-                        onclick="this.parentElement.classList.toggle('open')">
+                <li class="nav-item has-submenu">
+                    <a href="javascript:void(0)" class="nav-link submenu-toggle">
                         <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
                         <span class="nav-text">Ekonomi & Pembangunan</span>
-                        <span class="ms-auto small"><i class="fas fa-chevron-down submenu-arrow"></i></span>
+                        <span class="ms-auto small"><i class="fas fa-chevron-right nav-arrow"></i></span>
                     </a>
                     <ul class="nav-submenu">
                         <li class="nav-submenu-item">
                             <a href="{{ route('kecamatan.pembangunan.index') }}"
-                                class="nav-submenu-link {{ request()->routeIs('kecamatan.pembangunan.index') || request()->routeIs('kecamatan.pembangunan.show') ? 'active' : '' }}">
+                                class="nav-sublink {{ request()->routeIs('kecamatan.pembangunan.index') || request()->routeIs('kecamatan.pembangunan.show') ? 'active' : '' }}">
                                 <i class="fas fa-display me-2 small"></i> Monitoring Utama
                             </a>
                         </li>
                         <li class="nav-submenu-item">
                             <a href="{{ route('kecamatan.pembangunan.referensi.ssh.index') }}"
-                                class="nav-submenu-link {{ request()->is('kecamatan/pembangunan/referensi/ssh*') ? 'active' : '' }}">
+                                class="nav-sublink {{ request()->is('kecamatan/pembangunan/referensi/ssh*') ? 'active' : '' }}">
                                 <i class="fas fa-tags me-2 small"></i> Master SSH
                             </a>
                         </li>
                         <li class="nav-submenu-item">
                             <a href="{{ route('kecamatan.pembangunan.referensi.sbu.index') }}"
-                                class="nav-submenu-link {{ request()->is('kecamatan/pembangunan/referensi/sbu*') ? 'active' : '' }}">
+                                class="nav-sublink {{ request()->is('kecamatan/pembangunan/referensi/sbu*') ? 'active' : '' }}">
                                 <i class="fas fa-file-invoice-dollar me-2 small"></i> Master SBU
                             </a>
                         </li>
@@ -138,13 +136,33 @@
                     </a>
                 </li>
 
-                <!-- Trantibum -->
-                <li class="nav-item">
-                    <a href="{{ route('kecamatan.trantibum.index') }}"
-                        class="nav-link {{ request()->is('kecamatan/trantibum*') ? 'active' : '' }}">
+                <!-- Trantibum (Integrated Dropdown) -->
+                <li class="nav-item has-submenu">
+                    <a href="javascript:void(0)" class="nav-link submenu-toggle">
                         <span class="nav-icon"><i class="fas fa-masks-theater"></i></span>
                         <span class="nav-text">Trantibum & Linmas</span>
+                        <span class="ms-auto small"><i class="fas fa-chevron-right nav-arrow"></i></span>
                     </a>
+                    <ul class="nav-submenu">
+                        <li class="nav-submenu-item">
+                            <a href="{{ route('kecamatan.trantibum.index') }}"
+                                class="nav-sublink {{ request()->routeIs('kecamatan.trantibum.index') ? 'active' : '' }}">
+                                <i class="fas fa-display me-2 small"></i> Monitoring Wilayah
+                            </a>
+                        </li>
+                        <li class="nav-submenu-item">
+                            <a href="{{ route('kecamatan.trantibum.tagana.index') }}"
+                                class="nav-sublink {{ request()->is('kecamatan/trantibum/tagana*') ? 'active' : '' }}">
+                                <i class="fas fa-phone-volume me-2 small"></i> Data TAGANA Desa
+                            </a>
+                        </li>
+                        <li class="nav-submenu-item">
+                            <a href="{{ route('kecamatan.trantibum.emergency.index') }}"
+                                class="nav-sublink {{ request()->is('kecamatan/trantibum/emergency*') ? 'active' : '' }}">
+                                <i class="fas fa-headset me-2 small"></i> Pusat No. Darurat
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
                 <!-- Modul Laporan -->

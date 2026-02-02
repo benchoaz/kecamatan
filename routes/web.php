@@ -30,6 +30,7 @@ Route::get('/layanan', function () {
 use App\Http\Controllers\PublicServiceController;
 use App\Http\Controllers\ApplicationProfileController;
 Route::post('/public-service/submit', [PublicServiceController::class, 'submit'])->name('public.service.submit');
+Route::get('/api/faq-search', [PublicServiceController::class, 'faqSearch'])->name('api.faq.search');
 
 // Auth Routes
 Route::get('/login', [AuthController::class, 'login'])->name('login')->middleware('guest');

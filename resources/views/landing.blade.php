@@ -359,151 +359,259 @@
         </button>
     </div>
 
-    <!-- Public Service Portal -->
+    <!-- Administrative Bot Portal (REPLACEMENT FOR MODAL) -->
     <dialog id="publicServiceModal" class="modal">
-        <div class="modal-box max-w-2xl rounded-2xl bg-white p-0 overflow-y-auto max-h-[95vh]">
-            <div class="bg-teal-600 p-6 text-white flex justify-between items-center">
-                <div>
-                    <h3 class="font-bold text-xl">Sampaikan Layanan / Pengaduan</h3>
-                    <p class="text-xs text-teal-100 mt-1 italic">Kami siap mendengarkan dan membantu kebutuhan Anda.</p>
+        <div
+            class="modal-box max-w-md rounded-3xl bg-white p-0 overflow-hidden shadow-2xl flex flex-col h-[600px] border border-slate-100">
+            <!-- Header Bot -->
+            <div
+                class="bg-gradient-to-r from-teal-600 to-teal-700 p-5 text-white flex justify-between items-center shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                        <i class="fas fa-robot text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base leading-tight">Asisten Digital Administrasi</h3>
+                        <div class="flex items-center gap-1.5 mt-0.5">
+                            <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                            <p class="text-[10px] text-teal-100 font-medium">Online & Siap Membantu</p>
+                        </div>
+                    </div>
                 </div>
                 <form method="dialog">
-                    <button class="btn btn-sm btn-circle btn-ghost"><i class="fas fa-times"></i></button>
+                    <button class="btn btn-sm btn-circle btn-ghost text-teal-100 hover:text-white"><i
+                            class="fas fa-times"></i></button>
                 </form>
             </div>
 
-            <div class="p-8">
-                <!-- Single Step Form -->
-                <form id="publicServiceForm" class="space-y-5">
-                    @csrf
-                    <!-- Honeypot -->
-                    <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off">
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="form-control">
-                            <label class="label"><span class="label-text font-semibold">Jenis Layanan</span></label>
-                            <select name="jenis_layanan"
-                                class="select select-bordered bg-gray-50 focus:border-teal-500 rounded-xl" required>
-                                <option disabled selected>Pilih jenis layanan...</option>
-                                <option>Pengaduan Pelayanan</option>
-                                <option>Permohonan Informasi</option>
-                                <option>Konsultasi Administratif</option>
-                            </select>
+            <!-- Chat Area -->
+            <div id="chatMessages" class="flex-grow p-4 overflow-y-auto bg-slate-50 space-y-4">
+                <!-- Welcome Message -->
+                <div class="flex items-start gap-2.5">
+                    <div class="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center shrink-0 shadow-sm border border-teal-200">
+                        <i class="fas fa-robot text-teal-600 text-xs"></i>
+                    </div>
+                    <div class="space-y-3 max-w-[85%]">
+                        <div class="bg-white border border-slate-200 text-slate-700 p-4 rounded-2xl rounded-tl-none text-xs leading-relaxed shadow-sm">
+                            <p class="font-bold text-teal-700 mb-1">Halo! Saya Asisten Digital Kecamatan.</p>
+                            <p>Saya siap membantu Anda memberikan informasi resmi terkait persyaratan administrasi.</p>
                         </div>
-                        <div class="form-control">
-                            <label class="label"><span class="label-text font-semibold">Lokasi / Desa</span></label>
-                            <select name="desa_id"
-                                class="select select-bordered bg-gray-50 focus:border-teal-500 rounded-xl">
-                                <option value="">Pilih lokasi desa (Bila terkait)...</option>
-                                @foreach(\App\Models\Desa::orderBy('nama_desa')->get() as $desa)
-                                    <option value="{{ $desa->id }}">{{ $desa->nama_desa }}</option>
-                                @endforeach
-                            </select>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="sendQuickChip('KTP')" class="btn btn-xs bg-white hover:bg-teal-50 text-teal-600 border-teal-200 rounded-full font-medium px-3 normal-case shadow-sm">📦 Cek Syarat KTP</button>
+                            <button onclick="sendQuickChip('KK')" class="btn btn-xs bg-white hover:bg-teal-50 text-teal-600 border-teal-200 rounded-full font-medium px-3 normal-case shadow-sm">👨‍👩‍👧‍👦 Cek Syarat KK</button>
+                            <button onclick="sendQuickChip('Akte')" class="btn btn-xs bg-white hover:bg-teal-50 text-teal-600 border-teal-200 rounded-full font-medium px-3 normal-case shadow-sm">📄 Syarat Akte</button>
+                            <button onclick="sendQuickChip('Jam Layanan')" class="btn btn-xs bg-white hover:bg-teal-50 text-teal-600 border-teal-200 rounded-full font-medium px-3 normal-case shadow-sm">⏰ Jam Layanan</button>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div class="form-control">
-                        <label class="label"><span class="label-text font-semibold">Uraian Singkat</span></label>
-                        <textarea name="uraian"
-                            class="textarea textarea-bordered bg-gray-50 focus:border-teal-500 rounded-xl h-24"
-                            placeholder="Contoh: Mohon informasi mengenai jadwal pelayanan mobil keliling di desa kami..."
-                            required maxlength="500"></textarea>
-                    </div>
-
-                    <div class="form-control">
-                        <label class="label"><span class="label-text font-semibold">Nomor HP / WhatsApp</span></label>
-                        <div class="join">
-                            <span
-                                class="btn btn-disabled join-item bg-gray-200 text-gray-700 border-gray-300">+62</span>
-                            <input type="tel" name="whatsapp" placeholder="8123456xxxx"
-                                class="input input-bordered join-item w-full bg-gray-50 focus:border-teal-500" required>
-                        </div>
-                        <span class="label-text-alt text-gray-400 mt-1 italic">“Nomor ini digunakan petugas untuk
-                            klarifikasi bila diperlukan.”</span>
-                    </div>
-
-                    <div class="form-control">
-                        <label class="label"><span class="label-text font-semibold">Lampiran Foto
-                                (Opsional)</span></label>
-                        <input type="file" name="foto[]" multiple
-                            class="file-input file-input-bordered w-full bg-gray-50 text-xs"
-                            accept="image/png, image/jpeg">
-                        <span class="label-text-alt text-gray-400 mt-1 italic">*Maksimal 2 file, format JPG/PNG,
-                            maksimal 2MB per file.</span>
-                    </div>
-
-                    <div class="form-control">
-                        <label class="label cursor-pointer justify-start gap-3">
-                            <input type="checkbox" name="is_agreed" value="1" required
-                                class="checkbox checkbox-teal checkbox-sm">
-                            <span class="label-text text-gray-600 text-xs text-left">Saya menyampaikan laporan ini
-                                dengan itikad baik dan bersedia dihubungi untuk klarifikasi.</span>
-                        </label>
-                    </div>
-
-                    <div class="modal-action mt-6">
-                        <button type="submit" id="btnSubmitForm"
-                            class="btn bg-teal-600 hover:bg-teal-700 text-white border-0 w-full rounded-xl">
-                            Kirim Sekarang
-                        </button>
-                    </div>
+            <!-- Input Area -->
+            <div class="p-4 bg-white border-t border-slate-100 shrink-0 shadow-[0_-4px_15px_-5px_rgba(0,0,0,0.05)]">
+                <form id="publicFaqForm" class="relative">
+                    <input type="text" id="botQuery"
+                        class="input input-bordered w-full bg-slate-50 border-slate-200 focus:border-teal-500 rounded-2xl pr-12 text-sm text-slate-700 transition-all focus:shadow-md"
+                        placeholder="Ketik pertanyaan Anda..." autocomplete="off" required>
+                    <button type="submit" id="btnSendBot"
+                        class="absolute right-2 top-1/2 -translate-y-1/2 btn btn-sm btn-circle bg-teal-600 hover:bg-teal-700 border-0 text-white shadow-md transition-all active:scale-95">
+                        <i class="fas fa-paper-plane text-xs"></i>
+                    </button>
                 </form>
-
-                <!-- Success State (Hidden by default) -->
-                <div id="successSection" class="hidden text-center py-6">
-                    <div
-                        class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-check-circle text-3xl"></i>
-                    </div>
-                    <h4 class="font-bold text-gray-800 text-xl mb-2">Laporan Terkirim</h4>
-                    <p class="text-sm text-gray-600 mb-6" id="successMessage"></p>
-                    <button onclick="location.reload()" class="btn btn-ghost text-teal-600">Selesai</button>
+                <div class="flex justify-between items-center mt-3 px-1">
+                    <p class="text-[9px] text-slate-400 italic">Informasi Resmi Database FAQ.</p>
+                    <button onclick="startClarification()" class="text-[9px] font-bold text-teal-600 hover:underline">Butuh Tindak Lanjut Petugas?</button>
                 </div>
             </div>
         </div>
     </dialog>
 
     <script>
-        document.getElementById('publicServiceForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
-            const btn = document.getElementById('btnSubmitForm');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Mengirim...';
-            btn.disabled = true;
+        const chatMessages = document.getElementById('chatMessages');
+        const botForm = document.getElementById('publicFaqForm');
+        const botInput = document.getElementById('botQuery');
+        let chatState = 'FAQ'; // 'FAQ' or 'CAPTURE_WA'
+        let lastUserQuery = '';
 
-            const formData = new FormData(this);
+        function sendQuickChip(text) {
+            botInput.value = text;
+            botForm.dispatchEvent(new Event('submit'));
+        }
+
+        function startClarification() {
+            chatState = 'CAPTURE_WA';
+            appendMessage('bot', 'Baik, untuk bantuan lebih lanjut atau klarifikasi petugas, mohon masukkan **Nomor WhatsApp** Anda di bawah ini.');
+            botInput.placeholder = "Contoh: 08123456789";
+            botInput.type = "tel";
+            botInput.focus();
+        }
+
+        function appendMessage(role, text, isSOP = false) {
+            const container = document.createElement('div');
+            container.className = role === 'user' ? 'flex justify-end' : 'flex items-start gap-2.5 animate-[slideUp_0.3s_ease-out]';
+            
+            if (role === 'bot') {
+                let messageHtml = '';
+                if (isSOP) {
+                    // SOP-style Card UI
+                    messageHtml = `
+                        <div class="bg-white border border-teal-100 rounded-2xl shadow-md overflow-hidden max-w-[90%]">
+                            <div class="bg-teal-600 px-4 py-2 text-white flex justify-between items-center">
+                                <span class="text-[10px] font-bold uppercase tracking-wider">Informasi Layanan Resmi</span>
+                                <i class="fas fa-check-circle text-xs text-teal-200"></i>
+                            </div>
+                            <div class="p-4 space-y-3">
+                                <div class="text-xs text-slate-700 leading-relaxed">
+                                    ${text.replace(/\n/g, '<br>')}
+                                </div>
+                                <div class="pt-3 border-t border-slate-100 flex flex-col gap-2">
+                                    <p class="text-[10px] text-slate-400 font-medium">Apakah informasi ini membantu?</p>
+                                    <div class="flex gap-2">
+                                        <button onclick="appendMessage('bot', 'Terima kasih atas feedback Anda! Terus tingkatkan pelayanan kami.')" class="btn btn-xs btn-outline btn-success rounded-lg lowercase text-[9px]">Ya, Jelas</button>
+                                        <button onclick="startClarification()" class="btn btn-xs btn-outline btn-warning rounded-lg lowercase text-[9px]">Ingin Bertanya Petugas</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    messageHtml = `
+                        <div class="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center shrink-0 shadow-sm border border-teal-200">
+                            <i class="fas fa-robot text-teal-600 text-xs"></i>
+                        </div>
+                        <div class="bg-white border border-slate-200 text-slate-700 p-3 rounded-2xl rounded-tl-none text-xs leading-relaxed shadow-sm max-w-[85%] font-medium">
+                            ${text.replace(/\n/g, '<br>')}
+                        </div>
+                    `;
+                }
+                container.innerHTML = messageHtml;
+            } else {
+                container.innerHTML = `
+                    <div class="bg-teal-600 text-white p-3 rounded-2xl rounded-tr-none text-xs leading-relaxed shadow-md max-w-[85%] font-medium">
+                        ${text}
+                    </div>
+                `;
+            }
+            
+            chatMessages.appendChild(container);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        botForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const inputVal = botInput.value.trim();
+            if (!inputVal) return;
+
+            // Pattern detection for Phone Numbers (Citizen ease of use)
+            const isPhoneNumber = /^[0-9\+\-\s]{10,15}$/.test(inputVal);
+
+            if (chatState === 'CAPTURE_WA' || (chatState === 'FAQ' && isPhoneNumber)) {
+                if (chatState === 'FAQ' && isPhoneNumber) {
+                    // Auto-detect number and confirm
+                    appendMessage('user', inputVal);
+                    chatState = 'CAPTURE_WA';
+                    handleWaCapture(inputVal);
+                } else {
+                    handleWaCapture(inputVal);
+                }
+                return;
+            }
+
+            // Normal FAQ Search
+            lastUserQuery = inputVal;
+            botInput.value = '';
+            appendMessage('user', inputVal);
+
+            // Typing indicator
+            const typingId = 'typing-' + Date.now();
+            const typingDiv = document.createElement('div');
+            typingDiv.id = typingId;
+            typingDiv.className = 'flex items-start gap-2.5 animate-pulse';
+            typingDiv.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
+                    <i class="fas fa-robot text-slate-400 text-xs"></i>
+                </div>
+                <div class="bg-slate-100 text-slate-400 p-3 rounded-2xl rounded-tl-none text-[10px] italic">Memeriksa Database Resmi...</div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            try {
+                const url = new URL("{{ route('api.faq.search') }}", window.location.origin);
+                url.searchParams.append('q', inputVal);
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                const indicator = document.getElementById(typingId);
+                if (indicator) indicator.remove();
+
+                if (data.answer) {
+                    if (data.found) {
+                        appendMessage('bot', data.answer, true); // true = Use SOP UI
+                    } else {
+                        appendMessage('bot', data.answer);
+                    }
+                } else {
+                    appendMessage('bot', 'Mohon maaf, sistem sedang sibuk.');
+                }
+            } catch (error) {
+                const indicator = document.getElementById(typingId);
+                if (indicator) indicator.remove();
+                appendMessage('bot', 'Koneksi database terputus. Sila coba kembali.');
+            }
+        });
+
+        async function handleWaCapture(wa) {
+            botInput.value = '';
+            appendMessage('user', wa);
+            
+            appendMessage('bot', 'Sedang mencatat permintaan Anda untuk petugas...');
+
             try {
                 const response = await fetch("{{ route('public.service.submit') }}", {
                     method: 'POST',
-                    body: formData,
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        jenis_layanan: 'Konsultasi Administratif',
+                        uraian: `[Diteruskan dari Bot FAQ] Pertanyaan: "${lastUserQuery}"`,
+                        whatsapp: wa,
+                        is_agreed: true
+                    })
                 });
-                const data = await response.json();
 
-                if (response.status === 200) {
-                    if (data.type === 'siak_referral' || data.type === 'security_referral') {
-                        alert(data.message);
-                        if (data.link) window.open(data.link, '_blank');
-                        location.reload();
-                    } else if (data.type === 'faq_match') {
-                        alert(data.message);
-                        // Do not clear the form so they can edit or continue
-                    } else {
-                        document.getElementById('publicServiceForm').classList.add('hidden');
-                        document.getElementById('successSection').classList.remove('hidden');
-                        document.getElementById('successMessage').innerText = data.message;
-                    }
-                } else if (response.status === 422 || response.status === 429) {
-                    alert(data.message || 'Mohon periksa kembali isian Anda.');
+                const data = await response.json();
+                if (response.ok) {
+                    appendMessage('bot', '✅ **Permintaan Berhasil Dicatat!**\n\nNomor Anda sudah tersimpan. Petugas akan menghubungi Anda maksimal dalam 1x24 jam kerja.\n\nTerima kasih atas kesabarannya.');
                 } else {
-                    alert('Maaf, terjadi kendala teknis. Silakan coba lagi nanti.');
+                    appendMessage('bot', 'Gagal menyimpan data. Pastikan nomor WhatsApp benar.');
                 }
             } catch (error) {
-                alert('Gagal terhubung ke sistem. Periksa koneksi internet Anda.');
+                appendMessage('bot', 'Terjadi kendala saat mengirim data ke petugas.');
             } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
+                // Reset to FAQ state
+                chatState = 'FAQ';
+                botInput.placeholder = "Ketik pertanyaan Anda...";
+                botInput.type = "text";
             }
+        }
+
+        // Slide-up animation
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes slideUp {
+                from { opacity: 0; transform: translateY(15px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Autofocus on open
+        document.getElementById('publicServiceModal').addEventListener('show', () => {
+            setTimeout(() => botInput.focus(), 100);
         });
     </script>
 </body>

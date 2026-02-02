@@ -162,6 +162,14 @@ class AspekSeeder extends Seeder
                 'urutan' => 3,
                 'is_active' => true
             ],
+            [
+                'menu_id' => $getMenuId('trantibum'),
+                'kode_aspek' => 'tran_tagana',
+                'nama_aspek' => 'Data TAGANA Desa',
+                'deskripsi' => 'Kontak person Taruna Siaga Bencana tiap desa',
+                'urutan' => 4,
+                'is_active' => true
+            ],
         ];
 
         foreach ($aspeks as $a) {
