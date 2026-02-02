@@ -176,6 +176,19 @@
             </ul>
         </div>
 
+        <div class="nav-section">
+            <span class="nav-section-title">PUBLIKASI & INFORMASI</span>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="{{ route('kecamatan.berita.index') }}"
+                        class="nav-link {{ request()->is('kecamatan/berita*') ? 'active' : '' }}">
+                        <span class="nav-icon"><i class="fas fa-newspaper text-info"></i></span>
+                        <span class="nav-text">Berita & Artikel</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
         @if(auth()->user()->isSuperAdmin() || auth()->user()->isOperatorKecamatan())
             <div class="nav-section">
                 <span class="nav-section-title">KONFIGURASI SISTEM</span>

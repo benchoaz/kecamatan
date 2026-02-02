@@ -60,7 +60,7 @@
                 <li><a href="#wilayah"
                         class="text-sm font-medium text-gray-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg">Pariwisata</a>
                 </li>
-                <li><a href="#operasional"
+                <li><a href="#berita"
                         class="text-sm font-medium text-gray-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg">Berita</a>
                 </li>
             </ul>
@@ -261,6 +261,83 @@
         </div>
     </div>
 
+    <!-- Berita & Informasi Section -->
+    <div id="berita" class="py-20 bg-white border-t border-slate-100">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 tracking-tight">Warta Kecamatan</h2>
+                <a href="{{ route('public.berita.index') }}"
+                    class="group flex items-center text-sm font-semibold text-rose-600 hover:text-rose-700 transition-colors">
+                    Lihat Semua
+                    <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                @forelse($latestBerita as $item)
+                    <div class="group cursor-pointer">
+                        <div class="relative overflow-hidden rounded-2xl mb-4 aspect-[4/3]">
+                            @if($item->thumbnail)
+                                <img src="{{ asset('storage/' . $item->thumbnail) }}" alt="{{ $item->judul }}"
+                                    class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-in-out">
+                            @else
+                                <div class="w-full h-full bg-slate-100 flex items-center justify-center">
+                                    <i class="fas fa-image text-slate-300 text-3xl"></i>
+                                </div>
+                            @endif
+                            <div class="absolute top-3 left-3">
+                                @php
+                                    $catColors = [
+                                        'Pemerintahan' => 'bg-blue-600',
+                                        'Pembangunan' => 'bg-emerald-600',
+                                        'Sosial' => 'bg-purple-600',
+                                        'Ekonomi' => 'bg-amber-600',
+                                        'default' => 'bg-rose-600'
+                                    ];
+                                    $color = $catColors[$item->kategori] ?? $catColors['default'];
+                                @endphp
+                                <span
+                                    class="{{ $color }} text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow-sm uppercase tracking-wider">
+                                    {{ $item->kategori }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <div
+                                class="flex items-center text-[11px] font-medium text-slate-500 uppercase tracking-wide gap-2">
+                                <span class="text-rose-600">{{ $item->author->nama_lengkap ?? 'Admin' }}</span>
+                                <span>•</span>
+                                <span>{{ $item->published_at ? $item->published_at->diffForHumans() : '-' }}</span>
+                            </div>
+
+                            <h3
+                                class="text-lg font-bold text-gray-900 leading-snug group-hover:text-rose-600 transition-colors line-clamp-2">
+                                <a href="{{ route('public.berita.show', $item->slug) }}">
+                                    {{ $item->judul }}
+                                </a>
+                            </h3>
+
+                            <p class="text-sm text-slate-600 line-clamp-2 leading-relaxed">
+                                {{ Str::limit($item->ringkasan, 90) }}
+                            </p>
+                        </div>
+                    </div>
+                @empty
+                    <div
+                        class="col-span-full py-16 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+                        <div
+                            class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+                            <i class="far fa-newspaper text-slate-400 text-2xl"></i>
+                        </div>
+                        <h3 class="text-slate-900 font-medium mb-1">Belum ada berita</h3>
+                        <p class="text-slate-500 text-sm">Nantikan informasi terbaru dari kami.</p>
+                    </div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+
     <!-- Informasi Operasional Section -->
     <div id="operasional" class="py-16 bg-white">
         <div class="container mx-auto px-6">
@@ -388,19 +465,29 @@
             <div id="chatMessages" class="flex-grow p-4 overflow-y-auto bg-slate-50 space-y-4">
                 <!-- Welcome Message -->
                 <div class="flex items-start gap-2.5">
-                    <div class="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center shrink-0 shadow-sm border border-teal-200">
+                    <div
+                        class="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center shrink-0 shadow-sm border border-teal-200">
                         <i class="fas fa-robot text-teal-600 text-xs"></i>
                     </div>
                     <div class="space-y-3 max-w-[85%]">
-                        <div class="bg-white border border-slate-200 text-slate-700 p-4 rounded-2xl rounded-tl-none text-xs leading-relaxed shadow-sm">
+                        <div
+                            class="bg-white border border-slate-200 text-slate-700 p-4 rounded-2xl rounded-tl-none text-xs leading-relaxed shadow-sm">
                             <p class="font-bold text-teal-700 mb-1">Halo! Saya Asisten Digital Kecamatan.</p>
                             <p>Saya siap membantu Anda memberikan informasi resmi terkait persyaratan administrasi.</p>
                         </div>
                         <div class="flex flex-wrap gap-2">
-                            <button onclick="sendQuickChip('KTP')" class="btn btn-xs bg-white hover:bg-teal-50 text-teal-600 border-teal-200 rounded-full font-medium px-3 normal-case shadow-sm">📦 Cek Syarat KTP</button>
-                            <button onclick="sendQuickChip('KK')" class="btn btn-xs bg-white hover:bg-teal-50 text-teal-600 border-teal-200 rounded-full font-medium px-3 normal-case shadow-sm">👨‍👩‍👧‍👦 Cek Syarat KK</button>
-                            <button onclick="sendQuickChip('Akte')" class="btn btn-xs bg-white hover:bg-teal-50 text-teal-600 border-teal-200 rounded-full font-medium px-3 normal-case shadow-sm">📄 Syarat Akte</button>
-                            <button onclick="sendQuickChip('Jam Layanan')" class="btn btn-xs bg-white hover:bg-teal-50 text-teal-600 border-teal-200 rounded-full font-medium px-3 normal-case shadow-sm">⏰ Jam Layanan</button>
+                            <button onclick="sendQuickChip('KTP')"
+                                class="btn btn-xs bg-white hover:bg-teal-50 text-teal-600 border-teal-200 rounded-full font-medium px-3 normal-case shadow-sm">📦
+                                Cek Syarat KTP</button>
+                            <button onclick="sendQuickChip('KK')"
+                                class="btn btn-xs bg-white hover:bg-teal-50 text-teal-600 border-teal-200 rounded-full font-medium px-3 normal-case shadow-sm">👨‍👩‍👧‍👦
+                                Cek Syarat KK</button>
+                            <button onclick="sendQuickChip('Akte')"
+                                class="btn btn-xs bg-white hover:bg-teal-50 text-teal-600 border-teal-200 rounded-full font-medium px-3 normal-case shadow-sm">📄
+                                Syarat Akte</button>
+                            <button onclick="sendQuickChip('Jam Layanan')"
+                                class="btn btn-xs bg-white hover:bg-teal-50 text-teal-600 border-teal-200 rounded-full font-medium px-3 normal-case shadow-sm">⏰
+                                Jam Layanan</button>
                         </div>
                     </div>
                 </div>
@@ -419,7 +506,8 @@
                 </form>
                 <div class="flex justify-between items-center mt-3 px-1">
                     <p class="text-[9px] text-slate-400 italic">Informasi Resmi Database FAQ.</p>
-                    <button onclick="startClarification()" class="text-[9px] font-bold text-teal-600 hover:underline">Butuh Tindak Lanjut Petugas?</button>
+                    <button onclick="startClarification()"
+                        class="text-[9px] font-bold text-teal-600 hover:underline">Butuh Tindak Lanjut Petugas?</button>
                 </div>
             </div>
         </div>
@@ -448,7 +536,7 @@
         function appendMessage(role, text, isSOP = false) {
             const container = document.createElement('div');
             container.className = role === 'user' ? 'flex justify-end' : 'flex items-start gap-2.5 animate-[slideUp_0.3s_ease-out]';
-            
+
             if (role === 'bot') {
                 let messageHtml = '';
                 if (isSOP) {
@@ -491,7 +579,7 @@
                     </div>
                 `;
             }
-            
+
             chatMessages.appendChild(container);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
@@ -538,10 +626,10 @@
             try {
                 const url = new URL("{{ route('api.faq.search') }}", window.location.origin);
                 url.searchParams.append('q', inputVal);
-                
+
                 const response = await fetch(url);
                 const data = await response.json();
-                
+
                 const indicator = document.getElementById(typingId);
                 if (indicator) indicator.remove();
 
@@ -564,13 +652,13 @@
         async function handleWaCapture(wa) {
             botInput.value = '';
             appendMessage('user', wa);
-            
+
             appendMessage('bot', 'Sedang mencatat permintaan Anda untuk petugas...');
 
             try {
                 const response = await fetch("{{ route('public.service.submit') }}", {
                     method: 'POST',
-                    headers: { 
+                    headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
                         'X-Requested-With': 'XMLHttpRequest'

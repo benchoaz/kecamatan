@@ -136,4 +136,15 @@ Route::middleware(['auth', 'role:Operator Kecamatan,Super Admin'])->prefix('keca
     Route::prefix('master')->name('master.')->group(function () {
         Route::resource('desa', DesaMasterController::class)->except(['show']);
     });
+
+    // Modul Berita & Informasi (Kecamatan Internal CRUD)
+    Route::prefix('berita')->name('berita.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Kecamatan\BeritaController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Kecamatan\BeritaController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Kecamatan\BeritaController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [\App\Http\Controllers\Kecamatan\BeritaController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [\App\Http\Controllers\Kecamatan\BeritaController::class, 'update'])->name('update');
+        Route::delete('/{id}', [\App\Http\Controllers\Kecamatan\BeritaController::class, 'destroy'])->name('destroy');
+        Route::patch('/{id}/toggle-status', [\App\Http\Controllers\Kecamatan\BeritaController::class, 'toggleStatus'])->name('toggle-status');
+    });
 });

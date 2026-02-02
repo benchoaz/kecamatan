@@ -19,7 +19,21 @@ use App\Http\Controllers\FileController;
 
 // Public Landing Page
 Route::get('/', function () {
-    return view('landing');
+    $publicAnnouncements = \App\Models\Announcement::where('target_type', 'public')
+        ->where('is_active', true)
+        ->where('start_date', '<=', now())
+        ->where('end_date', '>=', now())
+        ->orderBy('priority', 'desc')
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    $latestBerita = \App\Models\Berita::published()
+        ->with('author:id,nama_lengkap')
+        ->latest('published_at')
+        ->take(4)
+        ->get();
+
+    return view('landing', compact('publicAnnouncements', 'latestBerita'));
 });
 
 // Public Service Portal
@@ -29,8 +43,16 @@ Route::get('/layanan', function () {
 
 use App\Http\Controllers\PublicServiceController;
 use App\Http\Controllers\ApplicationProfileController;
+use App\Http\Controllers\Kecamatan\DesaMasterController; // Added for DesaMasterController
+
 Route::post('/public-service/submit', [PublicServiceController::class, 'submit'])->name('public.service.submit');
 Route::get('/api/faq-search', [PublicServiceController::class, 'faqSearch'])->name('api.faq.search');
+
+// Public Berita Routes (Read-Only)
+Route::prefix('berita')->name('public.berita.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\PublicBeritaController::class, 'index'])->name('index');
+    Route::get('/{slug}', [\App\Http\Controllers\PublicBeritaController::class, 'show'])->name('show');
+});
 
 // Auth Routes
 Route::get('/login', [AuthController::class, 'login'])->name('login')->middleware('guest');

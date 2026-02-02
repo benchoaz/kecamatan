@@ -16,9 +16,10 @@ class DatabaseSeeder extends Seeder
             VillageSeeder::class,
             RoleSeeder::class,
             AdminUserSeeder::class,
-            // MenuSeeder::class,
-            // AspekSeeder::class,
-            // IndikatorSeeder::class,
+                // MenuSeeder::class,
+                // AspekSeeder::class,
+                // IndikatorSeeder::class,
+            BeritaSeeder::class,
         ]);
     }
 }
