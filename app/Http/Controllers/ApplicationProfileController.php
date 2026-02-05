@@ -33,11 +33,15 @@ class ApplicationProfileController extends Controller
             'image_umkm' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
             'image_pariwisata' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
             'image_festival' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
+            'hero_image_path' => 'nullable|image|mimes:png,webp|max:5120', // Limit 5MB, PNG/WebP preferred
+            'hero_image_alt' => 'nullable|string|max:100',
+            'hero_image_active' => 'nullable|in:0,1,on',
         ]);
 
         $profile = AppProfile::first() ?? new AppProfile();
 
-        $data = $request->only(['app_name', 'region_name', 'region_level', 'tagline']);
+        $data = $request->only(['app_name', 'region_name', 'region_level', 'tagline', 'hero_image_alt']);
+        $data['hero_image_active'] = $request->has('hero_image_active') ? true : false;
         $data['updated_by'] = auth()->id();
 
         // Handle File Uploads
@@ -45,7 +49,8 @@ class ApplicationProfileController extends Controller
             'logo_path' => 'logo_path',
             'image_umkm' => 'image_umkm',
             'image_pariwisata' => 'image_pariwisata',
-            'image_festival' => 'image_festival'
+            'image_festival' => 'image_festival',
+            'hero_image_path' => 'hero_image_path'
         ];
 
         foreach ($fileFields as $requestKey => $dbColumn) {
@@ -58,6 +63,9 @@ class ApplicationProfileController extends Controller
                 $path = 'app';
                 if ($requestKey === 'logo_path') {
                     $path = 'logos';
+                }
+                if ($requestKey === 'hero_image_path') {
+                    $path = 'media';
                 }
 
                 $data[$dbColumn] = $request->file($requestKey)->store($path, 'public');

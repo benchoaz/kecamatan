@@ -18,6 +18,9 @@ class AppProfile extends Model
         'image_umkm',
         'image_pariwisata',
         'image_festival',
+        'hero_image_path',
+        'hero_image_alt',
+        'hero_image_active',
         'updated_by'
     ];
 

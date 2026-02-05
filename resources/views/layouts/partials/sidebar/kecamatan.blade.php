@@ -90,12 +90,21 @@
             <span class="nav-section-title">BIDANG PENGAWASAN</span>
             <ul class="nav-menu">
                 <!-- Pemerintahan -->
-                <li class="nav-item">
-                    <a href="{{ route('kecamatan.pemerintahan.index') }}"
-                        class="nav-link {{ request()->is('kecamatan/pemerintahan*') ? 'active' : '' }}">
+                <!-- Pemerintahan -->
+                <li class="nav-item has-submenu">
+                    <a href="javascript:void(0)" class="nav-link submenu-toggle">
                         <span class="nav-icon"><i class="fas fa-shield-halved"></i></span>
-                        <span class="nav-text">Monev Tata Kelola</span>
+                        <span class="nav-text">Pemerintahan</span>
+                        <span class="ms-auto small"><i class="fas fa-chevron-right nav-arrow"></i></span>
                     </a>
+                    <ul class="nav-submenu">
+                        <li class="nav-submenu-item">
+                            <a href="{{ route('kecamatan.pemerintahan.index') }}"
+                                class="nav-sublink {{ request()->is('kecamatan/pemerintahan*') ? 'active' : '' }}">
+                                <i class="fas fa-chart-line me-2 small"></i> Monev Tata Kelola
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
                 <!-- Ekonomi & Pembangunan (Integrated Dropdown) -->

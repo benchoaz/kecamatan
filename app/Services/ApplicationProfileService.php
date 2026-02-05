@@ -65,6 +65,22 @@ class ApplicationProfileService
         return $path ? asset('storage/' . $path) : null;
     }
 
+    public function getHeroImage()
+    {
+        $path = $this->getProfile()->hero_image_path;
+        return $path ? asset('storage/' . $path) : null;
+    }
+
+    public function getHeroImageAlt()
+    {
+        return $this->getProfile()->hero_image_alt ?? 'Pimpinan Daerah';
+    }
+
+    public function isHeroImageActive()
+    {
+        return (bool) ($this->getProfile()->hero_image_active ?? false);
+    }
+
     public function clearCache()
     {
         Cache::forget($this->cacheKey);

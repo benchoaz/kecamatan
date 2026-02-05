@@ -125,6 +125,21 @@ class PublicServiceController extends Controller
             return response()->json(['answer' => null]);
         }
 
+        // 0. Pre-processing & Synonyms (Fix for user expectation vs keyword mismatch)
+        $synonyms = [
+            'jam layanan' => 'jam pelayanan',
+            'buka jam' => 'jam pelayanan',
+            'tutup jam' => 'jam pelayanan',
+            'jadwal' => 'jam',
+            'syarat' => 'persyaratan'
+        ];
+
+        foreach ($synonyms as $from => $to) {
+            if (str_contains($query, $from)) {
+                $query = str_replace($from, $to, $query);
+            }
+        }
+
         // 0. Priority Checklist: Darurat Category from Database (User Managed Override)
         $emergencyFaqs = \App\Models\PelayananFaq::where('is_active', true)
             ->where('category', 'Darurat')

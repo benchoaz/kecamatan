@@ -20,9 +20,9 @@
             </div>
         @endif
 
-        <div class="card border-0 shadow-premium rounded-4 overflow-hidden">
+        <div class="card border-0 shadow-premium rounded-4">
             <div class="card-body p-0">
-                <div class="table-responsive">
+                <div class="table-responsive" style="overflow: visible;">
                     <table class="table table-hover align-middle mb-0">
                         <thead class="bg-slate-50 border-bottom border-slate-100">
                             <tr>
@@ -39,7 +39,8 @@
                             @forelse($berita as $item)
                                 <tr class="border-bottom border-slate-50">
                                     <td class="px-4 py-3 text-slate-600 small">
-                                        {{ ($berita->currentPage() - 1) * $berita->perPage() + $loop->iteration }}</td>
+                                        {{ ($berita->currentPage() - 1) * $berita->perPage() + $loop->iteration }}
+                                    </td>
                                     <td class="px-4 py-3">
                                         <div class="d-flex align-items-center">
                                             <div class="flex-shrink-0 me-3">
@@ -57,7 +58,8 @@
                                                 <div class="fw-bold text-slate-800 line-clamp-1 truncate"
                                                     style="max-width: 250px;">{{ $item->judul }}</div>
                                                 <div class="text-[10px] text-slate-400">View:
-                                                    {{ number_format($item->view_count) }}</div>
+                                                    {{ number_format($item->view_count) }}
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
@@ -97,41 +99,28 @@
                                         @endif
                                     </td>
                                     <td class="px-4 py-3 text-end">
-                                        <div class="dropdown">
-                                            <button class="btn btn-light btn-sm rounded-3 shadow-none border-0" type="button"
-                                                data-bs-toggle="dropdown">
-                                                <i class="fas fa-ellipsis-h text-slate-400"></i>
-                                            </button>
-                                            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-premium rounded-4 py-2">
-                                                <li>
-                                                    <a class="dropdown-item py-2 px-3 small d-flex align-items-center"
-                                                        href="{{ route('public.berita.show', $item->slug) }}" target="_blank">
-                                                        <i class="fas fa-external-link-alt me-2 text-blue-400"></i> Preview
-                                                        Publik
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a class="dropdown-item py-2 px-3 small d-flex align-items-center"
-                                                        href="{{ route('kecamatan.berita.edit', $item->id) }}">
-                                                        <i class="fas fa-edit me-2 text-blue-500"></i> Edit Berita
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <hr class="dropdown-divider border-slate-50">
-                                                </li>
-                                                <li>
-                                                    <form action="{{ route('kecamatan.berita.destroy', $item->id) }}"
-                                                        method="POST"
-                                                        onsubmit="return confirm('Arsipkan berita ini? Berita tidak akan tampil di publik namun masih tersimpan di database.')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit"
-                                                            class="dropdown-item py-2 px-3 small d-flex align-items-center text-danger">
-                                                            <i class="fas fa-archive me-2"></i> Arsipkan
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                            </ul>
+                                        <div class="d-flex gap-1 justify-content-end">
+                                            <a href="{{ route('public.berita.show', $item->slug) }}" target="_blank"
+                                                class="btn btn-sm btn-light text-blue-500 shadow-sm border border-slate-200"
+                                                data-bs-toggle="tooltip" title="Preview Publik">
+                                                <i class="fas fa-external-link-alt"></i>
+                                            </a>
+                                            <a href="{{ route('kecamatan.berita.edit', $item->id) }}"
+                                                class="btn btn-sm btn-light text-amber-500 shadow-sm border border-slate-200"
+                                                data-bs-toggle="tooltip" title="Edit Berita">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form action="{{ route('kecamatan.berita.destroy', $item->id) }}" method="POST"
+                                                onsubmit="return confirm('Arsipkan berita ini? Berita tidak akan tampil di publik namun masih tersimpan di database.')"
+                                                class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="btn btn-sm btn-light text-rose-500 shadow-sm border border-slate-200"
+                                                    data-bs-toggle="tooltip" title="Arsipkan">
+                                                    <i class="fas fa-archive"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>

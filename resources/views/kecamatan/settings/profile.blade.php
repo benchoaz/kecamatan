@@ -163,6 +163,72 @@
                                         </p>
                                     </div>
                                 </div>
+
+                                <!-- Tokoh Utama Wilayah (Leader) -->
+                                <div class="col-md-12 mt-4">
+                                    <div class="p-4 border border-indigo-100 bg-indigo-50 bg-opacity-30 rounded-4">
+                                        <div class="d-flex align-items-center justify-content-between mb-4">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <i class="fas fa-user-tie text-indigo-600"></i>
+                                                <h6
+                                                    class="mb-0 fw-bold text-indigo-900 border-bottom border-indigo-200 pb-1">
+                                                    Tokoh Utama Wilayah (Landing Page)</h6>
+                                            </div>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="heroActive"
+                                                    name="hero_image_active" {{ isset($profile) && $profile->hero_image_active ? 'checked' : '' }}>
+                                                <label class="form-check-label fw-bold small text-indigo-900"
+                                                    for="heroActive">Tampilkan di Landing Page</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="row g-4 align-items-center">
+                                            <div class="col-md-4 text-center">
+                                                @if(isset($profile) && $profile->hero_image_path)
+                                                    <div class="mb-3 position-relative d-inline-block">
+                                                        <img src="{{ asset('storage/' . $profile->hero_image_path) }}"
+                                                            class="img-fluid rounded-3 shadow-lg"
+                                                            style="max-height: 200px; width: auto;" alt="Leader Preview">
+                                                        <div
+                                                            class="position-absolute bottom-0 start-50 translate-middle-x mb-2 px-3 py-1 bg-dark bg-opacity-75 rounded-pill text-white text-[10px]">
+                                                            Preview Aktif</div>
+                                                    </div>
+                                                @else
+                                                    <div class="bg-white p-4 rounded-3 shadow-sm mb-3 border d-inline-flex flex-column align-items-center justify-content-center"
+                                                        style="height: 200px; width: 100%;">
+                                                        <i class="fas fa-user-slash text-slate-200 fa-3x mb-2"></i>
+                                                        <span class="text-slate-400 text-xs">Belum ada gambar</span>
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <div class="col-md-8">
+                                                <div class="mb-3">
+                                                    <label class="form-label text-slate-700 fw-semibold small">Foto Pimpinan
+                                                        /
+                                                        Tokoh</label>
+                                                    <input type="file" name="hero_image_path"
+                                                        class="form-control bg-white border-indigo-200 rounded-3 text-sm">
+                                                    <div class="form-text text-[11px] text-slate-500 mt-1">
+                                                        <i class="fas fa-exclamation-circle text-amber-500 me-1"></i>
+                                                        Rekomendasi: Format PNG (Transparan/Tanpa Background).
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-0">
+                                                    <label class="form-label text-slate-700 fw-semibold small">Nama / Alt
+                                                        Text</label>
+                                                    <input type="text" name="hero_image_alt"
+                                                        value="{{ old('hero_image_alt', isset($profile) ? $profile->hero_image_alt : 'Camat Besuk') }}"
+                                                        class="form-control bg-white border-indigo-200 rounded-3 text-sm"
+                                                        placeholder="Contoh: Bpk. Camat Besuk">
+                                                    <div class="form-text text-[11px] text-slate-400">Digunakan untuk
+                                                        aksesibilitas (screen reader).</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="d-flex justify-content-end mt-5 pt-3 border-top border-light">

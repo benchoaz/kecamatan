@@ -1,0 +1,257 @@
+/* 
+ * Accessibility Widget Styles 
+ * Isolated from main layout to prevent conflicts.
+ */
+
+/* =========================================
+   1. Utility Classes (Modes & Overrides)
+   ========================================= */
+
+/* Grayscale Mode */
+.acc-grayscale {
+    filter: grayscale(100%) !important;
+}
+
+/* High Contrast Mode */
+.acc-high-contrast {
+    --acc-bg: #000000;
+    --acc-text: #ffffff;
+    --acc-link: #ffff00;
+    --acc-btn-bg: #1a1a1a;
+    --acc-btn-text: #ffff00;
+    --acc-border: #ffffff;
+}
+
+.acc-high-contrast body,
+.acc-high-contrast .bg-white,
+.acc-high-contrast .bg-slate-50,
+.acc-high-contrast .card {
+    background-color: var(--acc-bg) !important;
+    color: var(--acc-text) !important;
+    background-image: none !important;
+}
+
+.acc-high-contrast p,
+.acc-high-contrast h1,
+.acc-high-contrast h2,
+.acc-high-contrast h3,
+.acc-high-contrast span,
+.acc-high-contrast div {
+    color: var(--acc-text) !important;
+}
+
+.acc-high-contrast a {
+    color: var(--acc-link) !important;
+    text-decoration: underline !important;
+}
+
+.acc-high-contrast button,
+.acc-high-contrast .btn:not(#accessibility-toggle) {
+    background-color: var(--acc-btn-bg) !important;
+    color: var(--acc-btn-text) !important;
+    border: 2px solid var(--acc-border) !important;
+}
+
+/* Specific Overrides for Complaint Modal / Chat */
+.acc-high-contrast .bg-teal-600,
+.acc-high-contrast .bg-teal-100,
+.acc-high-contrast .bg-gradient-to-r,
+.acc-high-contrast .bg-emerald-50,
+.acc-high-contrast .bg-blue-50,
+.acc-high-contrast .bg-amber-50 {
+    background: var(--acc-bg) !important;
+    color: var(--acc-text) !important;
+    border: 1px solid var(--acc-border) !important;
+}
+
+.acc-high-contrast .text-teal-600,
+.acc-high-contrast .text-teal-700,
+.acc-high-contrast .text-rose-600,
+.acc-high-contrast .text-emerald-600,
+.acc-high-contrast .text-blue-600,
+.acc-high-contrast .text-amber-600 {
+    color: var(--acc-text) !important;
+}
+
+.acc-high-contrast .text-teal-100 {
+    color: var(--acc-link) !important;
+}
+
+.acc-high-contrast input,
+.acc-high-contrast textarea,
+.acc-high-contrast select {
+    background-color: var(--acc-bg) !important;
+    color: var(--acc-text) !important;
+    border: 1px solid var(--acc-border) !important;
+}
+
+/* Dark Mode */
+.acc-dark-mode {
+    filter: invert(1) hue-rotate(180deg);
+}
+
+.acc-dark-mode img,
+.acc-dark-mode video,
+.acc-dark-mode iframe {
+    filter: invert(1) hue-rotate(180deg);
+}
+
+/* Light Mode (Reset/Standard) */
+.acc-light-mode {
+    /* Default browser behavior */
+}
+
+/* Font Resizing */
+.acc-font-large {
+    font-size: 110% !important;
+}
+
+.acc-font-xlarge {
+    font-size: 125% !important;
+}
+
+/* Link Highlighting */
+.acc-link-underline a {
+    text-decoration: underline !important;
+    text-decoration-thickness: 2px !important;
+    text-decoration-skip-ink: none !important;
+}
+
+/* Dyslexia Friendly Font */
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('https://cdn.jsdelivr.net/npm/opendyslexic@2.1.0-beta/fonts/OpenDyslexic-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+.acc-dyslexia * {
+    font-family: 'OpenDyslexic', Arial, sans-serif !important;
+    line-height: 1.6 !important;
+    letter-spacing: 0.05em !important;
+}
+
+/* =========================================
+   2. Widget Panel UI
+   ========================================= */
+#accessibility-panel {
+    position: fixed;
+    bottom: 90px;
+    /* Above the toggle button */
+    left: 20px;
+    width: 320px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    z-index: 9999;
+    padding: 20px;
+    font-family: sans-serif;
+    transform: translateY(20px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    color: #333;
+}
+
+#accessibility-panel.active {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+#accessibility-panel h3 {
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1f2937;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#accessibility-panel h3 button.close-panel {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #9ca3af;
+    font-size: 18px;
+    padding: 5px;
+}
+
+.acc-section {
+    margin-bottom: 20px;
+}
+
+.acc-section-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #6b7280;
+    margin-bottom: 10px;
+    letter-spacing: 0.05em;
+}
+
+.acc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.acc-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    background: #f3f4f6;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 12px;
+    font-weight: 500;
+    color: #374151;
+    text-align: center;
+}
+
+.acc-btn:hover {
+    background: #e5e7eb;
+    transform: translateY(-1px);
+}
+
+.acc-btn.active {
+    background: #eff6ff;
+    border-color: #3b82f6;
+    color: #2563eb;
+}
+
+.acc-btn i {
+    font-size: 18px;
+    margin-bottom: 2px;
+}
+
+.acc-reset-btn {
+    width: 100%;
+    padding: 10px;
+    background: #fff1f2;
+    color: #e11d48;
+    border: 1px solid #fecdd3;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+    margin-top: 5px;
+    transition: background 0.2s;
+}
+
+.acc-reset-btn:hover {
+    background: #ffe4e6;
+}
+
+/* Focus states for accessibility */
+#accessibility-panel :focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
