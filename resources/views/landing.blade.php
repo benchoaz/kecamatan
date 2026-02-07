@@ -487,16 +487,15 @@
 
     <!-- Accessibility & Voice Floating Buttons -->
     <div class="fixed bottom-5 left-5 z-40 flex items-center gap-3">
-        <!-- Voice Guide Toggle -->
+        <!-- Voice Guide Toggle (Accessibility Orange) -->
         <button id="btnVoiceGuideToggle" onclick="activateVoiceGuide()"
-            class="btn btn-circle bg-blue-600 hover:bg-blue-700 border-0 shadow-lg w-14 h-14 relative group transition-all duration-300"
+            class="btn btn-circle bg-orange-600 hover:bg-orange-700 border-0 shadow-lg w-14 h-14 relative group transition-all duration-300"
             aria-label="Aktifkan Pemandu Suara" title="Bantuan Suara">
-            <img src="{{ asset('img/voice-guide-icon.png') }}" alt="Suara"
-                class="w-8 h-8 object-contain transition-transform group-hover:scale-110">
+            <i class="fas fa-deaf text-white text-xl transition-transform group-hover:scale-110"></i>
             <span class="absolute -top-1 -right-1 flex h-3 w-3">
                 <span id="voice-ping"
-                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75 hidden"></span>
-                <span id="voice-dot" class="relative inline-flex rounded-full h-3 w-3 bg-red-500 hidden"></span>
+                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 hidden"></span>
+                <span id="voice-dot" class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 hidden"></span>
             </span>
         </button>
 
@@ -607,6 +606,7 @@
     </dialog>
 
     <script>
+        // --- CHATBOT FAQ LOGIC (Preserved) ---
         const chatMessages = document.getElementById('chatMessages');
         const botForm = document.getElementById('publicFaqForm');
         const botInput = document.getElementById('botQuery');
@@ -614,123 +614,8 @@
         let chatState = 'FAQ'; // 'FAQ' or 'CAPTURE_WA'
         let lastUserQuery = '';
         let isVoiceInteraction = false;
-        let hasPlayedWelcome = false;
 
-        // --- CONTINUOUS VOICE CONFIGURATION ---
-        let isContinuousMode = false;
-        let voiceIdleTimer = null;
-        const IDLE_LIMIT_MS = 10000; // 10 Detik
-        // --------------------------------------
-
-        // Speech Recognition Setup
-        let recognition = null;
-        let isRecording = false;
-
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            recognition = new SpeechRecognition();
-            recognition.lang = 'id-ID';
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
-
-            recognition.onstart = function () {
-                isRecording = true;
-                // Visual: Ear Icon
-                const btnMic = document.getElementById('btnMic');
-                if (btnMic) {
-                    btnMic.innerHTML = `<img src="{{ asset('img/listening-ear.png') }}" class="w-8 h-8 object-contain animate-pulse">`;
-                    btnMic.classList.remove('text-slate-400');
-                    btnMic.title = "Sedang Mendengarkan...";
-                }
-                const botInput = document.getElementById('botQuery'); // Changed from botInput to botQuery
-                if (botInput) botInput.placeholder = "Silakan bicara...";
-
-                // Start Idle Timer (10s limit)
-                startIdleTimer();
-            };
-
-            recognition.onend = function () {
-                isRecording = false;
-                clearIdleTimer();
-
-                // Visual: Revert to Mic
-                const btnMic = document.getElementById('btnMic');
-                if (btnMic) {
-                    btnMic.innerHTML = `<i class="fas fa-microphone"></i>`;
-                    btnMic.classList.add('text-slate-400');
-                    btnMic.title = "Dikte Suara";
-                }
-                const botInput = document.getElementById('botQuery'); // Changed from botInput to botQuery
-                if (botInput) botInput.placeholder = "Ketik atau bicara...";
-
-                // AUTO-RESTART LOOP if Continuous Mode is ON and System is NOT speaking
-                if (isContinuousMode && !window.speechSynthesis.speaking) {
-                    setTimeout(() => {
-                        try { recognition.start(); } catch (e) { }
-                    }, 500);
-                }
-            };
-
-            recognition.onresult = function (event) {
-                clearIdleTimer(); // valid input received
-                const transcript = event.results[0][0].transcript;
-
-                const botInput = document.getElementById('botQuery'); // Changed from botInput to botQuery
-                const botForm = document.getElementById('publicFaqForm');
-
-                if (botInput && botForm) {
-                    botInput.value = transcript;
-                    isVoiceInteraction = true;
-                    botForm.dispatchEvent(new Event('submit'));
-                }
-            };
-
-            recognition.onerror = function (event) {
-                console.error('Speech error:', event.error);
-                isRecording = false;
-                clearIdleTimer();
-
-                // If 'no-speech' error in continuous mode, we just restart (handled by onend)
-                // If it's a real error, maybe stop? For now, we keep trying unless user turns off.
-            };
-        } else {
-            // Hide mic if not supported
-            if (btnMic) btnMic.style.display = 'none';
-        }
-
-        // --- IDLE TIMER LOGIC ---
-        function startIdleTimer() {
-            clearIdleTimer();
-            if (!isContinuousMode) return;
-
-            voiceIdleTimer = setTimeout(() => {
-                // Timeout Reached (10s Silence)
-                recognition.stop(); // Stop listening to speak
-
-                // Speak Prompt
-                speakResponse("Halo? Apakah Anda masih di sana? Katakan sesuatu jika butuh bantuan.", true);
-                // param 'true' indicates this is a prompt, will resume listening after.
-            }, IDLE_LIMIT_MS);
-        }
-
-        function clearIdleTimer() {
-            if (voiceIdleTimer) clearTimeout(voiceIdleTimer);
-        }
-
-        // --- VOICE ENGINE SETUP ---
-        let availableVoices = [];
-
-        function loadVoices() {
-            if (!window.speechSynthesis) return;
-            availableVoices = window.speechSynthesis.getVoices();
-        }
-
-        if (window.speechSynthesis) {
-            window.speechSynthesis.onvoiceschanged = loadVoices;
-            loadVoices(); // Try immediately
-        }
-
-        // --- VISUAL FEEDBACK UTILS ---
+        // Visual Feedback Util
         function showToast(message, type = 'info') {
             const toastId = 'toast-' + Date.now();
             const colors = type === 'success' ? 'bg-emerald-600' : 'bg-slate-700';
@@ -751,379 +636,9 @@
             }, 3000);
         }
 
-        function updateVoiceButtonVisuals(isActive) {
-            const btn = document.getElementById('btnVoiceGuideToggle');
-            const ping = document.getElementById('voice-ping');
-            const dot = document.getElementById('voice-dot');
-
-            if (!btn) return;
-
-            if (isActive) {
-                // Active State: Green, Pulse
-                btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-                btn.classList.add('bg-emerald-500', 'hover:bg-emerald-600', 'ring-4', 'ring-emerald-200');
-                if (ping) ping.classList.remove('hidden');
-                if (dot) dot.classList.remove('hidden', 'bg-red-500');
-                if (dot) dot.classList.add('bg-emerald-200');
-            } else {
-                // Inactive State: Default Blue
-                btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
-                btn.classList.remove('bg-emerald-500', 'hover:bg-emerald-600', 'ring-4', 'ring-emerald-200');
-                if (ping) ping.classList.add('hidden');
-                if (dot) dot.classList.add('hidden');
-            }
-        }
-
-        // --- MAIN TOGGLE ---
-        function toggleVoiceGuide() {
-            try {
-                if (!window.speechSynthesis) {
-                    showToast("Browser tidak mendukung suara", "info");
-                    return;
-                }
-
-                const modal = document.getElementById('publicServiceModal');
-
-                // 1. Toggle OFF
-                if (isContinuousMode) {
-                    isContinuousMode = false;
-                    localStorage.setItem('voiceGuideActive', 'false'); // SAVE STATE
-                    
-                    clearIdleTimer();
-                    if (recognition) recognition.stop();
-                    window.speechSynthesis.cancel();
-
-                    speakResponse("Mode Suara Nonaktif.");
-                    showToast("Suara Panduan Nonaktif", "info");
-                    updateVoiceButtonVisuals(false);
-                    return;
-                }
-
-                // 2. Toggle ON
-                isContinuousMode = true;
-                localStorage.setItem('voiceGuideActive', 'true'); // SAVE STATE (ALWAYS ON)
-                
-                updateVoiceButtonVisuals(true);
-                showToast("Suara Panduan Aktif", "success");
-
-                // Open Modal if closed
-                if (modal && !modal.open) {
-                    modal.showModal();
-                }
-
-                // Direct call without delay
-                if (!hasPlayedWelcome) {
-                    console.log("Starting Welcome Sequence...");
-                    // Ensure silence before starting
-                    window.speechSynthesis.cancel();
-
-                    // Small delay to allow 'cancel' to process and Toast to appear
-                    setTimeout(() => {
-                        readLandingMenus();
-                    }, 300);
-                } else {
-                    speakResponse("Mode Suara Aktif. Silakan bicara.");
-                }
-
-            } catch (error) {
-                console.error("Toggle Error:", error);
-                showToast("Terjadi kesalahan sistem", "info");
-            }
-        }
-
-        function activateVoiceGuide() {
-            toggleVoiceGuide();
-        }
-
-        function toggleVoiceInput() {
-            if (isContinuousMode) {
-                if (isRecording && recognition) recognition.stop();
-                else if (recognition) recognition.start();
-            } else {
-                if (!recognition) return;
-                if (isRecording) recognition.stop();
-                else recognition.start();
-            }
-        }
-
-        // --- SKELETON IMPLEMENTATION (USER REQUEST) ---
-
-        // Global Config from Blade
-        window.APP_WILAYAH_NAMA = {!! json_encode(optional(appProfile())->region_name ?? 'Wilayah') !!};
-
-        function readLandingMenus() {
-            if (!window.speechSynthesis) return;
-
-            // Ambil nama wilayah dari config global
-            const wilayah = window.APP_WILAYAH_NAMA || 'Wilayah Ini';
-
-            // Selector yang lebih luas untuk menangkap DaisyUI navbar
-            const selectors = [
-                'nav a', 'nav button',
-                '.navbar a', '.navbar button',
-                '.menu a', '.menu button'
-            ];
-
-            // Filter menu elements
-            const menuElements = Array.from(
-                document.querySelectorAll(selectors.join(', '))
-            ).filter(el => {
-                const text = el.innerText.trim();
-                const isVisible = el.offsetParent !== null; // Cek visibilitas layout
-                const isNotHidden = el.getAttribute('aria-hidden') !== 'true';
-                const isNotAccess = !el.classList.contains('accessibility-toggle') && !el.classList.contains('btn-voice-guide');
-                const isNotModal = !el.closest('#publicServiceModal'); // Kecuali modal terbuka (tapi biasanya baca background dulu)
-
-                // Exclude logo links or icon-only links if they have no readable text
-                // Check if text suggests it's a real menu
-
-                return isVisible &&
-                    isNotHidden &&
-                    text.length > 0 &&
-                    isNotAccess &&
-                    isNotModal;
-            });
-
-            // Deduplicate based on text (karena desktop & mobile menu sering duplikat di DOM)
-            const uniqueMenus = [];
-            const seenTexts = new Set();
-
-            menuElements.forEach(el => {
-                const txt = el.innerText.trim();
-                // Normalisasi: Hapus angka notifikasi jika ada (misal: "Pengaduan 5")
-                // Atau biarkan apa adanya agar user tahu status.
-
-                if (!seenTexts.has(txt) && txt.length > 1) { // Min 2 chars
-                    seenTexts.add(txt);
-                    uniqueMenus.push(txt);
-                }
-            });
-
-            // Susun kalimat
-            const sentences = [];
-            sentences.push(`Selamat datang di ${wilayah}.`);
-            sentences.push('Berikut adalah menu yang tersedia pada halaman ini.');
-
-            uniqueMenus.forEach(text => {
-                sentences.push(`Menu ${text}.`);
-            });
-
-            sentences.push('Silakan pilih menu yang Anda inginkan, atau katakan keperluan Anda.');
-
-            speakSequence(sentences);
-        }
-
-        // --- FALLBACK UX IMPLEMENTATION ---
-
-        let voiceFallbackShown = false;
-        let speechStarted = false;
-
-        function showVoiceFallback() {
-            if (voiceFallbackShown) return;
-            voiceFallbackShown = true;
-
-            const fallback = document.createElement('div');
-            fallback.id = 'voice-guide-fallback';
-            fallback.setAttribute('role', 'status');
-            fallback.setAttribute('aria-live', 'polite');
-
-            fallback.innerHTML = `
-                <div class="vg-fallback-card">
-                    <div class="flex items-start gap-3">
-                        <i class="fas fa-volume-xmark text-orange-500 mt-1"></i>
-                        <div>
-                            <strong>Panduan Suara Aktif</strong>
-                            <p class="text-sm mt-1 text-slate-600">
-                                Audio tidak tersedia di perangkat ini.
-                                Silakan gunakan menu visual pada halaman ini.
-                            </p>
-                            <button class="text-xs font-semibold text-blue-600 mt-2 hover:underline focus:outline-none" aria-label="Tutup panduan suara">
-                                Tutup
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            document.body.appendChild(fallback);
-
-            const btn = fallback.querySelector('button');
-            if (btn) {
-                btn.onclick = () => {
-                    fallback.remove();
-                    voiceFallbackShown = false; // Allow showing again if needed later
-                };
-            }
-
-            // Auto hide after 10s if ignored
-            setTimeout(() => {
-                if (document.body.contains(fallback)) fallback.remove();
-            }, 10000);
-        }
-
-        function speakWithFallback(utterance) {
-            speechStarted = false;
-
-            utterance.onstart = () => {
-                speechStarted = true;
-            };
-
-            const originalOnError = utterance.onerror;
-            utterance.onerror = (e) => {
-                console.error("TTS Error:", e);
-                showVoiceFallback();
-                if (originalOnError) originalOnError(e);
-            };
-
-            window.speechSynthesis.speak(utterance);
-
-            // Soft failure detector (2 seconds)
-            setTimeout(() => {
-                if (!speechStarted && isContinuousMode) {
-                    showVoiceFallback();
-                }
-            }, 2000);
-        }
-
-        // Fungsi Chaining (Anti Tumpang Tindih)
-        function speakSequence(sentences, index = 0) {
-            // Stop condition
-            if (!isContinuousMode || index >= sentences.length) {
-                if (isContinuousMode && index >= sentences.length) {
-                    // Sequence finished, enable listening
-                    hasPlayedWelcome = true;
-                    setTimeout(() => {
-                        speakResponse("Saya siap mendengarkan.", true);
-                    }, 500);
-                }
-                return;
-            }
-
-            const utterance = createUtterance(sentences[index]);
-
-            utterance.onend = () => {
-                speakSequence(sentences, index + 1);
-            };
-
-            utterance.onerror = (e) => {
-                console.error("Utterance Error:", e);
-                // If error, show fallback but try to proceed textually if possible (or just stop)
-                showVoiceFallback();
-                speakSequence(sentences, index + 1);
-            };
-
-            // Stability for Windows
-            requestAnimationFrame(() => {
-                speakWithFallback(utterance);
-            });
-        }
-
-        // Factory Utterance (Stabil di Windows)
-        function createUtterance(text) {
-            const utterance = new SpeechSynthesisUtterance(text);
-
-            const voice =
-                availableVoices.find(v => v.lang === 'id-ID') ||
-                availableVoices.find(v => v.lang.startsWith('id')) ||
-                availableVoices.find(v => v.default) ||
-                availableVoices[0];
-
-            utterance.voice = voice;
-            utterance.lang = voice?.lang || 'id-ID';
-            utterance.rate = 1;
-
-            return utterance;
-        }
-
-        // --- END SKELETON ---
-
-        function speakSystemMessage(text) {
-            speakResponse(text);
-        }
-
-        function speakResponse(text, isPrompt = false) {
-            if (!window.speechSynthesis) {
-                showVoiceFallback();
-                return;
-            }
-
-            if (isRecording && recognition) {
-                recognition.stop();
-            }
-
-            window.speechSynthesis.cancel();
-
-            // Clean Text
-            let cleanText = text
-                .replace(/\*\*/g, '')
-                .replace(/\[.*?\]\(.*?\)/g, '')
-                .replace(/\[.*?\]/g, '')
-                .replace(/<[^>]*>/g, '')
-                .replace(/^[#\-*]\s+/gm, '')
-                .replace(/`/g, '')
-                .replace(/&nbsp;/g, ' ');
-
-            const utterance = new SpeechSynthesisUtterance(cleanText);
-
-            // VOICE SELECTION (Detailed Logic)
-            // 1. Try exact ID match
-            let selectedVoice = availableVoices.find(v => v.lang === 'id-ID');
-            // 2. Try partial ID match
-            if (!selectedVoice) selectedVoice = availableVoices.find(v => v.lang.includes('id'));
-            // 3. Fallback to default (don't set voice, let browser decide)
-
-            if (selectedVoice) {
-                utterance.voice = selectedVoice;
-                utterance.lang = 'id-ID';
-            }
-
-            utterance.rate = 1;
-
-            // Visual Feedback
-            const btnMic = document.getElementById('btnMic');
-            if (btnMic) {
-                btnMic.innerHTML = `<i class="fas fa-volume-up animate-pulse text-teal-600"></i>`;
-            }
-
-            utterance.onend = function () {
-                if (isContinuousMode) {
-                    setTimeout(() => {
-                        try { recognition.start(); } catch (e) { }
-                    }, 200);
-                }
-            };
-
-            // Error handling for synthesis itself
-            utterance.onerror = function (e) {
-                console.error("TTS Utterance Error", e);
-            };
-
-            speakWithFallback(utterance);
-        }
-
-        function navigateToSection(sectionId, speechText) {
-            const modal = document.getElementById('publicServiceModal');
-            if (modal) modal.close();
-
-            const target = document.getElementById(sectionId);
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                // Highlight section temporarily
-                target.classList.add('bg-blue-50', 'transition-colors', 'duration-500');
-                setTimeout(() => target.classList.remove('bg-blue-50'), 2000);
-            }
-
-            // Speak after a short delay to account for scrolling
-            setTimeout(() => {
-                speakResponse(speechText);
-            }, 800);
-        }
-
-
-
         function sendQuickChip(text) {
             botInput.value = text;
-            isVoiceInteraction = false; // Chips are manual buttons
+            isVoiceInteraction = false;
             botForm.dispatchEvent(new Event('submit'));
         }
 
@@ -1191,217 +706,45 @@
             const inputVal = botInput.value.trim();
             if (!inputVal) return;
 
-            // Pattern detection for Phone Numbers (Citizen ease of use)
-            const isPhoneNumber = /^[0-9\+\-\s]{10,15}$/.test(inputVal);
-
-            // --- VOICE COMMANDS (Accessibility Overlay) ---
-            const lowerInput = inputVal.toLowerCase();
-
-            // 0. SHUTDOWN COMMAND (Matikan Suara)
-            if (lowerInput.includes('matikan') || lowerInput.includes('stop') || lowerInput.includes('nonaktifkan')) {
-                if (lowerInput.includes('suara') || lowerInput.includes('voice') || lowerInput.includes('panduan')) {
-                    
-                    // Logic to turn off
-                    if (isContinuousMode) {
-                        isContinuousMode = false;
-                        localStorage.setItem('voiceGuideActive', 'false'); // PERSISTENCE
-                        
-                        clearIdleTimer();
-                        if (recognition) recognition.stop();
-                        window.speechSynthesis.cancel();
-                        
-                        speakResponse("Baik, suara panduan dinonaktifkan.");
-                        showToast("Suara Panduan Nonaktif", "info");
-                        updateVoiceButtonVisuals(false);
-                        
-                        botInput.value = '';
-                        return;
-                    } else {
-                         speakResponse("Mode suara sudah nonaktif.");
-                         return;
-                    }
-                }
-            }
-
-            // 1. Berita / Warta
-            if (lowerInput.includes('berita') || lowerInput.includes('warta') || lowerInput.includes('kabar')) {
-                // Scrape Content
-                const newsItems = document.querySelectorAll('#berita h3 a');
-                let readText = "Menampilkan Warta Kecamatan Terbaru. ";
-                if (newsItems.length > 0) {
-                    newsItems.forEach((item, index) => {
-                        readText += `Berita ke-${index + 1}: ${item.innerText}. `;
-                    });
-                } else {
-                    readText += "Saat ini belum ada berita terbaru.";
-                }
-
-                navigateToSection('berita', readText);
+            if (chatState === 'CAPTURE_WA') {
+                handleWaCapture(inputVal);
                 return;
             }
 
-            // 2. Layanan
-            if (lowerInput.includes('layanan')) {
-                // Scrape Content
-                const serviceItems = document.querySelectorAll('#layanan h3');
-                let readText = "Menampilkan Layanan Publik. Kami menyediakan: ";
-                serviceItems.forEach((item) => {
-                    readText += `${item.innerText}, `;
-                });
-                readText += ". Silakan pilih layanan yang Anda butuhkan.";
-
-                navigateToSection('layanan', readText);
-                return;
-            }
-
-            // 3. Beranda / Kembali ke Awal
-            if (lowerInput.includes('beranda') || lowerInput.includes('home') || lowerInput.includes('depan') || (lowerInput.includes('menu') && lowerInput.includes('utama')) || lowerInput.includes('awal')) {
-                const modal = document.getElementById('publicServiceModal');
-                if (modal) modal.close();
-
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                speakResponse("Kembali ke halaman utama.");
-                return;
-            }
-
-            // 3. Pariwisata / Wilayah
-            if (lowerInput.includes('wisata') || lowerInput.includes('pariwisata') || lowerInput.includes('wilayah') || lowerInput.includes('umkm')) {
-                let readText = "Menampilkan Potensi Wilayah dan Pariwisata. Jelajahi UMKM Mandiri, Pesona Alam, dan Festival Budaya kami.";
-                navigateToSection('wilayah', readText);
-                return;
-            }
-
-            // 4. Jam Kerja
-            if ((lowerInput.includes('jam') || lowerInput.includes('buka') || lowerInput.includes('tutup')) && (lowerInput.includes('kerja') || lowerInput.includes('layanan') || lowerInput.includes('kantor'))) {
-                const text = "Kami buka Senin sampai Kamis pukul 08.00 sampai 15.30, dan Jumat pukul 08.00 sampai 14.30 WIB.";
-                botInput.value = '';
-                appendMessage('user', inputVal);
-                appendMessage('bot', text);
-                speakResponse(text);
-                return;
-            }
-
-            // 5. Login / Masuk
-            if (lowerInput.includes('login') || lowerInput.includes('masuk') || lowerInput.includes('admin')) {
-                speakResponse("Mengarahkan ke halaman Login Petugas.");
-                setTimeout(() => {
-                    window.location.href = "{{ route('login') }}";
-                }, 1500);
-                return;
-            }
-
-            // 6. Contextual Selection: Selecting News by Title (Improved Fuzzy Match)
-            const newsLinks = document.querySelectorAll('#berita h3 a');
-            let matchedLink = null;
-
-            // Normalize input for comparison
-            const cleanInput = lowerInput.replace(/baca/g, '').replace(/berita/g, '').replace(/buka/g, '').trim();
-
-            if (cleanInput.length > 2) { // Only search if we have actual keywords
-                for (let link of newsLinks) {
-                    const title = link.innerText.toLowerCase();
-
-                    // Match Logic:
-                    // 1. Title contains the user input (e.g. User: "Posyandu" -> Title: "Jadwal Posyandu")
-                    // 2. User input contains the Title (rare, usually input is shorter)
-                    // 3. Word-by-word match count for higher accuracy?
-
-                    if (title.includes(cleanInput) || cleanInput.includes(title)) {
-                        matchedLink = link;
-                        break;
-                    }
-                }
-            }
-
-            if (matchedLink) {
-                botInput.value = '';
-                // Show command
-                appendMessage('user', inputVal);
-
-                const actionText = `Membuka berita: ${matchedLink.innerText}`;
-                appendMessage('bot', actionText);
-                speakResponse(actionText);
-
-                // Navigate
-                setTimeout(() => {
-                    matchedLink.click();
-                    // If continuous mode, we might want to stop it or let it run. 
-                    // Usually navigating away reloads page, so JS state resets.
-                }, 1500);
-                return;
-            }
-
-            // ----------------------------------------------------
-
-            if (chatState === 'CAPTURE_WA' || (chatState === 'FAQ' && isPhoneNumber)) {
-                if (chatState === 'FAQ' && isPhoneNumber) {
-                    // Auto-detect number and confirm
-                    appendMessage('user', inputVal);
-                    chatState = 'CAPTURE_WA';
-                    handleWaCapture(inputVal);
-                } else {
-                    handleWaCapture(inputVal);
-                }
-                return;
-            }
-
-            // Normal FAQ Search (Default Fallback)
             lastUserQuery = inputVal;
+            appendMessage('user', inputVal);
             botInput.value = '';
 
-            // Only show user text if not navigation command (handled above)
-            appendMessage('user', inputVal);
-
-            // Typing indicator
-            const typingId = 'typing-' + Date.now();
-            const typingDiv = document.createElement('div');
-            typingDiv.id = typingId;
-            typingDiv.className = 'flex items-start gap-2.5 animate-pulse';
-            typingDiv.innerHTML = `
-                <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
-                    <i class="fas fa-robot text-slate-400 text-xs"></i>
-                </div>
-                <div class="bg-slate-100 text-slate-400 p-3 rounded-2xl rounded-tl-none text-[10px] italic">Memeriksa Database Resmi...</div>
-            `;
-            chatMessages.appendChild(typingDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-
             try {
-                const url = new URL("{{ route('api.faq.search') }}", window.location.origin);
-                url.searchParams.append('q', inputVal);
-
-                const response = await fetch(url);
+                const response = await fetch(`{{ route('api.faq.search') }}?q=${encodeURIComponent(inputVal)}`);
                 const data = await response.json();
 
-                const indicator = document.getElementById(typingId);
-                if (indicator) indicator.remove();
+                if (data.found && data.results && data.results.length > 0) {
+                    const top = data.results[0];
+                    const answerText = top.jawaban || top.answer || data.answer;
+                    appendMessage('bot', answerText, !data.is_emergency);
 
-                if (data.answer) {
-                    if (data.found) {
-                        appendMessage('bot', data.answer, true); // true = Use SOP UI
-                    } else {
-                        appendMessage('bot', data.answer);
+                    // Trigger Voice Guide speak if modular JS is active
+                    if (window.VoiceSpeech && window.VoiceState && window.VoiceState.isActive()) {
+                        window.VoiceSpeech.speak(answerText);
                     }
-
-                    // Auto-reply with voice if input was voice
-                    if (isVoiceInteraction) {
-                        speakResponse(data.answer);
-                        isVoiceInteraction = false; // Reset
+                } else if (data.answer) {
+                    // Fallback for direct answer field if results missing
+                    appendMessage('bot', data.answer, !data.is_emergency);
+                    if (window.VoiceSpeech && window.VoiceState && window.VoiceState.isActive()) {
+                        window.VoiceSpeech.speak(data.answer);
                     }
                 } else {
-                    appendMessage('bot', 'Mohon maaf, sistem sedang sibuk.');
+                    appendMessage('bot', 'Maaf, saya tidak menemukan jawaban pasti. Ingin bertanya langsung pada petugas?');
                 }
             } catch (error) {
-                const indicator = document.getElementById(typingId);
-                if (indicator) indicator.remove();
-                appendMessage('bot', 'Koneksi database terputus. Sila coba kembali.');
+                appendMessage('bot', 'Sepertinya ada gangguan koneksi. Coba lagi nanti ya.');
             }
         });
 
         async function handleWaCapture(wa) {
             botInput.value = '';
             appendMessage('user', wa);
-
             appendMessage('bot', 'Sedang mencatat permintaan Anda untuk petugas...');
 
             try {
@@ -1420,16 +763,14 @@
                     })
                 });
 
-                const data = await response.json();
                 if (response.ok) {
-                    appendMessage('bot', '✅ **Permintaan Berhasil Dicatat!**\n\nNomor Anda sudah tersimpan. Petugas akan menghubungi Anda maksimal dalam 1x24 jam kerja.\n\nTerima kasih atas kesabarannya.');
+                    appendMessage('bot', '✅ **Permintaan Berhasil Dicatat!**\n\nNomor Anda sudah tersimpan. Petugas akan menghubungi Anda maksimal dalam 1x24 jam kerja.');
                 } else {
                     appendMessage('bot', 'Gagal menyimpan data. Pastikan nomor WhatsApp benar.');
                 }
             } catch (error) {
                 appendMessage('bot', 'Terjadi kendala saat mengirim data ke petugas.');
             } finally {
-                // Reset to FAQ state
                 chatState = 'FAQ';
                 botInput.placeholder = "Ketik pertanyaan Anda...";
                 botInput.type = "text";
@@ -1439,15 +780,8 @@
         // Slide-up animation
         const style = document.createElement('style');
         style.innerHTML = `
-            @keyframes slideInUp {
-                from { opacity: 0; transform: translateY(20px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-            
-            @keyframes slideIn {
-                from { opacity: 0; transform: translateX(100%); }
-                to { opacity: 1; transform: translateX(0); }
-            }
+            @keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+            @keyframes slideIn { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
         `;
         document.head.appendChild(style);
 
@@ -1456,48 +790,13 @@
             setTimeout(() => botInput.focus(), 100);
         });
 
-        // --- ALWAYS ON: AUTO-START ON LOAD ---
-        document.addEventListener('DOMContentLoaded', () => {
-            const wasActive = localStorage.getItem('voiceGuideActive') === 'true';
-            
-            if (wasActive) {
-                console.log("Restoring Voice Guide State: ACTIVE");
-                // We use a small delay to ensure DOM is ready and not block initial render
-                setTimeout(() => {
-                    // Activate without full toggle logic to avoid double-toast in some cases, 
-                    // or just call toggle if it's currently false.
-                    if (!isContinuousMode) {
-                        // Manually set state to avoid the 'toggle' flipping it back if logic was simpler
-                        // But since toggle checks isContinuousMode, we can just force it ON.
-                        
-                        // NOTE: Browser Autoplay Policy might block immediate audio.
-                        // We will try to activate. If blocked, fallback UX will show.
-                        try {
-                            isContinuousMode = true;
-                            updateVoiceButtonVisuals(true);
-                            // Do NOT play welcome sequence on reload? Or should we?
-                            // User said "selalu on", arguably they want to know it's on.
-                            // But full welcome might be annoying. Let's do a short cue.
-                            
-                            hasPlayedWelcome = true; // Skip full menu reading on reload
-                            
-                            // Try to start listening
-                            if(recognition) {
-                                try { recognition.start(); } catch(e){}
-                            }
-                            
-                            showToast("Suara Panduan Dipulihkan", "success");
-                            
-                            // Optional: Short beep or "Siap"
-                            // speakResponse("Siap."); 
-                        } catch (e) {
-                            console.log("Auto-start blocked:", e);
-                        }
-                    }
-                }, 1000);
-            }
-        });
+        // --- MODULAR VOICE GUIDE INTEGRATION ---
+        window.APP_WILAYAH_NAMA = {!! json_encode(optional(appProfile())->region_name ?? 'Wilayah') !!};
+        window.APP_FAQ_KEYWORDS = {!! json_encode($faqKeywords ?? []) !!};
     </script>
+
+    <script src="{{ asset('voice-guide/voice.bundle.js') }}?v=2.7"></script>
+
 </body>
 
 </html>

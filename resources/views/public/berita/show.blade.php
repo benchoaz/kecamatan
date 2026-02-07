@@ -10,6 +10,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/public-berita.css') }}">
     <style>
         body {
@@ -56,7 +57,52 @@
             font-size: 1.125rem;
             color: #334155;
         }
+
+        /* Voice Guide Button (Floating) */
+        #voice-guide-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        #voice-guide-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 35px rgba(249, 115, 22, 0.5);
+        }
+
+        #voice-guide-btn.active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
     </style>
+
+    <!-- Style Overrides -->
 </head>
 
 <body class="bg-slate-50 text-slate-800">
@@ -157,6 +203,8 @@
         </div>
     </footer>
 
+    <!-- Voice Guide Scripts -->
+    <script src="{{ asset('voice-guide/voice.bundle.js') }}?v=2.7"></script>
 </body>
 
 </html>
