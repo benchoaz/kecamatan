@@ -1,311 +1,275 @@
 /**
- * Accessibility Widget Logic
- * Handles state management, feature toggling, and UI injection.
+ * ACCESSIBILITY CORE v3.0 - Javascript
+ * Strictly Following Mandatory Technical Architecture
  */
 
 (function () {
-    const STORAGE_KEY = 'acc_settings';
-
-    // Default Settings
-    const defaultSettings = {
-        contrast: 'normal',   // normal, high, dark, grayscale
-        fontScale: 'normal',  // normal, large, xlarge
+    // --- MANDATORY STATE ---
+    const accessibilityState = {
+        theme: 'default',
+        contrast: 'normal',
+        fontSize: 'normal',
+        dyslexia: false,
         underlineLinks: false,
-        dyslexiaFont: false,
         tts: false
     };
 
-    let settings = loadSettings();
-    let speechUtterance = null;
-    let autoReadHover = false;
+    const ROOT = document.documentElement;
 
-    // =========================================
-    // 1. State Management
-    // =========================================
-    function loadSettings() {
-        try {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            return saved ? { ...defaultSettings, ...JSON.parse(saved) } : { ...defaultSettings };
-        } catch (e) {
-            console.error('Accessibility: Failed to load settings', e);
-            return { ...defaultSettings };
+    // --- MANDATORY PERSISTENCE ---
+    function saveState() {
+        localStorage.setItem('a11y', JSON.stringify(accessibilityState));
+        applyState();
+    }
+
+    function loadState() {
+        const saved = localStorage.getItem('a11y');
+        if (saved) {
+            Object.assign(accessibilityState, JSON.parse(saved));
         }
+        applyState();
     }
 
-    function saveSettings() {
-        try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
-        } catch (e) {
-            console.error('Accessibility: Failed to save settings', e);
+    // --- MANDATORY APPLY LOGIC ---
+    function applyState() {
+        // 1️⃣ MODE TAMPILAN
+        ROOT.dataset.theme = accessibilityState.theme;
+
+        // 2️⃣ UKURAN TEKS
+        ROOT.dataset.font = accessibilityState.fontSize;
+
+        // 3️⃣ OTHER TOGGLES
+        ROOT.dataset.dyslexia = accessibilityState.dyslexia;
+        ROOT.dataset.underlineLinks = accessibilityState.underlineLinks;
+
+        // Update UI Active States
+        renderActiveStates();
+    }
+
+    // --- MANDATORY ACTIONS ---
+    window.setGrayMode = function () {
+        accessibilityState.theme = accessibilityState.theme === 'gray' ? 'default' : 'gray';
+        saveState();
+    };
+
+    window.setHighContrast = function () {
+        accessibilityState.theme = accessibilityState.theme === 'high-contrast' ? 'default' : 'high-contrast';
+        saveState();
+    };
+
+    window.setDarkMode = function () {
+        accessibilityState.theme = accessibilityState.theme === 'dark' ? 'default' : 'dark';
+        saveState();
+    };
+
+    window.setFontSize = function (size) {
+        accessibilityState.fontSize = accessibilityState.fontSize === size ? 'normal' : size;
+        saveState();
+    };
+
+    window.toggleDyslexia = function () {
+        accessibilityState.dyslexia = !accessibilityState.dyslexia;
+        saveState();
+    };
+
+    window.toggleUnderlineLinks = function () {
+        accessibilityState.underlineLinks = !accessibilityState.underlineLinks;
+        saveState();
+    };
+
+    window.toggleTTS = function () {
+        accessibilityState.tts = !accessibilityState.tts;
+        if (!accessibilityState.tts) {
+            window.speechSynthesis.cancel();
         }
-    }
+        saveState();
+    };
 
-    function resetSettings() {
-        settings = { ...defaultSettings };
-        saveSettings();
-        applySettings();
-        renderActiveStates();
-    }
+    window.resetAccessibility = function () {
+        if (!confirm('Reset semua pengaturan aksesibilitas?')) return;
+        localStorage.removeItem('a11y');
+        location.reload();
+    };
 
-    // =========================================
-    // 2. Core Functions
-    // =========================================
-    function applySettings() {
-        const root = document.documentElement;
-        const body = document.body;
-
-        // Reset all classes first
-        body.classList.remove('acc-grayscale', 'acc-high-contrast', 'acc-dark-mode', 'acc-light-mode');
-        root.classList.remove('acc-font-large', 'acc-font-xlarge');
-        body.classList.remove('acc-link-underline', 'acc-dyslexia');
-
-        // Apply Contrast
-        if (settings.contrast === 'grayscale') body.classList.add('acc-grayscale');
-        if (settings.contrast === 'high') body.classList.add('acc-high-contrast');
-        if (settings.contrast === 'dark') body.classList.add('acc-dark-mode');
-
-        // Apply Font Scale
-        if (settings.fontScale === 'large') root.classList.add('acc-font-large');
-        if (settings.fontScale === 'xlarge') root.classList.add('acc-font-xlarge');
-
-        // Other Features
-        if (settings.underlineLinks) body.classList.add('acc-link-underline');
-        if (settings.dyslexiaFont) body.classList.add('acc-dyslexia');
-
-        // TTS State
-        if (settings.tts && !autoReadHover) {
-            enableTTS();
-        } else if (!settings.tts && autoReadHover) {
-            disableTTS();
-        }
-    }
-
-    function toggleContrast(mode) {
-        settings.contrast = settings.contrast === mode ? 'normal' : mode;
-        saveSettings();
-        applySettings();
-        renderActiveStates();
-    }
-
-    function resizeText(scale) {
-        settings.fontScale = settings.fontScale === scale ? 'normal' : scale;
-        saveSettings();
-        applySettings();
-        renderActiveStates();
-    }
-
-    function toggleLinks() {
-        settings.underlineLinks = !settings.underlineLinks;
-        saveSettings();
-        applySettings();
-        renderActiveStates();
-    }
-
-    function toggleDyslexiaFont() {
-        settings.dyslexiaFont = !settings.dyslexiaFont;
-        saveSettings();
-        applySettings();
-        renderActiveStates();
-    }
-
-    function toggleTTS() {
-        settings.tts = !settings.tts;
-        saveSettings();
-        applySettings();
-        renderActiveStates();
-    }
-
-    // =========================================
-    // 3. TTS Logic
-    // =========================================
-    function enableTTS() {
-        autoReadHover = true;
-        document.body.addEventListener('mouseover', handleTTSHover);
-        document.body.addEventListener('click', handleTTSClick);
-    }
-
-    function disableTTS() {
-        autoReadHover = false;
-        if (window.speechSynthesis) window.speechSynthesis.cancel();
-        document.body.removeEventListener('mouseover', handleTTSHover);
-        document.body.removeEventListener('click', handleTTSClick);
-    }
-
-    function handleTTSHover(e) {
-        if (!settings.tts) return;
-        const target = e.target.closest('p, h1, h2, h3, h4, h5, h6, a, button, li, label');
-        if (target && target.innerText.trim().length > 0) {
-            // Debounce or simple limit could be added here
-            // For now, we wait for a slight pause
-        }
-    }
-
-    function handleTTSClick(e) {
-        if (!settings.tts) return;
-        // Read on click is more reliable than hover preventing spam
-        const target = e.target.closest('p, h1, h2, h3, h4, h5, h6, a, button, li, span, div');
-        if (target && target.innerText) {
-            speak(target.innerText);
-        }
-    }
-
+    // --- MANDATORY TTS (SUARA) ---
+    let speech;
     function speak(text) {
-        if (!window.speechSynthesis) return;
-        window.speechSynthesis.cancel();
+        if (!accessibilityState.tts) return;
 
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'id-ID';
-        utterance.rate = 1;
-        window.speechSynthesis.speak(utterance);
+        // COORDINATION: Skip if Voice Guide is active and speaking
+        if (window.VoiceState && window.VoiceState.isSpeaking()) return;
+
+        if (speech) window.speechSynthesis.cancel();
+
+        speech = new SpeechSynthesisUtterance(text);
+        speech.lang = 'id-ID';
+        window.speechSynthesis.speak(speech);
     }
 
-    // =========================================
-    // 4. UI Generation & Injection
-    // =========================================
+    // Aktif saat focus
+    document.addEventListener('focusin', (e) => {
+        if (!accessibilityState.tts) return;
+
+        // Debounce to prevent chatter
+        clearTimeout(window.a11yFocusTimer);
+        window.a11yFocusTimer = setTimeout(() => {
+            const label =
+                e.target.getAttribute('aria-label') ||
+                e.target.innerText ||
+                e.target.placeholder ||
+                e.target.value;
+
+            if (label && label.trim().length > 0) speak(label.trim());
+        }, 150);
+    });
+
+    // --- UI GENERATION (WCAG AUDIT READY) ---
     function createWidget() {
-        const panelHtml = `
-            <div id="accessibility-panel" role="dialog" aria-label="Menu Aksesibilitas">
-                <h3>
-                    <span class="flex items-center gap-2"><i class="fas fa-universal-access text-blue-600"></i> Aksesibilitas</span>
-                    <button class="close-panel" aria-label="Tutup"><i class="fas fa-times"></i></button>
-                </h3>
+        const panel = document.createElement('div');
+        panel.id = 'accessibility-panel';
+        panel.setAttribute('role', 'dialog');
+        panel.setAttribute('aria-modal', 'true');
+        panel.setAttribute('aria-label', 'Menu Aksesibilitas');
 
-                <div class="acc-section">
-                    <div class="acc-section-title">Mode Tampilan</div>
-                    <div class="acc-grid">
-                        <button class="acc-btn" data-action="contrast" data-value="grayscale">
-                            <i class="fas fa-filter"></i> Abu-abu
-                        </button>
-                        <button class="acc-btn" data-action="contrast" data-value="high">
-                            <i class="fas fa-adjust"></i> Kontras ++
-                        </button>
-                        <button class="acc-btn" data-action="contrast" data-value="dark">
-                            <i class="fas fa-moon"></i> Mode Gelap
-                        </button>
-                         <button class="acc-btn" data-action="dyslexia">
-                            <i class="fas fa-font"></i> Font Disleksia
-                        </button>
-                    </div>
-                </div>
+        panel.innerHTML = `
+      <div class="a11y-header">
+        <h2 class="a11y-title"><i class="fas fa-universal-access"></i> Aksesibilitas</h2>
+        <button id="a11y-close" class="a11y-close-btn" aria-label="Tutup Menu Aksesibilitas" tabindex="0">&times;</button>
+      </div>
+      
+      <div class="a11y-body">
+        <div class="a11y-group">
+          <div class="a11y-group-title">Mode Tampilan</div>
+          <div class="a11y-grid">
+            <button class="a11y-btn" onclick="setGrayMode()" aria-label="Aktifkan mode abu-abu" tabindex="0">
+              <i class="fas fa-filter"></i> Abu-abu
+            </button>
+            <button class="a11y-btn" onclick="setHighContrast()" aria-label="Aktifkan mode kontras tinggi" tabindex="0">
+              <i class="fas fa-adjust"></i> Kontras ++
+            </button>
+            <button class="a11y-btn" onclick="setDarkMode()" aria-label="Aktifkan mode gelap" tabindex="0">
+              <i class="fas fa-moon"></i> Mode Gelap
+            </button>
+            <button class="a11y-btn" onclick="toggleDyslexia()" aria-label="Aktifkan font disleksia" tabindex="0">
+              <i class="fas fa-font"></i> Font Disleksia
+            </button>
+          </div>
+        </div>
 
-                <div class="acc-section">
-                    <div class="acc-section-title">Ukuran Teks</div>
-                    <div class="acc-grid">
-                        <button class="acc-btn" data-action="resize" data-value="large">
-                            <i class="fas fa-plus"></i> Besar
-                        </button>
-                        <button class="acc-btn" data-action="resize" data-value="xlarge">
-                            <i class="fas fa-expand-arrows-alt"></i> Ekstra Besar
-                        </button>
-                    </div>
-                </div>
+        <div class="a11y-group">
+          <div class="a11y-group-title">Ukuran Teks</div>
+          <div class="a11y-grid">
+            <button class="a11y-btn" onclick="setFontSize('large')" aria-label="Teks besar" tabindex="0">
+              <i class="fas fa-plus"></i> Besar
+            </button>
+            <button class="a11y-btn" onclick="setFontSize('xlarge')" aria-label="Teks ekstra besar" tabindex="0">
+              <i class="fas fa-expand-arrows-alt"></i> Ekstra Besar
+            </button>
+          </div>
+        </div>
 
-                <div class="acc-section">
-                    <div class="acc-section-title">Bantuan Lain</div>
-                    <div class="acc-grid">
-                        <button class="acc-btn" data-action="links">
-                            <i class="fas fa-link"></i> Garis Link
-                        </button>
-                        <button class="acc-btn" data-action="tts">
-                            <i class="fas fa-volume-up"></i> Suara (TTS)
-                        </button>
-                    </div>
-                </div>
+        <div class="a11y-group">
+          <div class="a11y-group-title">Bantuan Lain</div>
+          <div class="a11y-grid">
+            <button class="a11y-btn" onclick="toggleUnderlineLinks()" aria-label="Tampilkan garis bawah link" tabindex="0">
+              <i class="fas fa-link"></i> Garis Link
+            </button>
+            <button class="a11y-btn" onclick="toggleTTS()" aria-label="Aktifkan pembantu suara" tabindex="0">
+              <i class="fas fa-volume-up"></i> Suara (TTS)
+            </button>
+          </div>
+        </div>
+      </div>
 
-                <button class="acc-reset-btn" id="acc-reset">
-                    <i class="fas fa-undo"></i> Atur Ulang
-                </button>
-            </div>
-        `;
+      <div class="a11y-footer">
+        <button class="a11y-reset-btn" onclick="resetAccessibility()" aria-label="Atur ulang semua pengaturan" tabindex="0">
+          <i class="fas fa-undo"></i> Atur Ulang
+        </button>
+      </div>
+    `;
 
-        const div = document.createElement('div');
-        div.innerHTML = panelHtml;
-        document.body.appendChild(div.firstElementChild);
-
+        document.body.appendChild(panel);
         bindEvents();
-        renderActiveStates();
     }
 
     function bindEvents() {
         const panel = document.getElementById('accessibility-panel');
-        const toggleBtn = document.getElementById('accessibility-toggle'); // Should be in landing.blade.php
-        const closeBtn = panel.querySelector('.close-panel');
-        const resetBtn = document.getElementById('acc-reset');
+        const toggle = document.getElementById('accessibility-toggle');
+        const closeBtn = document.getElementById('a11y-close');
 
-        // Toggle Panel
-        if (toggleBtn) {
-            toggleBtn.addEventListener('click', (e) => {
-                e.preventDefault();
+        if (toggle) {
+            toggle.onclick = () => {
                 panel.classList.toggle('active');
-                if (panel.classList.contains('active')) {
-                    closeBtn.focus();
-                }
-            });
+                if (panel.classList.contains('active')) closeBtn.focus();
+            };
         }
 
-        closeBtn.addEventListener('click', () => {
+        closeBtn.onclick = () => {
             panel.classList.remove('active');
-            if (toggleBtn) toggleBtn.focus();
-        });
+            if (toggle) toggle.focus();
+        };
 
-        // Close on escape
+        // Close on Escape
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && panel.classList.contains('active')) {
                 panel.classList.remove('active');
-                if (toggleBtn) toggleBtn.focus();
+                if (toggle) toggle.focus();
             }
         });
-
-        // Feature Buttons
-        panel.querySelectorAll('.acc-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const action = btn.dataset.action;
-                const value = btn.dataset.value;
-
-                switch (action) {
-                    case 'contrast': toggleContrast(value); break;
-                    case 'resize': resizeText(value); break;
-                    case 'dyslexia': toggleDyslexiaFont(); break;
-                    case 'links': toggleLinks(); break;
-                    case 'tts': toggleTTS(); break;
-                }
-            });
-        });
-
-        resetBtn.addEventListener('click', resetSettings);
     }
 
     function renderActiveStates() {
         const panel = document.getElementById('accessibility-panel');
         if (!panel) return;
 
-        // Reset all active classes
-        panel.querySelectorAll('.acc-btn').forEach(btn => btn.classList.remove('active'));
+        panel.querySelectorAll('.a11y-btn').forEach(btn => {
+            btn.classList.remove('active');
+            btn.setAttribute('aria-pressed', 'false');
+        });
 
-        // Contrast
-        if (settings.contrast !== 'normal') {
-            const btn = panel.querySelector(`.acc-btn[data-action="contrast"][data-value="${settings.contrast}"]`);
-            if (btn) btn.classList.add('active');
+        // Theme Buttons
+        if (accessibilityState.theme !== 'default') {
+            const btnMap = { 'gray': 0, 'high-contrast': 1, 'dark': 2 };
+            const idx = btnMap[accessibilityState.theme];
+            if (idx !== undefined) {
+                const btn = panel.querySelectorAll('.a11y-group:nth-child(1) .a11y-btn')[idx];
+                btn.classList.add('active');
+                btn.setAttribute('aria-pressed', 'true');
+            }
         }
 
-        // Resize
-        if (settings.fontScale !== 'normal') {
-            const btn = panel.querySelector(`.acc-btn[data-action="resize"][data-value="${settings.fontScale}"]`);
-            if (btn) btn.classList.add('active');
+        // Dyslexia
+        if (accessibilityState.dyslexia) {
+            const btn = panel.querySelectorAll('.a11y-group:nth-child(1) .a11y-btn')[3];
+            btn.classList.add('active');
+            btn.setAttribute('aria-pressed', 'true');
         }
 
-        // Toggles
-        if (settings.dyslexiaFont) panel.querySelector('.acc-btn[data-action="dyslexia"]').classList.add('active');
-        if (settings.underlineLinks) panel.querySelector('.acc-btn[data-action="links"]').classList.add('active');
-        if (settings.tts) panel.querySelector('.acc-btn[data-action="tts"]').classList.add('active');
+        // Font Size
+        if (accessibilityState.fontSize !== 'normal') {
+            const idx = accessibilityState.fontSize === 'large' ? 0 : 1;
+            const btn = panel.querySelectorAll('.a11y-group:nth-child(2) .a11y-btn')[idx];
+            btn.classList.add('active');
+            btn.setAttribute('aria-pressed', 'true');
+        }
+
+        // Other Toggles
+        if (accessibilityState.underlineLinks) {
+            const btn = panel.querySelectorAll('.a11y-group:nth-child(3) .a11y-btn')[0];
+            btn.classList.add('active');
+            btn.setAttribute('aria-pressed', 'true');
+        }
+
+        if (accessibilityState.tts) {
+            const btn = panel.querySelectorAll('.a11y-group:nth-child(3) .a11y-btn')[1];
+            btn.classList.add('active');
+            btn.setAttribute('aria-pressed', 'true');
+        }
     }
 
-    // Initialize
+    // --- INITIALIZE ---
     document.addEventListener('DOMContentLoaded', () => {
-        // Create widget UI
+        loadState();
         createWidget();
-        // Apply saved settings
-        applySettings();
     });
-
 })();

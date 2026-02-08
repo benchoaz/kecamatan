@@ -58,4 +58,9 @@ class PembangunanDesa extends Model
     {
         return $this->hasMany(PembangunanDokumenSpj::class, 'pembangunan_desa_id');
     }
+
+    public function logbooks()
+    {
+        return $this->hasMany(PembangunanLogbook::class, 'pembangunan_desa_id');
+    }
 }

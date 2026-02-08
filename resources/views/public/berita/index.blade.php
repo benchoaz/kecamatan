@@ -191,7 +191,10 @@
     </button>
 
     <!-- Voice Guide Scripts -->
-    <script src="{{ asset('voice-guide/voice.bundle.js') }}?v=2.7"></script>
+    <script>
+        window.APP_WILAYAH_NAMA = "{{ appProfile()->region_name }}";
+    </script>
+    <script src="{{ asset('voice-guide/voice.bundle.js') }}?v=2.9.2"></script>
 
 </body>
 

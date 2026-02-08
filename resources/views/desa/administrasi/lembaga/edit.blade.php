@@ -50,7 +50,7 @@
                                     required="true" />
 
                                 <x-desa.form.upload label="File SK (Scan PDF)" name="file_sk"
-                                    :currentFile="$lembaga->file_sk" :readonly="$readonly"
+                                    :currentFile="$lembaga->file_sk" :readonly="$readonly" :downloadUrl="$lembaga->file_sk ? route('desa.administrasi.file.lembaga', $lembaga->id) : null"
                                     helper="Lampirkan scan SK Pendirian." />
                             </div>
 

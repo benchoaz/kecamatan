@@ -21,6 +21,19 @@ class AppProfile extends Model
         'hero_image_path',
         'hero_image_alt',
         'hero_image_active',
+        'hero_bg_path',
+        'hero_bg_opacity',
+        'hero_bg_blur',
+        'is_menu_pengaduan_active',
+        'is_menu_umkm_active',
+        'address',
+        'phone',
+        'whatsapp_complaint',
+        'facebook_url',
+        'instagram_url',
+        'youtube_url',
+        'office_hours_mon_thu',
+        'office_hours_fri',
         'updated_by'
     ];
 

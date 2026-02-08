@@ -39,72 +39,122 @@
                         </div>
                     </div>
                     <div class="card-body p-4">
+                        @php
+                            $rawUraian = $complaint->uraian;
+                            
+                            // Extract Instansi Tujuan
+                            $tujuan = '-';
+                            if (preg_match('/\[Tujuan:\s*(.*?)\]/', $rawUraian, $matches)) {
+                                $tujuan = $matches[1];
+                            }
+
+                            // Extract Privacy flags
+                            $isAnonim = str_contains($rawUraian, '[ANONIM]');
+                            $isRahasia = str_contains($rawUraian, '[RAHASIA]');
+
+                            // Clean Uraian (remove all tags at start)
+                            $cleanUraian = preg_replace('/^(\[.*?\]\s*)+/', '', $rawUraian);
+                        @endphp
+
                         <div class="row g-4 mb-5">
                             <div class="col-md-6 col-lg-3">
-                                <label
-                                    class="text-[10px] text-slate-400 uppercase fw-bold tracking-wider mb-1 d-block">Jenis
-                                    Layanan</label>
-                                <p class="fw-bold text-slate-800 mb-0 small">{{ $complaint->jenis_layanan }}</p>
-                            </div>
-                            <div class="col-md-6 col-lg-3">
-                                <label class="text-[10px] text-slate-400 uppercase fw-bold tracking-wider mb-1 d-block">Asal
-                                    Wilayah</label>
-                                <p class="fw-bold text-slate-800 mb-0 small">
-                                    {{ $complaint->desa ? $complaint->desa->nama_desa : ($complaint->nama_desa_manual ?? 'Umum') }}
+                                <label class="text-[10px] text-slate-400 uppercase fw-bold tracking-wider mb-1 d-block">Nama Pemohon</label>
+                                <p class="fw-bold text-teal-700 mb-0 small">
+                                    {{ $complaint->nama_pemohon ?? 'Sistem Bot' }}
+                                    @if($isAnonim)
+                                        <span class="badge bg-slate-200 text-slate-600 text-[9px] ms-1">ANONIM</span>
+                                    @endif
                                 </p>
+                                @if($complaint->nik)
+                                    <small class="text-[9px] text-slate-500 font-medium">NIK: {{ $complaint->nik }}</small>
+                                @endif
                             </div>
                             <div class="col-md-6 col-lg-3">
-                                <label
-                                    class="text-[10px] text-slate-400 uppercase fw-bold tracking-wider mb-1 d-block">Kontak
-                                    Pelapor</label>
+                                <label class="text-[10px] text-slate-400 uppercase fw-bold tracking-wider mb-1 d-block">Jenis Layanan & Tujuan</label>
+                                <p class="fw-bold text-slate-800 mb-0 small">{{ $complaint->jenis_layanan }}</p>
+                                <span class="text-[10px] text-slate-500 block mt-1"><i class="fas fa-building me-1 opacity-50"></i> {{ $tujuan }}</span>
+                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <label class="text-[10px] text-slate-400 uppercase fw-bold tracking-wider mb-1 d-block">Privasi & Keamanan</label>
+                                <div class="d-flex gap-1">
+                                    @if($isRahasia)
+                                        <span class="badge bg-rose-100 text-rose-600 text-[9px] border border-rose-200"><i class="fas fa-lock me-1"></i> RAHASIA</span>
+                                    @else
+                                        <span class="badge bg-emerald-100 text-emerald-600 text-[9px] border border-emerald-200"><i class="fas fa-lock-open me-1"></i> PUBLIK</span>
+                                    @endif
+                                    @if($isAnonim)
+                                        <span class="badge bg-slate-100 text-slate-600 text-[9px] border border-slate-200"><i class="fas fa-user-secret me-1"></i> SAMARKAN</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <label class="text-[10px] text-slate-400 uppercase fw-bold tracking-wider mb-1 d-block">Kontak Pelapor</label>
                                 <a href="https://wa.me/62{{ ltrim($complaint->whatsapp, '0') }}" target="_blank"
                                     class="text-emerald-600 fw-bold text-decoration-none small">
                                     <i class="fab fa-whatsapp me-1"></i> +62{{ $complaint->whatsapp }}
                                 </a>
                             </div>
-                            <div class="col-md-6 col-lg-3">
-                                <label
-                                    class="text-[10px] text-slate-400 uppercase fw-bold tracking-wider mb-1 d-block">Pernyataan
-                                    Itikad Baik</label>
-                                @if($complaint->is_agreed)
-                                    <span
-                                        class="text-emerald-500 text-[10px] fw-bold border border-emerald-100 px-2 py-0.5 rounded">TERECORD</span>
-                                @else
-                                    <span
-                                        class="text-rose-400 text-[10px] fw-bold border border-rose-100 px-2 py-0.5 rounded">TIDAK
-                                        ADA</span>
-                                @endif
-                            </div>
                         </div>
 
                         <div class="mb-5">
-                            <label class="text-[10px] text-slate-400 uppercase fw-bold tracking-wider mb-2 d-block">Uraian /
-                                Aspirasi Masyarakat</label>
-                            <div
-                                class="p-4 bg-slate-50 border border-slate-100 rounded-4 text-slate-700 leading-relaxed fs-6">
-                                {{ $complaint->uraian }}
+                            <label class="text-[10px] text-slate-400 uppercase fw-bold tracking-wider mb-2 d-block">Uraian / Aspirasi Masyarakat</label>
+                            <div class="p-4 bg-slate-50 border border-slate-100 rounded-4 text-slate-700 leading-relaxed fs-6">
+                                {{ $cleanUraian }}
                             </div>
                         </div>
 
-                        @if($complaint->file_path_1 || $complaint->file_path_2)
+                        @php $allAttachments = $complaint->attachments; @endphp
+                        @if($allAttachments->count() > 0)
                             <div class="mb-0">
-                                <label class="text-[10px] text-slate-400 uppercase fw-bold tracking-wider mb-3 d-block">Foto /
-                                    Lampiran Pendukung</label>
+                                <label class="text-[10px] text-slate-400 uppercase fw-bold tracking-wider mb-3 d-block">Lampiran Berkas (${{ $allAttachments->count() }})</label>
+                                <div class="row g-3">
+                                    @foreach($allAttachments as $attachment)
+                                        <div class="col-6 col-md-4 col-lg-3">
+                                            <div class="card border-slate-100 shadow-sm rounded-4 overflow-hidden h-100">
+                                                <div class="bg-slate-50 border-bottom p-2 text-center" style="height: 100px; display: flex; align-items: center; justify-content: center;">
+                                                    @php $isPdf = str_ends_with(strtolower($attachment->file_path), '.pdf'); @endphp
+                                                    <a href="{{ asset('storage/' . $attachment->file_path) }}" target="_blank" class="text-decoration-none">
+                                                        @if($isPdf)
+                                                            <i class="fas fa-file-pdf text-rose-500 fs-1"></i>
+                                                        @else
+                                                            <img src="{{ asset('storage/' . $attachment->file_path) }}" class="img-fluid rounded shadow-sm" style="max-height: 80px; width: auto; object-fit: contain;">
+                                                        @endif
+                                                    </a>
+                                                </div>
+                                                <div class="p-2">
+                                                    <p class="mb-0 text-[10px] fw-bold text-slate-700 truncate" title="{{ $attachment->label }}">
+                                                        {{ $attachment->label }}
+                                                    </p>
+                                                    <small class="text-[8px] text-slate-400 truncate d-block">{{ $attachment->original_name }}</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @elseif($complaint->file_path_1 || $complaint->file_path_2)
+                            <!-- Fallback for legacy files -->
+                            <div class="mb-0">
+                                <label class="text-[10px] text-slate-400 uppercase fw-bold tracking-wider mb-3 d-block">Lampiran Berkas (Legacy)</label>
                                 <div class="d-flex gap-3">
-                                    @if($complaint->file_path_1)
-                                        <a href="{{ asset('storage/' . $complaint->file_path_1) }}" target="_blank"
-                                            class="attachment-preview shadow-sm rounded-4 border border-slate-200 overflow-hidden">
-                                            <img src="{{ asset('storage/' . $complaint->file_path_1) }}"
-                                                class="object-cover w-100 h-100">
-                                        </a>
-                                    @endif
-                                    @if($complaint->file_path_2)
-                                        <a href="{{ asset('storage/' . $complaint->file_path_2) }}" target="_blank"
-                                            class="attachment-preview shadow-sm rounded-4 border border-slate-200 overflow-hidden">
-                                            <img src="{{ asset('storage/' . $complaint->file_path_2) }}"
-                                                class="object-cover w-100 h-100">
-                                        </a>
-                                    @endif
+                                    @foreach(['file_path_1', 'file_path_2'] as $field)
+                                        @if($complaint->$field)
+                                            @php 
+                                                $path = $complaint->$field;
+                                                $isPdf = str_ends_with(strtolower($path), '.pdf');
+                                            @endphp
+                                            <a href="{{ asset('storage/' . $path) }}" target="_blank"
+                                                class="attachment-preview shadow-sm rounded-4 border border-slate-200 overflow-hidden bg-slate-100 d-flex flex-column align-items-center justify-content-center text-decoration-none p-0">
+                                                @if($isPdf)
+                                                    <i class="fas fa-file-pdf text-rose-500 fs-2 mb-1"></i>
+                                                    <span class="text-[8px] fw-bold text-slate-500 tracking-tighter">LIHAT PDF</span>
+                                                @else
+                                                    <img src="{{ asset('storage/' . $path) }}"
+                                                        class="object-cover w-100 h-100">
+                                                @endif
+                                            </a>
+                                        @endif
+                                    @endforeach
                                 </div>
                             </div>
                         @endif

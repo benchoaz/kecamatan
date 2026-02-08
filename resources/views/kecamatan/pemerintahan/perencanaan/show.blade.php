@@ -59,7 +59,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <a href="#" class="btn btn-sm btn-icon"><i class="fas fa-download"></i></a>
+                            <a href="{{ route('kecamatan.file.perencanaan-ba', $perencanaan->id) }}"
+                                class="btn btn-sm btn-icon" target="_blank"><i class="fas fa-download"></i></a>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center">
@@ -70,30 +71,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <a href="#" class="btn btn-sm btn-icon"><i class="fas fa-download"></i></a>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-file-contract text-warning fa-2x me-3"></i>
-                                <div>
-                                    <div class="fw-bold small">Output Hukum (SK/Perdes)</div>
-                                    <div class="text-muted" style="font-size: 0.7rem;">
-                                        @if($perencanaan->file_output)
-                                            DOKUMEN_LEGAL_{{ $perencanaan->tahun }}.pdf
-                                        @else
-                                            <span class="text-danger italic">Belum Diunggah</span>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                            @if($perencanaan->file_output)
-                                <a href="#" class="btn btn-sm btn-icon"><i class="fas fa-download"></i></a>
-                            @endif
+                            <a href="{{ route('kecamatan.file.perencanaan-absensi', $perencanaan->id) }}"
+                                class="btn btn-sm btn-icon" target="_blank"><i class="fas fa-download"></i></a>
                         </li>
                         @if($perencanaan->file_foto)
                             <li class="list-group-item">
                                 <div class="fw-bold small mb-2">Dokumentasi Foto</div>
-                                <img src="#" class="img-fluid rounded border" alt="Foto Musrenbang"
+                                <img src="{{ route('kecamatan.file.perencanaan-foto', $perencanaan->id) }}"
+                                    class="img-fluid rounded border" alt="Foto Musrenbang"
                                     style="width: 100%; height: 150px; object-fit: cover; background: #334155;">
                             </li>
                         @endif
@@ -101,16 +86,55 @@
                 </div>
             </div>
 
-            <!-- Suggestion: Verification Action for Kecamatan -->
+            <!-- Verification Action for Kecamatan -->
             <div class="card mt-4 border-primary">
                 <div class="card-body">
                     <h6 class="text-primary mb-3">Tindakan Monev Kecamatan</h6>
-                    <button class="btn btn-success w-100 mb-2">
-                        <i class="fas fa-check-double me-2"></i> Sahkan Administrasi
-                    </button>
-                    <button class="btn btn-outline-warning w-100">
-                        <i class="fas fa-exclamation-triangle me-2"></i> Beri Catatan Pembinaan
-                    </button>
+                    @if($perencanaan->status_administrasi != 'verified')
+                        <form action="{{ route('kecamatan.pemerintahan.detail.perencanaan.verify', $perencanaan->id) }}"
+                            method="POST" class="d-inline">
+                            @csrf
+                            <input type="hidden" name="status" value="verified">
+                            <button type="submit" class="btn btn-success w-100 mb-2">
+                                <i class="fas fa-check-double me-2"></i> Sahkan Administrasi
+                            </button>
+                        </form>
+
+                        <button class="btn btn-outline-warning w-100" data-bs-toggle="modal" data-bs-target="#revisionModal">
+                            <i class="fas fa-exclamation-triangle me-2"></i> Beri Catatan Pembinaan
+                        </button>
+                    @else
+                        <div class="alert alert-success mb-0 text-center">
+                            <i class="fas fa-check-circle me-1"></i> Data Telah Terverifikasi
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Revision Modal -->
+            <div class="modal fade" id="revisionModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 shadow-lg rounded-4">
+                        <div class="modal-header bg-warning-subtle text-warning-emphasis fw-bold">
+                            Catatan Pembinaan / Revisi
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <form action="{{ route('kecamatan.pemerintahan.detail.perencanaan.verify', $perencanaan->id) }}"
+                            method="POST">
+                            @csrf
+                            <input type="hidden" name="status" value="revision">
+                            <div class="modal-body text-start">
+                                <label class="form-label fw-bold small">Catatan Kecamatan</label>
+                                <textarea name="catatan" class="form-control" rows="4" required
+                                    placeholder="Berikan catatan perbaikan atau rekomendasi..."></textarea>
+                            </div>
+                            <div class="modal-footer border-0">
+                                <button type="button" class="btn btn-light rounded-pill"
+                                    data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-warning rounded-pill px-4">Kirim Catatan</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

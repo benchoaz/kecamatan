@@ -456,6 +456,9 @@
     </script>
 
     @stack('scripts')
+
+    {{-- Modal Section - Rendered outside of stacked context --}}
+    @yield('modal')
 </body>
 
 </html>

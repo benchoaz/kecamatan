@@ -6,10 +6,17 @@ use App\Http\Controllers\Desa\BltController;
 use App\Http\Controllers\Desa\PemerintahanController;
 use App\Http\Controllers\Desa\SubmissionController;
 use App\Http\Controllers\Desa\TrantibumController;
+use App\Http\Controllers\Desa\TrantibumRelawanController;
+use App\Http\Controllers\Desa\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'role:Operator Desa,Super Admin'])->prefix('desa')->name('desa.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // User Profile
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
     // === MODUL ADMINISTRASI DESA (NEW) ===
     Route::prefix('administrasi')->name('administrasi.')->group(function () {
@@ -41,6 +48,11 @@ Route::middleware(['auth', 'role:Operator Desa,Super Admin'])->prefix('desa')->n
         Route::put('/dokumen/{id}', [App\Http\Controllers\Desa\AdministrasiController::class, 'dokumenUpdate'])->name('dokumen.update');
         Route::delete('/dokumen/{id}', [App\Http\Controllers\Desa\AdministrasiController::class, 'dokumenDestroy'])->name('dokumen.destroy');
         Route::post('/dokumen/{id}/submit', [App\Http\Controllers\Desa\AdministrasiController::class, 'dokumenSubmit'])->name('dokumen.submit');
+
+        // Secure File Routes
+        Route::get('/file/personil/{id}', [App\Http\Controllers\Desa\FileController::class, 'personil'])->name('file.personil');
+        Route::get('/file/lembaga/{id}', [App\Http\Controllers\Desa\FileController::class, 'lembaga'])->name('file.lembaga');
+        Route::get('/file/dokumen/{id}', [App\Http\Controllers\Desa\FileController::class, 'dokumen'])->name('file.dokumen');
     });
 
     // Web Submission Routes
@@ -163,14 +175,34 @@ Route::middleware(['auth', 'role:Operator Desa,Super Admin'])->prefix('desa')->n
         Route::post('/{id}/submit', [App\Http\Controllers\Desa\KesraController::class, 'submit'])->name('submit');
     });
 
-    // Trantibum (Input Side - UPDATED with full CRUD)
+    // Trantibum (Input Side - UPDATED with specific Kejadian reports)
     Route::prefix('trantibum')->name('trantibum.')->group(function () {
         Route::get('/', [TrantibumController::class, 'index'])->name('index');
+
+        // Specific Kejadian/Bencana Reporting (Phase 1)
+        Route::prefix('kejadian')->name('kejadian.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Desa\TrantibumKejadianController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\Desa\TrantibumKejadianController::class, 'create'])->name('create');
+            Route::post('/', [App\Http\Controllers\Desa\TrantibumKejadianController::class, 'store'])->name('store');
+            Route::get('/{id}', [App\Http\Controllers\Desa\TrantibumKejadianController::class, 'show'])->name('show');
+            Route::delete('/{id}', [App\Http\Controllers\Desa\TrantibumKejadianController::class, 'destroy'])->name('destroy');
+        });
+
+        // Relawan Tangguh Bencana
+        Route::resource('relawan', TrantibumRelawanController::class);
+
         Route::get('/create', [TrantibumController::class, 'create'])->name('create');
         Route::post('/', [TrantibumController::class, 'store'])->name('store');
         Route::get('/{id}/edit', [TrantibumController::class, 'edit'])->name('edit');
         Route::put('/{id}', [TrantibumController::class, 'update'])->name('update');
         Route::get('/{id}', [TrantibumController::class, 'show'])->name('show');
         Route::post('/{id}/submit', [TrantibumController::class, 'submit'])->name('submit');
+    });
+
+    // Modul Pembangunan Logbooks
+    Route::middleware(['menu.toggle:ekbang'])->prefix('pembangunan-logbook')->name('pembangunan.logbook.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Desa\PembangunanLogbookController::class, 'index'])->name('index');
+        Route::post('/', [App\Http\Controllers\Desa\PembangunanLogbookController::class, 'store'])->name('store');
+        Route::delete('/{id}', [App\Http\Controllers\Desa\PembangunanLogbookController::class, 'destroy'])->name('destroy');
     });
 });

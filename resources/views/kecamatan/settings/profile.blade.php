@@ -13,6 +13,16 @@
         </div>
 
         @if(session('success'))
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: "{{ session('success') }}",
+                    timer: 3000,
+                    showConfirmButton: false,
+                    borderRadius: '1rem'
+                });
+            </script>
             <div class="alert alert-emerald border-0 shadow-sm rounded-4 p-4 mb-4 animate__animated animate__fadeIn">
                 <div class="d-flex align-items-center gap-3">
                     <div class="icon-box icon-box-emerald sm">
@@ -21,6 +31,24 @@
                     <div>
                         <h6 class="mb-0 fw-bold text-emerald-900">Berhasil!</h6>
                         <p class="mb-0 text-emerald-700">{{ session('success') }}</p>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="alert alert-danger border-0 shadow-sm rounded-4 p-4 mb-4 animate__animated animate__shakeX">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="icon-box icon-box-danger sm">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0 fw-bold text-danger">Terjadi Kesalahan!</h6>
+                        <ul class="mb-0 text-danger small ps-3">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -164,67 +192,289 @@
                                     </div>
                                 </div>
 
-                                <!-- Tokoh Utama Wilayah (Leader) -->
+                                <!-- Pengaturan Visibilitas Menu Landing Page -->
                                 <div class="col-md-12 mt-4">
-                                    <div class="p-4 border border-indigo-100 bg-indigo-50 bg-opacity-30 rounded-4">
-                                        <div class="d-flex align-items-center justify-content-between mb-4">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <i class="fas fa-user-tie text-indigo-600"></i>
-                                                <h6
-                                                    class="mb-0 fw-bold text-indigo-900 border-bottom border-indigo-200 pb-1">
-                                                    Tokoh Utama Wilayah (Landing Page)</h6>
-                                            </div>
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="heroActive"
-                                                    name="hero_image_active" {{ isset($profile) && $profile->hero_image_active ? 'checked' : '' }}>
-                                                <label class="form-check-label fw-bold small text-indigo-900"
-                                                    for="heroActive">Tampilkan di Landing Page</label>
-                                            </div>
+                                    <div class="p-4 border border-slate-200 bg-slate-50 rounded-4">
+                                        <div class="d-flex align-items-center gap-2 mb-4">
+                                            <i class="fas fa-eye text-slate-600"></i>
+                                            <h6 class="mb-0 fw-bold text-slate-900 border-bottom border-slate-200 pb-1">
+                                                Kontrol
+                                                Visibilitas Menu Landing Page</h6>
                                         </div>
 
-                                        <div class="row g-4 align-items-center">
-                                            <div class="col-md-4 text-center">
-                                                @if(isset($profile) && $profile->hero_image_path)
-                                                    <div class="mb-3 position-relative d-inline-block">
-                                                        <img src="{{ asset('storage/' . $profile->hero_image_path) }}"
-                                                            class="img-fluid rounded-3 shadow-lg"
-                                                            style="max-height: 200px; width: auto;" alt="Leader Preview">
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <div
+                                                    class="p-3 bg-white border border-slate-200 rounded-3 d-flex align-items-center justify-content-between">
+                                                    <div class="d-flex align-items-center gap-3">
                                                         <div
-                                                            class="position-absolute bottom-0 start-50 translate-middle-x mb-2 px-3 py-1 bg-dark bg-opacity-75 rounded-pill text-white text-[10px]">
-                                                            Preview Aktif</div>
+                                                            class="avatar-sm bg-orange-100 text-orange-600 rounded-circle d-flex align-items-center justify-content-center">
+                                                            <i class="fas fa-bullhorn"></i>
+                                                        </div>
+                                                        <div>
+                                                            <h6 class="mb-0 fw-bold text-slate-900">Menu Pengaduan</h6>
+                                                            <small class="text-slate-500 text-[10px]">Aktifkan form lapor
+                                                                warga.</small>
+                                                        </div>
                                                     </div>
-                                                @else
-                                                    <div class="bg-white p-4 rounded-3 shadow-sm mb-3 border d-inline-flex flex-column align-items-center justify-content-center"
-                                                        style="height: 200px; width: 100%;">
-                                                        <i class="fas fa-user-slash text-slate-200 fa-3x mb-2"></i>
-                                                        <span class="text-slate-400 text-xs">Belum ada gambar</span>
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            name="is_menu_pengaduan_active" {{ $profile->is_menu_pengaduan_active ? 'checked' : '' }}
+                                                            style="width: 2.5em; height: 1.25em;">
                                                     </div>
-                                                @endif
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div
+                                                    class="p-3 bg-white border border-slate-200 rounded-3 d-flex align-items-center justify-content-between">
+                                                    <div class="d-flex align-items-center gap-3">
+                                                        <div
+                                                            class="avatar-sm bg-emerald-100 text-emerald-600 rounded-circle d-flex align-items-center justify-content-center">
+                                                            <i class="fas fa-store"></i>
+                                                        </div>
+                                                        <div>
+                                                            <h6 class="mb-0 fw-bold text-slate-900">Menu UMKM & Loker</h6>
+                                                            <small class="text-slate-500 text-[10px]">Aktifkan etalase
+                                                                potensi
+                                                                wilayah.</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            name="is_menu_umkm_active" {{ $profile->is_menu_umkm_active ? 'checked' : '' }} style="width: 2.5em; height: 1.25em;">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Konfigurasi Hero Section (Beranda) - GABUNGAN -->
+                                <div class="col-md-12 mt-5">
+                                    <div class="card border-0 shadow-premium rounded-4 overflow-hidden">
+                                        <div class="card-header bg-white py-3 px-4 border-bottom border-light">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <i class="fas fa-desktop text-tertiary"></i>
+                                                    <h6 class="mb-0 fw-bold text-slate-800">Konfigurasi Hero Section
+                                                        (Beranda)</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body p-4">
+
+                                            <!-- Tokoh Utama / Pimpinan -->
+                                            <div class="mb-5">
+                                                <div class="d-flex align-items-center justify-content-between mb-4">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="fas fa-user-tie text-primary"></i>
+                                                        <span
+                                                            class="text-xs font-black text-slate-400 uppercase tracking-widest">Tokoh
+                                                            Utama / Pimpinan</span>
+                                                    </div>
+                                                    <div class="form-check form-switch d-flex align-items-center gap-2">
+                                                        <input class="form-check-input" type="checkbox" id="heroActive"
+                                                            name="hero_image_active" {{ isset($profile) && $profile->hero_image_active ? 'checked' : '' }}
+                                                            style="width: 2.5em; height: 1.25em;">
+                                                        <label class="form-check-label fw-bold small text-slate-600"
+                                                            for="heroActive">Tampilkan</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row g-4 align-items-center">
+                                                    <div class="col-md-4">
+                                                        <div
+                                                            class="bg-white p-2 rounded-4 shadow-sm border border-slate-100 text-center">
+                                                            @if(isset($profile) && $profile->hero_image_path)
+                                                                <img src="{{ asset('storage/' . $profile->hero_image_path) }}"
+                                                                    class="img-fluid rounded-4 w-100 object-fit-contain bg-slate-50"
+                                                                    style="max-height: 200px;" alt="Leader Preview">
+                                                            @else
+                                                                <div class="bg-slate-50 rounded-4 d-flex flex-column align-items-center justify-content-center"
+                                                                    style="height: 180px;">
+                                                                    <i class="fas fa-user-slash fa-2x text-slate-200 mb-2"></i>
+                                                                    <span
+                                                                        class="text-[10px] fw-bold text-slate-400 uppercase">Input
+                                                                        Foto</span>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <div class="mb-3">
+                                                            <label class="form-label text-slate-600 small fw-bold">Upload
+                                                                Foto (Transparan)</label>
+                                                            <input type="file" name="hero_image_path"
+                                                                class="form-control bg-slate-50 border-slate-200 rounded-3 text-sm">
+                                                            <div class="form-text text-[10px] text-slate-400 mt-1 italic">
+                                                                Format PNG tanpa background agar menyatu dengan desain.
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <label class="form-label text-slate-600 small fw-bold">Nama /
+                                                                Jabatan (Alt Text)</label>
+                                                            <input type="text" name="hero_image_alt"
+                                                                value="{{ old('hero_image_alt', $profile->hero_image_alt) }}"
+                                                                class="form-control bg-slate-50 border-slate-200 rounded-3 text-sm"
+                                                                placeholder="Contoh: Bpk. Camat Besuk">
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
 
-                                            <div class="col-md-8">
-                                                <div class="mb-3">
-                                                    <label class="form-label text-slate-700 fw-semibold small">Foto Pimpinan
-                                                        /
-                                                        Tokoh</label>
-                                                    <input type="file" name="hero_image_path"
-                                                        class="form-control bg-white border-indigo-200 rounded-3 text-sm">
-                                                    <div class="form-text text-[11px] text-slate-500 mt-1">
-                                                        <i class="fas fa-exclamation-circle text-amber-500 me-1"></i>
-                                                        Rekomendasi: Format PNG (Transparan/Tanpa Background).
-                                                    </div>
+                                            <div class="border-top border-light my-5"></div>
+
+                                            <!-- Background Pemandangan -->
+                                            <div>
+                                                <div class="d-flex align-items-center gap-2 mb-4">
+                                                    <i class="fas fa-image text-emerald-500"></i>
+                                                    <span
+                                                        class="text-xs font-black text-slate-400 uppercase tracking-widest">Background
+                                                        Pemandangan</span>
                                                 </div>
 
-                                                <div class="mb-0">
-                                                    <label class="form-label text-slate-700 fw-semibold small">Nama / Alt
-                                                        Text</label>
-                                                    <input type="text" name="hero_image_alt"
-                                                        value="{{ old('hero_image_alt', isset($profile) ? $profile->hero_image_alt : 'Camat Besuk') }}"
-                                                        class="form-control bg-white border-indigo-200 rounded-3 text-sm"
-                                                        placeholder="Contoh: Bpk. Camat Besuk">
-                                                    <div class="form-text text-[11px] text-slate-400">Digunakan untuk
-                                                        aksesibilitas (screen reader).</div>
+                                                <div class="row g-4">
+                                                    <div class="col-md-4">
+                                                        <div
+                                                            class="position-relative rounded-4 overflow-hidden border border-slate-200 shadow-sm">
+                                                            @if(isset($profile) && $profile->hero_bg_path)
+                                                                <img src="{{ asset('storage/' . $profile->hero_bg_path) }}"
+                                                                    class="w-100 h-100 object-fit-cover"
+                                                                    style="min-height: 140px;" alt="BG Preview">
+                                                            @else
+                                                                <div class="bg-slate-100 w-100 d-flex flex-column align-items-center justify-content-center"
+                                                                    style="height: 140px;">
+                                                                    <i class="fas fa-mountain text-slate-300 fa-2x mb-2"></i>
+                                                                </div>
+                                                            @endif
+                                                            <div
+                                                                class="position-absolute bottom-0 start-0 w-100 bg-dark bg-opacity-70 py-1.5 text-center">
+                                                                <span
+                                                                    class="text-[10px] font-black text-white uppercase tracking-widest">Preview</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <div class="mb-4">
+                                                            <label class="form-label text-slate-600 small fw-bold">Upload
+                                                                Pemandangan Desa</label>
+                                                            <input type="file" name="hero_bg_path"
+                                                                class="form-control bg-slate-50 border-slate-200 rounded-3 text-sm">
+                                                        </div>
+
+                                                        <div class="row g-4">
+                                                            <div class="col-6">
+                                                                <div
+                                                                    class="d-flex justify-content-between align-items-center mb-1">
+                                                                    <span
+                                                                        class="text-[11px] font-bold text-slate-600 uppercase tracking-tighter">Transparansi</span>
+                                                                    <span class="text-xs font-black text-primary"
+                                                                        id="opacityValue">{{ $profile->hero_bg_opacity ?? 10 }}%</span>
+                                                                </div>
+                                                                <input type="range" name="hero_bg_opacity"
+                                                                    class="form-range" min="0" max="100"
+                                                                    value="{{ $profile->hero_bg_opacity ?? 10 }}"
+                                                                    oninput="document.getElementById('opacityValue').innerText = this.value + '%'">
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div
+                                                                    class="d-flex justify-content-between align-items-center mb-1">
+                                                                    <span
+                                                                        class="text-[11px] font-bold text-slate-600 uppercase tracking-tighter">Efek
+                                                                        Blur</span>
+                                                                    <span class="text-xs font-black text-primary"
+                                                                        id="blurValue">{{ $profile->hero_bg_blur ?? 0 }}px</span>
+                                                                </div>
+                                                                <input type="range" name="hero_bg_blur" class="form-range"
+                                                                    min="0" max="20"
+                                                                    value="{{ $profile->hero_bg_blur ?? 0 }}"
+                                                                    oninput="document.getElementById('blurValue').innerText = this.value + 'px'">
+                                                            </div>
+                                                        </div>
+                                                        <p class="text-[10px] text-slate-400 mt-3 mb-0">Pengaturan ini
+                                                            memastikan teks tetap terbaca jelas di atas gambar.</p>
+                                                    </div>
                                                 </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Kontak & Jejaring Sosial (NEW) -->
+                                <div class="col-md-12 mt-4">
+                                    <div class="p-4 border border-blue-100 bg-blue-50 bg-opacity-30 rounded-4">
+                                        <div class="d-flex align-items-center gap-2 mb-4">
+                                            <i class="fas fa-address-book text-blue-600"></i>
+                                            <h6 class="mb-0 fw-bold text-blue-900 border-bottom border-blue-200 pb-1">Kontak
+                                                & Jejaring Sosial</h6>
+                                        </div>
+
+                                        <div class="row g-4">
+                                            <div class="col-md-12">
+                                                <label class="form-label text-slate-700 fw-semibold">Alamat Kantor
+                                                    Resmi</label>
+                                                <textarea name="address"
+                                                    class="form-control bg-white border-slate-200 rounded-3 text-sm"
+                                                    rows="2"
+                                                    placeholder="Contoh: Jl. Raya Besuk No. 1, Besuk, Kab. Probolinggo">{{ old('address', $profile->address) }}</textarea>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label text-slate-700 fw-semibold">Nomor Telepon
+                                                    Kantor/Layanan</label>
+                                                <input type="text" name="phone" value="{{ old('phone', $profile->phone) }}"
+                                                    class="form-control bg-white border-slate-200 rounded-3 text-sm"
+                                                    placeholder="(0335) 123456">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label text-slate-700 fw-semibold">WhatsApp Pengaduan
+                                                    (Lapor!)</label>
+                                                <input type="text" name="whatsapp_complaint"
+                                                    value="{{ old('whatsapp_complaint', $profile->whatsapp_complaint) }}"
+                                                    class="form-control bg-white border-slate-200 rounded-3 text-sm"
+                                                    placeholder="08123456789">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label text-slate-700 fw-semibold">Buka: Senin -
+                                                    Kamis</label>
+                                                <input type="text" name="office_hours_mon_thu"
+                                                    value="{{ old('office_hours_mon_thu', $profile->office_hours_mon_thu) }}"
+                                                    class="form-control bg-white border-slate-200 rounded-3 text-sm"
+                                                    placeholder="08:00 - 15:30 WIB">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label text-slate-700 fw-semibold">Buka: Jumat</label>
+                                                <input type="text" name="office_hours_fri"
+                                                    value="{{ old('office_hours_fri', $profile->office_hours_fri) }}"
+                                                    class="form-control bg-white border-slate-200 rounded-3 text-sm"
+                                                    placeholder="08:00 - 11:30 WIB">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label text-slate-400 fw-semibold">Sabtu - Minggu</label>
+                                                <input type="text"
+                                                    class="form-control bg-slate-100 border-slate-200 rounded-3 text-sm text-slate-400"
+                                                    value="Libur" readonly>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label text-slate-700 fw-semibold">Link Instagram</label>
+                                                <input type="url" name="instagram_url"
+                                                    value="{{ old('instagram_url', $profile->instagram_url) }}"
+                                                    class="form-control bg-white border-slate-200 rounded-3 text-sm"
+                                                    placeholder="https://instagram.com/kecamatan.besuk">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label text-slate-700 fw-semibold">Link Facebook</label>
+                                                <input type="url" name="facebook_url"
+                                                    value="{{ old('facebook_url', $profile->facebook_url) }}"
+                                                    class="form-control bg-white border-slate-200 rounded-3 text-sm"
+                                                    placeholder="https://facebook.com/kecamatan.besuk">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label text-slate-700 fw-semibold">Link YouTube</label>
+                                                <input type="url" name="youtube_url"
+                                                    value="{{ old('youtube_url', $profile->youtube_url) }}"
+                                                    class="form-control bg-white border-slate-200 rounded-3 text-sm"
+                                                    placeholder="https://youtube.com/@kecamatanbesuk">
                                             </div>
                                         </div>
                                     </div>

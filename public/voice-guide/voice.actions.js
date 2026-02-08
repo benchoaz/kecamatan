@@ -24,24 +24,20 @@ window.VoiceActions = (function () {
                 break;
 
             case Intent.NAVIGATE_HOME:
-                navigateTo('top');
                 Speech.speak(Config.messages.navigateHome);
+                if (window.location.pathname !== '/') {
+                    setTimeout(() => window.location.assign('/'), 100);
+                } else {
+                    navigateTo('top');
+                }
                 break;
 
-            case Intent.NAVIGATE_BERITA:
-                navigateTo('berita');
-                readNewsSummary();
-                break;
-
-            case Intent.NAVIGATE_LAYANAN:
-                navigateTo('layanan');
-                readServices();
-                break;
-
-            case Intent.NAVIGATE_WILAYAH:
-                navigateTo('wilayah');
-                Speech.speak("Menampilkan potensi wilayah dan pariwisata.");
-                break;
+            case Intent.NAVIGATE_BERITA: navigateTo('berita'); readTargetSummary(); break;
+            case Intent.NAVIGATE_LAYANAN: navigateTo('layanan'); readServices(); break;
+            case Intent.NAVIGATE_WILAYAH: navigateTo('umkm'); Speech.speak("Menampilkan UMKM dan Lowongan Kerja."); break;
+            case Intent.NAVIGATE_INFO: navigateTo('info-hari-ini'); Speech.speak("Menampilkan informasi hari ini."); break;
+            case Intent.NAVIGATE_PENGADUAN: navigateTo('pengaduan'); Speech.speak("Menampilkan layanan pengaduan warga."); break;
+            case Intent.NAVIGATE_PROFILE: navigateTo('profil'); Speech.speak("Menampilkan profil kecamatan."); break;
 
             case Intent.SEARCH_NEWS:
                 {
@@ -76,80 +72,57 @@ window.VoiceActions = (function () {
                 break;
 
             case Intent.READ_NEWS_ITEM:
-                console.log('[VoiceActions] READ_NEWS_ITEM triggered');
-                console.log('[VoiceActions] ParseResult:', parseResult);
+                {
+                    const target = parseResult.payload;
+                    const tagName = target.tagName.toLowerCase();
 
-                if (!parseResult.payload) {
-                    console.error('[VoiceActions] ❌ NO PAYLOAD found!');
-                    Speech.speak("Maaf, saya tidak menemukan berita yang Anda maksud. Coba sebutkan judul berita yang lebih spesifik.");
-                    break;
+                    if (tagName === 'button') {
+                        const title = target.innerText;
+                        window.VoiceSpeech.speak(`Membuka: ${title}`);
+                        target.click();
+                        break;
+                    }
+
+                    const url = target.getAttribute('href');
+                    const titleForDetail = target.innerText;
+
+                    if (!url || url === '#' || url === 'javascript:void(0)') {
+                        window.VoiceSpeech.speak("Maaf, aksi ini tidak memiliki tujuan yang valid.");
+                        break;
+                    }
+
+                    window.VoiceState.setPendingAction('READ_DETAIL', { title: titleForDetail });
+                    window.VoiceSpeech.speak(`Membuka: ${titleForDetail}`);
+                    setTimeout(() => window.location.assign(url), 100);
                 }
-
-                const newsLink = parseResult.payload;
-                const url = newsLink.getAttribute('href');
-                const titleForDetail = newsLink.innerText;
-
-                console.log('[VoiceActions] News Link found:', newsLink);
-                console.log('[VoiceActions] URL:', url);
-                console.log('[VoiceActions] Title:', titleForDetail);
-
-                if (!url || url === '#' || url === 'javascript:void(0)') {
-                    console.error('[VoiceActions] ❌ INVALID URL:', url);
-                    Speech.speak("Maaf, berita ini tidak memiliki tautan yang valid.");
-                    break;
-                }
-
-                console.log('[VoiceActions] ✅ VALID URL, proceeding with navigation...');
-
-                // 1. Simpan state SEBELUM navigasi
-                window.VoiceState.setPendingAction('READ_DETAIL', { title: titleForDetail });
-                console.log('[VoiceActions] ✅ State saved to sessionStorage');
-
-                // Verify save
-                const savedAction = window.VoiceState.getPendingAction();
-                console.log('[VoiceActions] Verification - Saved data:', savedAction);
-
-                // 2. Ucapkan TANPA menunggu callback
-                Speech.speak(`Membuka berita: ${titleForDetail}`);
-
-                // 3. NAVIGASI via setTimeout (event loop optimization)
-                console.log('[VoiceActions] Setting navigation timeout...');
-                setTimeout(() => {
-                    console.log('[VoiceActions] 🚀 EXECUTING NAVIGATION to:', url);
-                    window.location.assign(url);
-                }, 100);
                 break;
 
             case Intent.READ_NEWS_DETAIL:
-                // Contextual Read (After landing)
-                readNewsDetailContent();
+                // Generalized Detail Reading
+                readGenericDetail();
                 break;
 
             case Intent.NAVIGATE_PROFILE:
-                navigateTo('profil'); // Ensure ID exists in landing
-                Speech.speak("Menampilkan profil kecamatan dan struktur organisasi.");
+                navigateTo('profil');
+                window.VoiceSpeech.speak("Menampilkan profil kecamatan dan struktur organisasi.");
                 break;
 
             case Intent.FAQ_SEARCH:
-                // General FAQ fallback using the original Clean Text
-                // We dispatch it to the chatbot input
-                const originalText = parseResult.original || "";
-                if (originalText) {
-                    Speech.speak("Sedang mencari informasi...", () => {
-                        // Show Modal first
-                        const modal = document.getElementById('publicServiceModal');
-                        if (modal && typeof modal.showModal === 'function') {
-                            modal.showModal();
-                        }
+                {
+                    const originalText = parseResult.original || "";
+                    if (originalText) {
+                        window.VoiceSpeech.speak("Sedang mencari informasi...", () => {
+                            const modal = document.getElementById('publicServiceModal');
+                            if (modal && typeof modal.showModal === 'function') modal.showModal();
 
-                        // Send to Bot
-                        const botInput = document.getElementById('botQuery');
-                        const botForm = document.getElementById('publicFaqForm');
-                        if (botInput && botForm) {
-                            botInput.value = originalText;
-                            botForm.dispatchEvent(new Event('submit'));
-                        }
-                    });
+                            const botInput = document.getElementById('botQuery');
+                            const botForm = document.getElementById('publicFaqForm');
+                            if (botInput && botForm) {
+                                botInput.value = originalText;
+                                botForm.dispatchEvent(new Event('submit'));
+                            }
+                        });
+                    }
                 }
                 break;
 
@@ -220,47 +193,32 @@ window.VoiceActions = (function () {
 
     // --- Helpers ---
 
-    function readNewsDetailContent(knownTitle) {
-        // Heuristic to find content in standard Laravel/HTML layout
+    function readGenericDetail(knownTitle) {
         // 1. Find Title
-        let titleEl = document.querySelector('h1') || document.querySelector('.post-title') || document.querySelector('article h2');
-        let titleText = knownTitle || (titleEl ? titleEl.innerText : "Berita");
+        let titleEl = document.querySelector('h1') || document.querySelector('.post-title') || document.querySelector('article h2') || document.querySelector('.card-title');
+        let titleText = knownTitle || (titleEl ? titleEl.innerText : "Informasi");
 
-        // 2. Find Content (Article Body)
-        // Common selectors: article, .content, .post-body, .entry-content
-        let contentEl = document.querySelector('article') || document.querySelector('.content') || document.querySelector('.post-body');
+        // 2. Find Content (Article/Product Body)
+        let contentEl = document.querySelector('article') || document.querySelector('.article-content') || document.querySelector('.prose') || document.querySelector('.description');
 
         if (!contentEl) {
-            // Fallback: Try to find large text block?
-            window.VoiceSpeech.speak(`Saya sudah membuka berita ${titleText}, namun saya kesulitan membaca isinya secara otomatis. Silakan baca manual.`);
+            window.VoiceSpeech.speak(`Saya sudah membuka detail ${titleText}, silakan baca pada layar.`);
             return;
         }
 
         // 3. Extract Paragraphs
-        let paragraphs = Array.from(contentEl.querySelectorAll('p')).map(p => p.innerText.trim()).filter(t => t.length > 20);
+        let paragraphs = Array.from(contentEl.querySelectorAll('p, li')).map(p => p.innerText.trim()).filter(t => t.length > 15);
 
         if (paragraphs.length === 0) {
-            // Fallback: Check for text nodes or content with <br> (nl2br)
-            // We can split the innerText by newlines if it has many
             const rawText = contentEl.innerText;
-            const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 25);
-
-            if (lines.length > 1) {
-                console.log('[VoiceActions] Extracted paragraphs from newlines (nl2br fallback)');
-                paragraphs = lines;
-            } else {
-                // Single block
-                console.log('[VoiceActions] Using single text block fallback');
-                // Split by common sentence endings if too long
-                const sentences = rawText.match(/[^.!?]+[.!?]+/g) || [rawText];
-                paragraphs = sentences.map(s => s.trim()).filter(s => s.length > 10).slice(0, 5); // Limit to first 5 sentences for brevity
-            }
+            const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 20);
+            paragraphs = lines.length > 1 ? lines : [rawText];
         }
 
         // 4. Speak Sequence
-        let sentences = [`Menampilkan berita: ${titleText}.`];
-        sentences = sentences.concat(paragraphs);
-        sentences.push("Sekian berita ini. Katakan 'kembali' untuk ke menu utama.");
+        let sentences = [`Menampilkan detail: ${titleText}.`];
+        sentences = sentences.concat(paragraphs.slice(0, 8)); // Limit for brevity
+        sentences.push("Sekian informasi ini. Katakan 'kembali' untuk ke menu utama.");
 
         window.VoiceSpeech.speakSequence(sentences);
     }
@@ -272,7 +230,6 @@ window.VoiceActions = (function () {
             const el = document.getElementById(id);
             if (el) {
                 el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                // Helper highlight
                 el.classList.add('bg-blue-50', 'transition-colors', 'duration-1000');
                 setTimeout(() => el.classList.remove('bg-blue-50'), 2000);
             }
@@ -280,68 +237,39 @@ window.VoiceActions = (function () {
     }
 
     function playWelcomeSequence() {
-        console.log('[VoiceActions] playWelcomeSequence() called');
         const Config = window.VoiceConfig;
         const Speech = window.VoiceSpeech;
-
-        // 1. Get Region Name
         const region = Config.regionName;
-        console.log('[VoiceActions] Region name:', region);
-
-        // 2. Scan Menu
         const menus = getReadableMenus();
-        console.log('[VoiceActions] Found menus:', menus);
 
-        // 3. Build Sentences
         const sentences = [];
         sentences.push(Config.messages.welcome(region));
-
         menus.forEach(m => sentences.push(Config.messages.menuItem(m)));
-
         sentences.push(Config.messages.instruction);
 
-        console.log('[VoiceActions] Sentences to speak:', sentences.length);
-        console.log('[VoiceActions] First sentence:', sentences[0]);
-
-        // 4. Speak
         Speech.speakSequence(sentences, () => {
-            console.log('[VoiceActions] Welcome sequence completed');
             window.VoiceState.setPlayedWelcome(true);
         });
     }
 
     function getReadableMenus() {
-        // Target specific menu containers that contain the primary navigation
         const containers = document.querySelectorAll('.navbar-center, .menu, nav');
         const texts = new Set();
-
         containers.forEach(container => {
             const links = container.querySelectorAll('a');
             links.forEach(el => {
                 const text = el.innerText.trim();
-                // Filters: ignore "Masuk", ignore icons/short text
-                if (text && text.toLowerCase() !== 'masuk' && text.length > 2) {
-                    texts.add(text);
-                }
+                if (text && text.toLowerCase() !== 'masuk' && text.length > 2) texts.add(text);
             });
         });
-
-        // If empty, try one last broad search
-        if (texts.size === 0) {
-            const footerLinks = document.querySelectorAll('footer a');
-            footerLinks.forEach(el => {
-                const text = el.innerText.trim();
-                if (text && text.length > 3 && text.length < 20) texts.add(text);
-            });
-        }
-
         return Array.from(texts);
     }
 
-    function readNewsSummary() {
-        const newsItems = document.querySelectorAll('#berita h3 a');
-        let text = "Berikut berita terbaru: ";
-        if (newsItems.length === 0) text += "Belum ada berita tersaji.";
+    function readTargetSummary() {
+        // Detect current section or default to latest news
+        const newsItems = document.querySelectorAll('#berita h3 a, #umkm h4');
+        let text = "Berikut update terbaru: ";
+        if (newsItems.length === 0) text += "Belum ada informasi tersaji.";
 
         newsItems.forEach((item, idx) => {
             if (idx < 3) text += `${item.innerText}. `;

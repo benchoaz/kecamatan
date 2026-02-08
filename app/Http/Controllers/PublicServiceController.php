@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\PublicService;
 use App\Models\Desa;
+use App\Models\PengunjungKecamatan;
+use App\Models\PublicServiceAttachment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
@@ -77,38 +79,85 @@ class PublicServiceController extends Controller
             }
         }
 
+        // Honeypot check for bots
+        if ($request->filled('website')) {
+            return response()->json(['message' => 'Layanan tidak dapat diproses (Spam detected).'], 422);
+        }
+
         // 5. Validation
         $validator = Validator::make($request->all(), [
             'jenis_layanan' => 'required|string',
-            'desa_id' => 'nullable|exists:desa,id',
-            'uraian' => 'required|string|max:500',
+            'desa_id' => 'nullable|string', // Changed to string to handle '999'
+            'nama_pemohon' => 'required|string|max:255',
+            'nik' => 'nullable|string|max:16',
+            'uraian' => 'required|string|max:1000',
             'whatsapp' => 'required|string|regex:/^[0-9+]+$/',
-            'foto.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+            'foto.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120'
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
+        $desaId = $request->desa_id;
+        if ($desaId == '999') {
+            $desaId = null;
+        }
+
         // 6. Create record (Status: Menunggu Klarifikasi)
         $service = PublicService::create([
             'uuid' => (string) Str::uuid(),
-            'desa_id' => $request->desa_id,
+            'nama_pemohon' => $request->nama_pemohon,
+            'nik' => $request->nik,
+            'desa_id' => $desaId,
             'jenis_layanan' => $request->jenis_layanan,
             'uraian' => $request->uraian,
             'whatsapp' => $request->whatsapp,
-            'is_agreed' => $request->boolean('is_agreed'),
+            'is_agreed' => $request->boolean('is_agreed', true),
             'ip_address' => $request->ip(),
             'status' => 'Menunggu Klarifikasi'
         ]);
 
-        // 7. Handle uploads
+        // 6b. GUEST BOOK INTEGRATION: Create record in pengunjung_kecamatan
+        try {
+            PengunjungKecamatan::create([
+                'nama' => $request->nama_pemohon,
+                'nik' => $request->nik,
+                'desa_asal_id' => $desaId,
+                'alamat_luar' => ($request->desa_id == '999') ? 'Luar Wilayah Kecamatan Besuk' : null,
+                'no_hp' => $request->whatsapp,
+                'tujuan_bidang' => 'Pelayanan Umum', // Aligned with visitor dropdown
+                'keperluan' => '[' . $request->jenis_layanan . '] ' . $request->uraian,
+                'jam_datang' => now(),
+                'status' => 'menunggu'
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Gagal mencatat buku tamu (PublicService): ' . $e->getMessage());
+        }
+
+        // 7. Handle uploads (Dynamic Multi-File)
         if ($request->hasFile('foto')) {
-            foreach ($request->file('foto') as $i => $file) {
-                if ($i < 2) {
+            $files = $request->file('foto');
+            $labels = $request->input('foto_labels', []);
+
+            foreach ($files as $i => $file) {
+                if ($file->isValid()) {
                     $path = $file->store('public_services', 'local');
-                    $fieldName = 'file_path_' . ($i + 1);
-                    $service->update([$fieldName => $path]);
+                    $label = $labels[$i] ?? 'Berkas ' . ($i + 1);
+
+                    PublicServiceAttachment::create([
+                        'public_service_id' => $service->id,
+                        'label' => $label,
+                        'file_path' => $path,
+                        'original_name' => $file->getClientOriginalName(),
+                        'file_type' => $file->getClientMimeType()
+                    ]);
+
+                    // Fallback for old system (Keep first 2 as file_path_1 and file_path_2 for basic compatibility)
+                    if ($i === 0)
+                        $service->update(['file_path_1' => $path]);
+                    if ($i === 1)
+                        $service->update(['file_path_2' => $path]);
                 }
             }
         }
@@ -149,11 +198,11 @@ class PublicServiceController extends Controller
             $keywords = explode(',', strtolower($faq->keywords));
             foreach ($keywords as $kw) {
                 $trimmedKw = trim($kw);
-                if ($trimmedKw !== '' && str_contains($query, $trimmedKw)) {
+                if ($trimmedKw !== '' && preg_match('/\b' . preg_quote($trimmedKw, '/') . '\b/i', $query)) {
                     return response()->json([
                         'found' => true,
                         'is_emergency' => true,
-                        'answer' => $faq->answer
+                        'results' => [['jawaban' => $faq->answer]]
                     ]);
                 }
             }
@@ -178,11 +227,11 @@ class PublicServiceController extends Controller
             'pencuri'
         ];
         foreach ($criminalKeywords as $ckw) {
-            if (str_contains($query, $ckw)) {
+            if (preg_match('/\b' . preg_quote($ckw, '/') . '\b/i', $query)) {
                 return response()->json([
-                    'found' => false,
+                    'found' => true,
                     'is_emergency' => true,
-                    'answer' => "⚠️ Jika Anda mengalami atau melihat tindak pencurian atau kejahatan:\n\n1. Segera hubungi Kepolisian melalui nomor 110\n2. Atau laporkan langsung ke Polsek terdekat\n3. Mintalah Surat Tanda Lapor Polisi (STLP) jika diperlukan\n\nUtamakan keselamatan diri Anda."
+                    'results' => [['jawaban' => "⚠️ Jika Anda mengalami atau melihat tindak pencurian atau kejahatan:\n\n1. Segera hubungi Kepolisian melalui nomor 110\n2. Atau laporkan langsung ke Polsek terdekat\n3. Mintalah Surat Tanda Lapor Polisi (STLP) jika diperlukan\n\nUtamakan keselamatan diri Anda."]]
                 ]);
             }
         }
@@ -202,11 +251,11 @@ class PublicServiceController extends Controller
             'ambulan'
         ];
         foreach ($healthKeywords as $hkw) {
-            if (str_contains($query, $hkw)) {
+            if (preg_match('/\b' . preg_quote($hkw, '/') . '\b/i', $query)) {
                 return response()->json([
-                    'found' => false,
+                    'found' => true,
                     'is_emergency' => true,
-                    'answer' => "⚠️ Jika terjadi keadaan darurat kesehatan:\n\n1. Segera hubungi layanan darurat medis (119) atau fasilitas kesehatan terdekat\n2. Jika memungkinkan, minta bantuan warga sekitar\n3. Jika korban tidak sadar atau luka berat, jangan dipindahkan sembarangan\n\nUtamakan keselamatan dan pertolongan pertama."
+                    'results' => [['jawaban' => "⚠️ Jika terjadi keadaan darurat kesehatan:\n\n1. Segera hubungi layanan darurat medis (119) atau fasilitas kesehatan terdekat\n2. Jika memungkinkan, minta bantuan warga sekitar\n3. Jika korban tidak sadar atau luka berat, jangan dipindahkan sembarangan\n\nUtamakan keselamatan dan pertolongan pertama."]]
                 ]);
             }
         }
@@ -225,11 +274,11 @@ class PublicServiceController extends Controller
             'rusuh'
         ];
         foreach ($conflictKeywords as $ckw) {
-            if (str_contains($query, $ckw)) {
+            if (preg_match('/\b' . preg_quote($ckw, '/') . '\b/i', $query)) {
                 return response()->json([
-                    'found' => false,
+                    'found' => true,
                     'is_emergency' => true,
-                    'answer' => "⚠️ Jika terjadi konflik atau gangguan ketertiban:\n\n1. Hindari lokasi kejadian demi keselamatan\n2. Segera laporkan ke aparat keamanan setempat\n3. Jangan melakukan tindakan balasan atau provokasi\n\nMari jaga keamanan dan ketertiban bersama."
+                    'results' => [['jawaban' => "⚠️ Jika terjadi konflik atau gangguan ketertiban:\n\n1. Hindari lokasi kejadian demi keselamatan\n2. Segera laporkan ke aparat keamanan setempat\n3. Jangan melakukan tindakan balasan atau provokasi\n\nMari jaga keamanan dan ketertiban bersama."]]
                 ]);
             }
         }
@@ -249,11 +298,11 @@ class PublicServiceController extends Controller
             'damkar'
         ];
         foreach ($disasterKeywords as $dkw) {
-            if (str_contains($query, $dkw)) {
+            if (preg_match('/\b' . preg_quote($dkw, '/') . '\b/i', $query)) {
                 return response()->json([
-                    'found' => false,
+                    'found' => true,
                     'is_emergency' => true,
-                    'answer' => "⚠️ Jika terjadi bencana alam:\n\n1. Segera menjauh dari lokasi berbahaya\n2. Ikuti arahan petugas dan aparat setempat\n3. Siapkan dokumen penting dan kebutuhan darurat\n\nKeselamatan jiwa adalah yang utama.\nNO DARURAT PETUGAS DAMKAR 112"
+                    'results' => [['jawaban' => "⚠️ Jika terjadi bencana alam:\n\n1. Segera menjauh dari lokasi berbahaya\n2. Ikuti arahan petugas dan aparat setempat\n3. Siapkan dokumen penting dan kebutuhan darurat\n\nKeselamatan jiwa adalah yang utama.\nNO DARURAT PETUGAS DAMKAR 112"]]
                 ]);
             }
         }
@@ -261,11 +310,11 @@ class PublicServiceController extends Controller
         // 1.5 General Backup
         $generalEmergency = ['darurat', 'begal', 'bantuan'];
         foreach ($generalEmergency as $ekw) {
-            if (str_contains($query, $ekw)) {
+            if (preg_match('/\b' . preg_quote($ekw, '/') . '\b/i', $query)) {
                 return response()->json([
-                    'found' => false,
+                    'found' => true,
                     'is_emergency' => true,
-                    'answer' => "⚠️ **Peringatan Darurat Keamanan/Keselamatan!**\n\nLayanan ini hanya untuk informasi administrasi. Untuk situasi darurat, segera hubungi:\n- **Polisi/Keadaan Darurat**: 110\n- **Ambulans/Medis**: 119\n- **Pemadam Kebakaran**: 113\n\nTetap tenang dan cari tempat aman."
+                    'results' => [['jawaban' => "⚠️ **Peringatan Darurat Keamanan/Keselamatan!**\n\nLayanan ini hanya untuk informasi administrasi. Untuk situasi darurat, segera hubungi:\n- **Polisi/Keadaan Darurat**: 110\n- **Ambulans/Medis**: 119\n- **Pemadam Kebakaran**: 113\n\nTetap tenang dan cari tempat aman."]]
                 ]);
             }
         }
@@ -281,7 +330,8 @@ class PublicServiceController extends Controller
             $matchingFaq = \App\Models\PelayananFaq::where('is_active', true)->get()->first(function ($faq) use ($query) {
                 $keywords = explode(',', strtolower($faq->keywords));
                 foreach ($keywords as $kw) {
-                    if (trim($kw) !== '' && (str_contains($query, trim($kw)) || str_contains(trim($kw), $query))) {
+                    $trimmedKw = trim($kw);
+                    if ($trimmedKw !== '' && preg_match('/\b' . preg_quote($trimmedKw, '/') . '\b/i', $query)) {
                         return true;
                     }
                 }
@@ -294,7 +344,7 @@ class PublicServiceController extends Controller
             return response()->json([
                 'found' => true,
                 'question' => $matchingFaq->question,
-                'answer' => $matchingFaq->answer // RETURN VERBATIM
+                'results' => [['jawaban' => $matchingFaq->answer]]
             ]);
         }
 

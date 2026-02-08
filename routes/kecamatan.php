@@ -25,6 +25,17 @@ Route::middleware(['auth', 'role:Operator Kecamatan,Super Admin'])->prefix('keca
         Route::post('/{id}/process', [VerifikasiController::class, 'process'])->name('process');
     });
 
+    // Secure File Routes for Kecamatan
+    Route::prefix('file')->name('file.')->group(function () {
+        Route::get('/personil/{id}', [\App\Http\Controllers\Kecamatan\FileController::class, 'personil'])->name('personil');
+        Route::get('/personil-foto/{id}', [\App\Http\Controllers\Kecamatan\FileController::class, 'personilFoto'])->name('personil-foto');
+        Route::get('/lembaga/{id}', [\App\Http\Controllers\Kecamatan\FileController::class, 'lembaga'])->name('lembaga');
+        Route::get('/dokumen/{id}', [\App\Http\Controllers\Kecamatan\FileController::class, 'dokumen'])->name('dokumen');
+        Route::get('/perencanaan/ba/{id}', [\App\Http\Controllers\Kecamatan\FileController::class, 'perencanaanBa'])->name('perencanaan-ba');
+        Route::get('/perencanaan/absensi/{id}', [\App\Http\Controllers\Kecamatan\FileController::class, 'perencanaanAbsensi'])->name('perencanaan-absensi');
+        Route::get('/perencanaan/foto/{id}', [\App\Http\Controllers\Kecamatan\FileController::class, 'perencanaanFoto'])->name('perencanaan-foto');
+    });
+
     // Pemerintahan (Monitoring Side)
     Route::prefix('pemerintahan')->name('pemerintahan.')->group(function () {
         Route::get('/', [PemerintahanController::class, 'index'])->name('index');
@@ -35,15 +46,18 @@ Route::middleware(['auth', 'role:Operator Kecamatan,Super Admin'])->prefix('keca
         Route::prefix('detail')->name('detail.')->group(function () {
             Route::get('/personil', [PemerintahanController::class, 'personilIndex'])->name('personil.index');
             Route::post('/personil', [PemerintahanController::class, 'personilStore'])->name('personil.store');
+            Route::post('/personil/{id}/verify', [PemerintahanController::class, 'personilVerify'])->name('personil.verify');
 
             Route::get('/bpd', [PemerintahanController::class, 'bpdIndex'])->name('bpd.index');
             Route::post('/bpd', [PemerintahanController::class, 'personilStore'])->name('bpd.store'); // Reuse store for now
 
             Route::get('/lembaga', [PemerintahanController::class, 'lembagaIndex'])->name('lembaga.index');
             Route::post('/lembaga', [PemerintahanController::class, 'lembagaStore'])->name('lembaga.store');
+            Route::post('/lembaga/{id}/verify', [PemerintahanController::class, 'lembagaVerify'])->name('lembaga.verify');
             Route::get('/perencanaan', [PemerintahanController::class, 'perencanaanIndex'])->name('perencanaan.index');
             Route::post('/perencanaan', [PemerintahanController::class, 'perencanaanStore'])->name('perencanaan.store');
             Route::get('/perencanaan/{id}', [PemerintahanController::class, 'perencanaanShow'])->name('perencanaan.show');
+            Route::post('/perencanaan/{id}/verify', [PemerintahanController::class, 'perencanaanVerify'])->name('perencanaan.verify');
             Route::get('/laporan', [PemerintahanController::class, 'laporanIndex'])->name('laporan.index');
             Route::get('/inventaris', [PemerintahanController::class, 'inventarisIndex'])->name('inventaris.index');
             Route::post('/inventaris', [PemerintahanController::class, 'inventarisStore'])->name('inventaris.store');
@@ -77,8 +91,8 @@ Route::middleware(['auth', 'role:Operator Kecamatan,Super Admin'])->prefix('keca
     // Pembangunan & BLT (Monitoring Side)
     Route::middleware(['menu.toggle:ekbang'])->prefix('pembangunan')->name('pembangunan.')->group(function () {
         Route::get('/', [PembangunanController::class, 'index'])->name('index');
+        Route::get('/{id}/detail', [PembangunanController::class, 'show'])->name('show');
         Route::get('/blt', [PembangunanController::class, 'bltIndex'])->name('blt.index');
-        Route::get('/{id}', [PembangunanController::class, 'show'])->name('show');
         Route::post('/{id}/monitoring/{type}', [PembangunanController::class, 'updateMonitoring'])->name('update-monitoring');
 
         // Reference Data (SSH & SBU)
@@ -110,8 +124,11 @@ Route::middleware(['auth', 'role:Operator Kecamatan,Super Admin'])->prefix('keca
         Route::post('/process/{id}', [KesraController::class, 'process'])->name('process');
     });
 
+    // Trantibum Dashboard
     Route::prefix('trantibum')->name('trantibum.')->group(function () {
         Route::get('/', [TrantibumController::class, 'index'])->name('index');
+        Route::get('/kejadian', [TrantibumController::class, 'kejadian'])->name('kejadian');
+        Route::get('/relawan', [TrantibumController::class, 'relawan'])->name('relawan');
         Route::get('/tagana', [TrantibumController::class, 'taganaIndex'])->name('tagana.index');
         Route::get('/emergency', [TrantibumController::class, 'emergencyIndex'])->name('emergency.index');
         Route::get('/export-audit', [TrantibumController::class, 'exportAudit'])->name('export');

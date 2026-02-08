@@ -16,7 +16,9 @@ window.VoiceConfig = {
         NAVIGATE_LAYANAN: 'NAV_LAYANAN',
         NAVIGATE_HOME: 'NAV_HOME',
         NAVIGATE_WILAYAH: 'NAV_WILAYAH', // Maps to "Region"
-        NAVIGATE_PROFILE: 'NAV_PROFILE', // [NEW] maps to "Profile"
+        NAVIGATE_PROFILE: 'NAV_PROFILE',
+        NAVIGATE_INFO: 'NAV_INFO',
+        NAVIGATE_PENGADUAN: 'NAV_COMPLAINT',
         READ_NEWS_ITEM: 'READ_NEWS_ITEM',
         READ_NEWS_DETAIL: 'READ_NEWS_DETAIL', // [NEW] Contextual read
         SEARCH_NEWS: 'SEARCH_NEWS', // [NEW] Multi-page search
@@ -32,9 +34,11 @@ window.VoiceConfig = {
         { intent: 'NAVIGATE_BERITA', words: ['berita', 'warta', 'kabar', 'informasi'] },
         { intent: 'NAVIGATE_LAYANAN', words: ['layanan', 'pelayanan', 'admin', 'surat', 'ktp', 'kk', 'akta', 'domisili'] },
         { intent: 'NAVIGATE_HOME', words: ['beranda', 'home', 'depan', 'utama', 'awal'] },
-        { intent: 'NAVIGATE_WILAYAH', words: ['wilayah', 'pariwisata', 'wisata', 'umkm', 'potensi'] },
-        { intent: 'LOGIN', words: ['masuk', 'login', 'operator'] },
-        { intent: 'INFO_HOURS', words: ['jam', 'buka', 'tutup', 'jadwal'] }
+        { intent: 'NAVIGATE_WILAYAH', words: ['wilayah', 'pariwisata', 'wisata', 'umkm', 'potensi', 'loker', 'lowongan'] },
+        { intent: 'NAVIGATE_INFO', words: ['info', 'informasi', 'pengumuman', 'hari ini'] },
+        { intent: 'NAVIGATE_PENGADUAN', words: ['pengaduan', 'lapor', 'aspirasi', 'keluhan'] },
+        { intent: 'LOGIN', words: ['masuk', 'login', 'operator', 'admin'] },
+        { intent: 'FAQ_SEARCH', words: ['bantuan', 'cari', 'tanya', 'bagaimana', 'syarat', 'persyaratan'] },
     ],
 
     // Sentences

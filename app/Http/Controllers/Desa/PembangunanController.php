@@ -301,7 +301,14 @@ class PembangunanController extends Controller
 
     public function show($id)
     {
-        $item = PembangunanDesa::where('desa_id', auth()->user()->desa_id)->findOrFail($id);
+        $item = PembangunanDesa::where('desa_id', auth()->user()->desa_id)
+            ->with([
+                'logbooks' => function ($query) {
+                    $query->latest();
+                }
+            ])
+            ->findOrFail($id);
+
         return view('desa.pembangunan.show', compact('item'));
     }
 

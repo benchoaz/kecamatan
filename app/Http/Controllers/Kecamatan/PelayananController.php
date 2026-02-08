@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PublicService;
 use App\Models\PelayananFaq;
 use App\Models\PengunjungKecamatan;
+use App\Models\MasterLayanan;
 use App\Models\Desa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -173,5 +174,67 @@ class PelayananController extends Controller
 
         $visitor->update($validated);
         return back()->with('success', 'Status pengunjung berhasil diperbarui.');
+    }
+
+    /**
+     * Master Layanan (Self Service)
+     */
+    public function layananIndex()
+    {
+        $layanan = MasterLayanan::orderBy('urutan')->get();
+        return view('kecamatan.pelayanan.layanan.index', compact('layanan'));
+    }
+
+    public function layananCreate()
+    {
+        return view('kecamatan.pelayanan.layanan.form');
+    }
+
+    public function layananStore(Request $request)
+    {
+        $validated = $request->validate([
+            'nama_layanan' => 'required|string|max:255',
+            'deskripsi_syarat' => 'required|string',
+            'estimasi_waktu' => 'nullable|string|max:100',
+            'ikon' => 'required|string|max:100',
+            'warna_bg' => 'required|string|max:100',
+            'warna_text' => 'required|string|max:100',
+            'is_active' => 'required|boolean',
+            'urutan' => 'required|integer',
+        ]);
+
+        MasterLayanan::create($validated);
+        return redirect()->route('kecamatan.pelayanan.layanan.index')->with('success', 'Layanan berhasil ditambahkan.');
+    }
+
+    public function layananEdit($id)
+    {
+        $layanan = MasterLayanan::findOrFail($id);
+        return view('kecamatan.pelayanan.layanan.form', compact('layanan'));
+    }
+
+    public function layananUpdate(Request $request, $id)
+    {
+        $layanan = MasterLayanan::findOrFail($id);
+        $validated = $request->validate([
+            'nama_layanan' => 'required|string|max:255',
+            'deskripsi_syarat' => 'required|string',
+            'estimasi_waktu' => 'nullable|string|max:100',
+            'ikon' => 'required|string|max:100',
+            'warna_bg' => 'required|string|max:100',
+            'warna_text' => 'required|string|max:100',
+            'is_active' => 'required|boolean',
+            'urutan' => 'required|integer',
+        ]);
+
+        $layanan->update($validated);
+        return redirect()->route('kecamatan.pelayanan.layanan.index')->with('success', 'Layanan berhasil diperbarui.');
+    }
+
+    public function layananDestroy($id)
+    {
+        $layanan = MasterLayanan::findOrFail($id);
+        $layanan->delete();
+        return redirect()->route('kecamatan.pelayanan.layanan.index')->with('success', 'Layanan berhasil dihapus.');
     }
 }

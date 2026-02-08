@@ -1,7 +1,8 @@
 @props([
     'label', 
     'name', 
-    'currentFile' => null, 
+    'currentFile' => null,
+    'downloadUrl' => null,
     'helper' => null,
     'required' => false,
     'readonly' => false
@@ -18,9 +19,16 @@
             <div>
                 <div class="fw-bold text-slate-800">Dokumen Tersimpan</div>
                 @if($currentFile)
-                    <a href="{{ asset('storage/' . $currentFile) }}" target="_blank" class="text-primary text-decoration-none small">
-                        Lihat File <i class="fas fa-external-link-alt ms-1"></i>
-                    </a>
+                    @if($downloadUrl)
+                        <a href="{{ $downloadUrl }}" target="_blank" class="text-primary text-decoration-none small">
+                            Lihat File <i class="fas fa-external-link-alt ms-1"></i>
+                        </a>
+                    @else
+                        {{-- Fallback for legacy public storage files --}}
+                        <a href="{{ asset('storage/' . $currentFile) }}" target="_blank" class="text-primary text-decoration-none small">
+                            Lihat File <i class="fas fa-external-link-alt ms-1"></i>
+                        </a>
+                    @endif
                 @else
                     <span class="text-muted small">Tidak ada file</span>
                 @endif

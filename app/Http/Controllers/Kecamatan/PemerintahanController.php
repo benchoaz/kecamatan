@@ -101,6 +101,28 @@ class PemerintahanController extends Controller
         return back()->with('success', 'Data personil berhasil disimpan.');
     }
 
+    public function personilVerify(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:diterima,dikembalikan',
+            'catatan' => 'nullable|string'
+        ]);
+
+        $personil = PersonilDesa::findOrFail($id);
+
+        // Ensure user has access (kecamatan operator matches desa if needed, or global kecamatan)
+        // Kecamatan user usually has access to all desas in their kecamatan
+        // Assuming middleware handles basic role. 
+
+        $personil->status = $validated['status'];
+        if ($validated['status'] == 'dikembalikan') {
+            $personil->catatan_revisi = $validated['catatan'];
+        }
+        $personil->save();
+
+        return back()->with('success', 'Status personil berhasil diperbarui.');
+    }
+
     public function personilIndex()
     {
         $desa_id = request('desa_id');
@@ -267,6 +289,25 @@ class PemerintahanController extends Controller
         return back()->with('success', 'Data perencanaan dan usulan berhasil disimpan.');
     }
 
+    public function perencanaanVerify(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:verified,revision',
+            'catatan' => 'nullable|string'
+        ]);
+
+        $perencanaan = PerencanaanDesa::findOrFail($id);
+        $perencanaan->status_administrasi = $validated['status'];
+
+        if ($validated['status'] == 'revision') {
+            $perencanaan->catatan_kecamatan = $validated['catatan'];
+        }
+
+        $perencanaan->save();
+
+        return back()->with('success', 'Status administrasi perencanaan telah diperbarui.');
+    }
+
     public function laporanIndex()
     {
         $desa_id = request('desa_id');
@@ -419,6 +460,24 @@ class PemerintahanController extends Controller
         $lembaga->save();
 
         return back()->with('success', 'Data lembaga berhasil disimpan.');
+    }
+
+    public function lembagaVerify(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:diterima,dikembalikan',
+            'catatan' => 'nullable|string'
+        ]);
+
+        $lembaga = LembagaDesa::findOrFail($id);
+
+        $lembaga->status = $validated['status'];
+        if ($validated['status'] == 'dikembalikan') {
+            $lembaga->catatan_revisi = $validated['catatan'];
+        }
+        $lembaga->save();
+
+        return back()->with('success', 'Status lembaga berhasil diperbarui.');
     }
 
 

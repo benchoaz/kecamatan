@@ -19,7 +19,7 @@
                 {{ strtoupper(substr(auth()->user()->nama_lengkap, 0, 2)) }}
             </div>
             <div class="desa-dropdown-menu">
-                <a href="#" class="desa-dropdown-item">
+                <a href="{{ route('desa.profile.index') }}" class="desa-dropdown-item">
                     <i class="fas fa-user"></i> Profil Saya
                 </a>
                 <a href="{{ route('logout') }}" class="desa-dropdown-item"

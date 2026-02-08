@@ -102,12 +102,20 @@
         @endif
 
         <div class="desa-nav-section">
-            <div class="desa-nav-title">Pelayanan</div>
+            <div class="desa-nav-title">Trantibum</div>
             <ul class="desa-nav-menu">
                 <li class="desa-nav-item">
-                    <a href="#" class="desa-nav-link {{ request()->routeIs('desa.pelayanan.*') ? 'active' : '' }}">
-                        <i class="desa-nav-icon fas fa-users"></i>
-                        <span>Pelayanan & Kegiatan</span>
+                    <a href="{{ route('desa.trantibum.kejadian.index') }}"
+                        class="desa-nav-link {{ request()->routeIs('desa.trantibum.kejadian.*') ? 'active' : '' }}">
+                        <i class="desa-nav-icon fas fa-shield-alt text-danger"></i>
+                        <span>Laporan Trantibum</span>
+                    </a>
+                </li>
+                <li class="desa-nav-item">
+                    <a href="{{ route('desa.trantibum.relawan.index') }}"
+                        class="desa-nav-link {{ request()->routeIs('desa.trantibum.relawan.*') ? 'active' : '' }}">
+                        <i class="desa-nav-icon fas fa-users-cog text-primary"></i>
+                        <span>Tim Relawan</span>
                     </a>
                 </li>
             </ul>

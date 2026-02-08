@@ -88,6 +88,7 @@
 
                                 <x-desa.form.upload label="File SK (Scan PDF)" name="file_sk"
                                     :currentFile="$personil->file_sk" :readonly="$readonly"
+                                    :downloadUrl="$personil->file_sk ? route('desa.administrasi.file.personil', $personil->id) : null"
                                     helper="Lampirkan scan asli SK Pengangkatan. Pastikan tulisan terbaca jelas." />
                             </div>
 

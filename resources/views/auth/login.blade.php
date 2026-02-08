@@ -77,9 +77,11 @@
                 class="absolute inset-0 w-full h-full object-cover">
             <div class="absolute inset-0 side-image-overlay flex flex-col justify-center p-12 text-white">
                 <div class="mb-8">
-                    <div class="w-28 h-28 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-xl border border-white/20">
+                    <div
+                        class="w-28 h-28 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-xl border border-white/20">
                         @if(appProfile()->logo_path)
-                            <img src="{{ asset('storage/' . appProfile()->logo_path) }}" class="w-20 h-20 object-contain" alt="Logo">
+                            <img src="{{ asset('storage/' . appProfile()->logo_path) }}" class="w-20 h-20 object-contain"
+                                alt="Logo">
                         @else
                             <i class="fas fa-landmark text-white text-5xl"></i>
                         @endif
@@ -177,9 +179,14 @@
                             class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none group-focus-within:text-teal-600 transition-colors text-slate-400">
                             <i class="fas fa-key"></i>
                         </div>
-                        <input type="password" name="password" placeholder="••••••••"
-                            class="input input-bordered w-full pl-11 bg-slate-50 border-slate-200 focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-100 transition-all rounded-2xl h-14"
+                        <input type="password" name="password" id="password" placeholder="••••••••"
+                            class="input input-bordered w-full pl-11 pr-12 bg-slate-50 border-slate-200 focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-100 transition-all rounded-2xl h-14"
                             required />
+                        <button type="button"
+                            class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-teal-600 focus:outline-none transition-colors toggle-password"
+                            tabindex="-1">
+                            <i class="fas fa-eye text-lg"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -212,6 +219,29 @@
         </div>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const togglePassword = document.querySelector('.toggle-password');
+            const passwordInput = document.getElementById('password');
+
+            if (togglePassword && passwordInput) {
+                togglePassword.addEventListener('click', function () {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+
+                    // Toggle icon
+                    const icon = this.querySelector('i');
+                    if (type === 'text') {
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

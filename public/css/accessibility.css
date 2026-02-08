@@ -1,257 +1,222 @@
-/* 
- * Accessibility Widget Styles 
- * Isolated from main layout to prevent conflicts.
+/**
+ * ACCESSIBILITY CORE v3.0 (Strict WCAG 2.1 Compliant)
+ * Implementing Mandatory Global State Styling
  */
 
-/* =========================================
-   1. Utility Classes (Modes & Overrides)
-   ========================================= */
-
-/* Grayscale Mode */
-.acc-grayscale {
-    filter: grayscale(100%) !important;
+:root {
+    /* Default Branding Fallbacks */
+    --bg: #ffffff;
+    --text: #2d342d;
+    --muted: #749274;
+    --accent: #4f46e5;
+    --border: #e8eee8;
+    --card: #ffffff;
 }
 
-/* High Contrast Mode */
-.acc-high-contrast {
-    --acc-bg: #000000;
-    --acc-text: #ffffff;
-    --acc-link: #ffff00;
-    --acc-btn-bg: #1a1a1a;
-    --acc-btn-text: #ffff00;
-    --acc-border: #ffffff;
+/* 1️⃣ MODE TAMPILAN */
+
+/* A. MODE ABU-ABU (Low saturation + contrast) */
+[data-theme="gray"] {
+    --bg: #f5f5f5;
+    --text: #1a1a1a;
+    --muted: #555;
+    --accent: #2f6f6f;
+    --card: #ffffff;
+    --border: #cccccc;
 }
 
-.acc-high-contrast body,
-.acc-high-contrast .bg-white,
-.acc-high-contrast .bg-slate-50,
-.acc-high-contrast .card {
-    background-color: var(--acc-bg) !important;
-    color: var(--acc-text) !important;
-    background-image: none !important;
+/* B. KONTRAS ++ (WCAG AAA) */
+[data-theme="high-contrast"] {
+    --bg: #000000;
+    --text: #ffffff;
+    --accent: #ffd400;
+    --border: #ffffff;
+    --card: #000000;
+    --muted: #ffff00;
 }
 
-.acc-high-contrast p,
-.acc-high-contrast h1,
-.acc-high-contrast h2,
-.acc-high-contrast h3,
-.acc-high-contrast span,
-.acc-high-contrast div {
-    color: var(--acc-text) !important;
-}
-
-.acc-high-contrast a {
-    color: var(--acc-link) !important;
+[data-theme="high-contrast"] a {
+    color: var(--accent) !important;
     text-decoration: underline !important;
 }
 
-.acc-high-contrast button,
-.acc-high-contrast .btn:not(#accessibility-toggle) {
-    background-color: var(--acc-btn-bg) !important;
-    color: var(--acc-btn-text) !important;
-    border: 2px solid var(--acc-border) !important;
+[data-theme="high-contrast"] button:not(.a11y-btn) {
+    background: var(--accent) !important;
+    color: #000 !important;
+    border: 2px solid #ffffff !important;
 }
 
-/* Specific Overrides for Complaint Modal / Chat */
-.acc-high-contrast .bg-teal-600,
-.acc-high-contrast .bg-teal-100,
-.acc-high-contrast .bg-gradient-to-r,
-.acc-high-contrast .bg-emerald-50,
-.acc-high-contrast .bg-blue-50,
-.acc-high-contrast .bg-amber-50 {
-    background: var(--acc-bg) !important;
-    color: var(--acc-text) !important;
-    border: 1px solid var(--acc-border) !important;
+/* C. MODE GELAP (Persistent) */
+[data-theme="dark"] {
+    --bg: #121212;
+    --card: #1e1e1e;
+    --text: #eaeaea;
+    --border: #333333;
+    --accent: #818cf8;
+    --muted: #999999;
 }
 
-.acc-high-contrast .text-teal-600,
-.acc-high-contrast .text-teal-700,
-.acc-high-contrast .text-rose-600,
-.acc-high-contrast .text-emerald-600,
-.acc-high-contrast .text-blue-600,
-.acc-high-contrast .text-amber-600 {
-    color: var(--acc-text) !important;
+/* Apply Root Variables */
+body {
+    background-color: var(--bg) !important;
+    color: var(--text) !important;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
-.acc-high-contrast .text-teal-100 {
-    color: var(--acc-link) !important;
-}
-
-.acc-high-contrast input,
-.acc-high-contrast textarea,
-.acc-high-contrast select {
-    background-color: var(--acc-bg) !important;
-    color: var(--acc-text) !important;
-    border: 1px solid var(--acc-border) !important;
-}
-
-/* Dark Mode */
-.acc-dark-mode {
-    filter: invert(1) hue-rotate(180deg);
-}
-
-.acc-dark-mode img,
-.acc-dark-mode video,
-.acc-dark-mode iframe {
-    filter: invert(1) hue-rotate(180deg);
-}
-
-/* Light Mode (Reset/Standard) */
-.acc-light-mode {
-    /* Default browser behavior */
-}
-
-/* Font Resizing */
-.acc-font-large {
-    font-size: 110% !important;
-}
-
-.acc-font-xlarge {
-    font-size: 125% !important;
-}
-
-/* Link Highlighting */
-.acc-link-underline a {
-    text-decoration: underline !important;
-    text-decoration-thickness: 2px !important;
-    text-decoration-skip-ink: none !important;
-}
-
-/* Dyslexia Friendly Font */
+/* D. FONT DISLEKSIA */
 @font-face {
     font-family: 'OpenDyslexic';
-    src: url('https://cdn.jsdelivr.net/npm/opendyslexic@2.1.0-beta/fonts/OpenDyslexic-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
+    src: url('https://cdn.jsdelivr.net/npm/opendyslexic@1.0.3/font/OpenDyslexic-Regular.otf');
 }
 
-.acc-dyslexia * {
-    font-family: 'OpenDyslexic', Arial, sans-serif !important;
-    line-height: 1.6 !important;
+[data-dyslexia="true"] * {
+    font-family: 'OpenDyslexic', 'Lexend', Arial, sans-serif !important;
     letter-spacing: 0.05em !important;
+    word-spacing: 0.12em !important;
+    line-height: 1.8 !important;
 }
 
-/* =========================================
-   2. Widget Panel UI
-   ========================================= */
+/* 2️⃣ UKURAN TEKS (Strictly using REM) */
+html {
+    font-size: 100%;
+    /* Default 16px */
+}
+
+[data-font="large"] {
+    font-size: 112.5% !important;
+    /* ~18px */
+}
+
+[data-font="xlarge"] {
+    font-size: 125% !important;
+    /* ~20px */
+}
+
+/* 3️⃣ GARIS LINK & FOCUS */
+[data-underline-links="true"] a {
+    text-decoration: underline !important;
+    text-underline-offset: 4px !important;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid #ffbf00 !important;
+    outline-offset: 2px !important;
+}
+
+/* 4️⃣ PANEL STYLING (Ensures Visibility) */
 #accessibility-panel {
     position: fixed;
-    bottom: 90px;
-    /* Above the toggle button */
-    left: 20px;
-    width: 320px;
+    top: 1rem;
+    left: 1rem;
+    width: 20rem;
+    max-width: calc(100vw - 2rem);
+    max-height: calc(100vh - 2rem);
     background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
-    z-index: 9999;
-    padding: 20px;
-    font-family: sans-serif;
-    transform: translateY(20px);
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    color: #333;
+    border-radius: 1.5rem;
+    box-shadow: 0 1.25rem 3.125rem rgba(0, 0, 0, 0.15);
+    z-index: 10001;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 #accessibility-panel.active {
-    transform: translateY(0);
-    opacity: 1;
-    visibility: visible;
+    display: flex;
 }
 
-#accessibility-panel h3 {
-    margin: 0 0 15px 0;
-    font-size: 16px;
-    font-weight: 700;
-    color: #1f2937;
+.a11y-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-#accessibility-panel h3 button.close-panel {
-    background: transparent;
+.a11y-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.a11y-close-btn {
+    background: none;
     border: none;
+    font-size: 1.5rem;
     cursor: pointer;
-    color: #9ca3af;
-    font-size: 18px;
-    padding: 5px;
+    color: #64748b;
 }
 
-.acc-section {
-    margin-bottom: 20px;
+.a11y-body {
+    padding: 1.5rem;
+    overflow-y: auto;
 }
 
-.acc-section-title {
-    font-size: 12px;
-    font-weight: 600;
+.a11y-group {
+    margin-bottom: 1.5rem;
+}
+
+.a11y-group-title {
+    font-size: 0.7rem;
+    font-weight: 700;
     text-transform: uppercase;
-    color: #6b7280;
-    margin-bottom: 10px;
     letter-spacing: 0.05em;
+    color: #94a3b8;
+    margin-bottom: 0.75rem;
 }
 
-.acc-grid {
+.a11y-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 0.5rem;
 }
 
-.acc-btn {
+.a11y-btn {
+    background: #f8fafc;
+    border: 2px solid #f1f5f9;
+    border-radius: 0.75rem;
+    padding: 0.75rem 0.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 12px;
-    background: #f3f4f6;
-    border: 1px solid transparent;
-    border-radius: 8px;
+    gap: 0.5rem;
     cursor: pointer;
-    transition: all 0.2s;
-    font-size: 12px;
-    font-weight: 500;
-    color: #374151;
-    text-align: center;
+    color: #475569;
+    font-family: inherit;
 }
 
-.acc-btn:hover {
-    background: #e5e7eb;
-    transform: translateY(-1px);
-}
-
-.acc-btn.active {
+.a11y-btn.active {
     background: #eff6ff;
     border-color: #3b82f6;
     color: #2563eb;
 }
 
-.acc-btn i {
-    font-size: 18px;
-    margin-bottom: 2px;
+.a11y-footer {
+    padding: 1rem 1.5rem 1.5rem;
 }
 
-.acc-reset-btn {
+.a11y-reset-btn {
     width: 100%;
-    padding: 10px;
     background: #fff1f2;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
     color: #e11d48;
-    border: 1px solid #fecdd3;
-    border-radius: 8px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    font-size: 13px;
-    margin-top: 5px;
-    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
-.acc-reset-btn:hover {
-    background: #ffe4e6;
-}
-
-/* Focus states for accessibility */
-#accessibility-panel :focus-visible {
-    outline: 2px solid #3b82f6;
-    outline-offset: 2px;
+/* Prevent layout breaking on large font */
+main {
+    max-width: 100vw;
+    overflow-x: hidden;
 }

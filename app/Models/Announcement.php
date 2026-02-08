@@ -5,8 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\Auditable;
+
 class Announcement extends Model
 {
+    use Auditable;
+
     protected $fillable = [
         'title',
         'content',

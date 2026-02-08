@@ -40,7 +40,7 @@ window.VoiceLexicon = (function () {
         nouns: {
             'news': [
                 'berita', 'kabar', 'informasi', 'info',
-                'artikel', 'pengumuman', 'warta', 'bacaan'
+                'artikel', 'pengumuman', 'warta', 'bacaan', 'informasi terbaru'
             ],
             'audio': [
                 'suara', 'audio', 'panduan suara', 'voice', 'panduan'
@@ -51,12 +51,17 @@ window.VoiceLexicon = (function () {
             'service': [
                 'layanan', 'servis', 'jasa', 'pelayanan', 'bantuan', 'service',
                 'administrasi', 'urus', 'pembuatan', 'surat', 'dokumen', 'berkas',
-                'ktp', 'kk', 'akta'
+                'ktp', 'kk', 'akta', 'pengaduan', 'lapor', 'aduan', 'aspirasi'
             ],
             'region': [
                 'wilayah', 'daerah', 'desa', 'lokasi', 'tempat', 'peta', 'geografi',
-                'wisata', 'piknik', 'jalan-jalan', 'tamasya', 'rekreasi',
-                'umkm', 'jualan', 'dagangan', 'bisnis'
+                'wisata', 'piknik', 'jalan-jalan', 'tamasya', 'rekreasi'
+            ],
+            'umkm': [
+                'umkm', 'jualan', 'dagangan', 'bisnis', 'usaha', 'pedagang', 'warung', 'toko'
+            ],
+            'loker': [
+                'loker', 'lowongan', 'kerja', 'kerjaan', 'karir', 'rekrutmen'
             ],
             'profile': [
                 'profil', 'tentang', 'about', 'kami', 'kita', 'siapa', 'visimisi', 'sejarah',

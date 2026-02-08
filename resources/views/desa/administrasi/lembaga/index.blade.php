@@ -54,7 +54,7 @@
                                             <div class="text-slate-700 fw-medium">SK No:
                                                 {{ Str::limit($lembaga->sk_pendirian, 15) }}</div>
                                             @if($lembaga->file_sk)
-                                                <a href="{{ asset('storage/' . $lembaga->file_sk) }}" target="_blank"
+                                                <a href="{{ route('desa.administrasi.file.lembaga', $lembaga->id) }}" target="_blank"
                                                     class="text-primary text-decoration-none small">
                                                     <i class="fas fa-file-pdf me-1"></i> Lihat File
                                                 </a>

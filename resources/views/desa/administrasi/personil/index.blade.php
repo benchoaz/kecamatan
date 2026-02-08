@@ -68,7 +68,7 @@
                                     <div class="d-flex flex-column">
                                         <span class="fw-medium text-slate-700">{{ $p->nomor_sk }}</span>
                                         @if($p->file_sk)
-                                            <a href="{{ asset('storage/' . $p->file_sk) }}" target="_blank"
+                                            <a href="{{ route('desa.administrasi.file.personil', $p->id) }}" target="_blank"
                                                 class="small text-primary text-decoration-none">
                                                 <i class="fas fa-paperclip me-1"></i> Lihat File
                                             </a>

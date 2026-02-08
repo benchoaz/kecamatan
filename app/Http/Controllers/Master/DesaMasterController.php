@@ -47,7 +47,14 @@ class DesaMasterController extends Controller
             'kecamatan' => 'required|string|max:100',
             'kabupaten' => 'required|string|max:100',
             'status' => 'required|in:aktif,tidak_aktif',
+            'website' => 'nullable|string|max:255',
         ]);
+
+        if ($validated['website'] && !filter_var($validated['website'], FILTER_VALIDATE_URL)) {
+            if (!preg_match("~^(?:f|ht)tps?://~i", $validated['website'])) {
+                $validated['website'] = "http://" . $validated['website'];
+            }
+        }
 
         Desa::create($validated);
 
@@ -69,7 +76,14 @@ class DesaMasterController extends Controller
             'alamat_kantor' => 'nullable|string',
             'telepon' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:100',
+            'website' => 'nullable|string|max:255',
         ]);
+
+        if ($validated['website'] && !filter_var($validated['website'], FILTER_VALIDATE_URL)) {
+            if (!preg_match("~^(?:f|ht)tps?://~i", $validated['website'])) {
+                $validated['website'] = "http://" . $validated['website'];
+            }
+        }
 
         $desa->update($validated);
 

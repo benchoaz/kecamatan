@@ -27,16 +27,16 @@
             UNKNOWN: 'UNKNOWN'
         },
         keywords: [
-            { intent: 'STOP', words: ['stop', 'matikan', 'berhenti', 'nonaktifkan', 'diam'] },
-            { intent: 'NAVIGATE_BERITA', words: ['news', 'berita', 'warta', 'kabar', 'informasi'] },
-            { intent: 'NAVIGATE_LAYANAN', words: ['service', 'layanan', 'pelayanan', 'admin', 'surat', 'ktp', 'kk', 'akta', 'domisili'] },
-            { intent: 'NAVIGATE_HOME', words: ['home', 'beranda', 'depan', 'utama', 'awal'] },
-            { intent: 'NAVIGATE_WILAYAH', words: ['region', 'wilayah', 'pariwisata', 'wisata', 'umkm', 'potensi'] },
+            { intent: 'STOP', words: ['matikan', 'stop', 'berhenti', 'nonaktifkan', 'diam'] },
+            { intent: 'NAVIGATE_BERITA', words: ['berita', 'warta', 'kabar', 'informasi'] },
+            { intent: 'NAVIGATE_LAYANAN', words: ['layanan', 'pelayanan', 'admin', 'surat', 'ktp', 'kk', 'akta', 'domisili'] },
+            { intent: 'NAVIGATE_HOME', words: ['beranda', 'home', 'depan', 'utama', 'awal'] },
+            { intent: 'NAVIGATE_WILAYAH', words: ['wilayah', 'pariwisata', 'wisata', 'umkm', 'potensi', 'loker', 'lowongan'] },
+            { intent: 'NAVIGATE_INFO', words: ['info', 'informasi', 'pengumuman', 'hari ini'] },
+            { intent: 'NAVIGATE_PENGADUAN', words: ['pengaduan', 'lapor', 'aspirasi', 'keluhan'] },
             { intent: 'NAVIGATE_PROFILE', words: ['profile', 'profil', 'tentang', 'sejarah', 'struktur'] },
-            { intent: 'FAQ_SEARCH', words: ['contact', 'tanya', 'hubungi', 'bantuan', 'tolong', 'cara', 'bagaimana', 'apa', 'syarat', 'prosedur', 'persyaratan', 'ktp', 'kk', 'akta', 'domisili', 'surat', 'pindah', 'nikah', 'lahir', 'mati', 'kematian'] },
-            { intent: 'READ_NEWS_DETAIL', words: ['baca', 'detail', 'isi', 'lengkap', 'bacakan', 'lanjut', 'perjelas'] },
-            { intent: 'LOGIN', words: ['login', 'masuk', 'operator'] },
-            { intent: 'INFO_HOURS', words: ['hours', 'jam', 'buka', 'tutup', 'jadwal'] }
+            { intent: 'FAQ_SEARCH', words: ['bantuan', 'cari', 'tanya', 'bagaimana', 'syarat', 'persyaratan'] },
+            { intent: 'LOGIN', words: ['masuk', 'login', 'operator', 'admin'] }
         ],
         messages: {
             welcome: (region) => `Selamat datang di ${region}. Berikut adalah menu yang tersedia pada halaman ini.`,
@@ -61,15 +61,28 @@
                 'stop': ['stop', 'setop', 'berhenti', 'diem', 'diam', 'cukup', 'sudah', 'jangan', 'matikan', 'nonaktifkan', 'batal', 'shh', 'tutup', 'keluar'],
                 'back': ['kembali', 'balik', 'pulang', 'ke belakang', 'ke awal', 'ke beranda', 'ke halaman utama', 'back'],
                 'next': ['lanjut', 'lanjutin', 'selanjutnya', 'berikutnya', 'terus', 'sambung', 'next'],
-                'contact': ['hubungi', 'telepon', 'wa', 'whatsapp', 'email', 'alamat', 'kantor', 'lokasi', 'tanya', 'bertanya', 'minta tolong', 'syarat', 'prosedur', 'bagaimana', 'ktp', 'kk', 'akta', 'domisili'],
+                'contact': ['hubungi', 'telepon', 'wa', 'whatsapp', 'email', 'alamat', 'kantor', 'lokasi', 'tanya', 'bertanya', 'minta tolong', 'syarat', 'prosedur', 'bagaimana'],
                 'login': ['masuk', 'login', 'log in', 'sign in', 'daftar', 'akun', 'admin', 'operator', 'petugas']
             },
             nouns: {
                 'news': ['berita', 'kabar', 'informasi', 'info', 'artikel', 'pengumuman', 'warta', 'bacaan'],
                 'audio': ['suara', 'audio', 'panduan suara', 'voice', 'panduan'],
                 'menu': ['menu', 'halaman', 'tampilan'],
-                'service': ['layanan', 'servis', 'jasa', 'pelayanan', 'bantuan', 'service', 'administrasi', 'urus', 'pembuatan', 'surat', 'dokumen', 'berkas', 'ktp', 'kk', 'akta'],
-                'region': ['wilayah', 'daerah', 'desa', 'lokasi', 'tempat', 'peta', 'geografi', 'wisata', 'piknik', 'jalan-jalan', 'tamasya', 'rekreasi', 'umkm', 'jualan', 'dagangan', 'bisnis'],
+                'service': [
+                    'layanan', 'servis', 'jasa', 'pelayanan', 'bantuan', 'service',
+                    'administrasi', 'urus', 'pembuatan', 'surat', 'dokumen', 'berkas',
+                    'ktp', 'kk', 'akta', 'pengaduan', 'lapor', 'aduan', 'aspirasi'
+                ],
+                'region': [
+                    'wilayah', 'daerah', 'desa', 'lokasi', 'tempat', 'peta', 'geografi',
+                    'wisata', 'piknik', 'jalan-jalan', 'tamasya', 'rekreasi'
+                ],
+                'umkm': [
+                    'umkm', 'jualan', 'dagangan', 'bisnis', 'usaha', 'pedagang', 'warung', 'toko'
+                ],
+                'loker': [
+                    'loker', 'lowongan', 'kerja', 'kerjaan', 'karir', 'rekrutmen'
+                ],
                 'profile': ['profil', 'tentang', 'about', 'kami', 'kita', 'siapa', 'visimisi', 'sejarah', 'struktur', 'organisasi', 'pegawai', 'perangkat', 'pejabat', 'camat'],
                 'hours': ['jam', 'pukul', 'waktu', 'jadwal', 'kapan', 'buka', 'operasi', 'operasional', 'kerja']
             },
@@ -140,91 +153,71 @@
 
     // --- 4. INTENT RULES (voice.intent.rules.js) ---
     window.VoiceIntentRules = (function () {
-        // --- VERB-FIRST DOMAIN RESOLUTION CONFIG (STRICTER) ---
-        // CRITICAL: Include English canonical forms (post-normalization)
-        const VERBS_NEWS = ['baca', 'bacakan', 'buka', 'berita', 'info', 'kabar', 'kegiatan', 'tentang', 'terkait', 'mengenai', 'read', 'news'];
-        const VERBS_SERVICE = ['syarat', 'cara', 'prosedur', 'biaya', 'urus', 'pengurusan', 'daftar', 'bikin', 'membuat', 'buat'];
+        const Config = window.VoiceConfig;
+        const VERBS_NEWS = ['baca', 'bacakan', 'bacain', 'buka', 'berita', 'info', 'kabar', 'kegiatan', 'tentang', 'terkait', 'mengenai', 'read', 'news', 'isi', 'detail', 'selengkapnya', 'umkm', 'loker', 'lowongan', 'produk', 'jualan', 'dagangan'];
+        const VERBS_SERVICE = ['syarat', 'cara', 'prosedur', 'biaya', 'urus', 'pengurusan', 'daftar', 'bikin', 'membuat', 'buat', 'ajukan', 'pengajuan'];
         const VERBS_COMPLAINT = ['lapor', 'adukan', 'keluhan', 'komplain'];
         const NOUNS_AMBIGUOUS = ['umkm', 'ktp', 'kk', 'akta', 'surat', 'nikah', 'cerai', 'pindah', 'domisili', 'ijin', 'izin', 'blt', 'dd', 'bantuan', 'region'];
+
+        const RULES = [
+            { intent: "NAV_HOME", triggers: ["back", "home", "beranda", "depan", "utama"], minScore: 1 },
+            { intent: "NAV_NEWS", triggers: ["news", "read", "berita", "kabar", "detail", "isi", "umkm", "loker", "produk"], minScore: 1 },
+            { intent: "NAV_SERVICES", triggers: ["service"], minScore: 1 },
+            { intent: "NAV_PROFILE", triggers: ["profile", "profil", "tentang"], minScore: 1 },
+            { intent: "NAV_INFO", triggers: ["info", "informasi", "pengumuman", "hari ini"], minScore: 1 },
+            { intent: "NAV_COMPLAINT", triggers: ["pengaduan", "lapor", "aspirasi", "keluhan"], minScore: 1 },
+            { intent: "NAV_LOGIN", triggers: ["login", "masuk", "admin", "operator"], minScore: 1 },
+            { intent: "INFO_HOURS", triggers: ["hours", "jam", "buka", "tutup", "jadwal"], minScore: 1 },
+            { intent: "FAQ_SEARCH", triggers: ["contact", "tanya", "apa", "syarat"], minScore: 1 }
+        ];
 
         function evaluate(normalizedText) {
             console.log(`[IntentRules] Evaluating: "${normalizedText}"`);
             const tokens = normalizedText.split(' ');
 
-            // --- 1. PRIORITY: VERB CHECK ---
-
-            // A. NEWS VERBS (Highest Priority)
             const hasNewsVerb = tokens.some(t => VERBS_NEWS.includes(t));
             if (hasNewsVerb) {
-                // Exception Check: "info syarat" -> Service wins
-                // But "baca berita contact" -> News wins (contact alone is not enough)
                 const hasStrongServiceVerb = tokens.some(t => ['syarat', 'cara', 'prosedur', 'biaya', 'urus', 'mengurus'].includes(t));
-                if (!hasStrongServiceVerb) {
-                    console.log('[IntentRules] 📰 News Verb Detected -> Force NAV_NEWS');
-                    return {
-                        intent: window.VoiceConfig.INTENT.NAVIGATE_BERITA,
-                        score: 10,
-                        originalIntent: 'NAV_NEWS'
-                    };
-                }
+                if (!hasStrongServiceVerb) return { intent: mapInternalIntentToConfig("NAV_NEWS"), score: 10, originalIntent: "NAV_NEWS" };
             }
 
-            // B. SERVICE VERBS (Second Priority)
             const hasServiceVerb = tokens.some(t => VERBS_SERVICE.includes(t));
-            if (hasServiceVerb) {
-                console.log('[IntentRules] 🛠️ Service Verb Detected -> Force FAQ_SEARCH');
-                return {
-                    intent: window.VoiceConfig.INTENT.FAQ_SEARCH,
-                    score: 10,
-                    originalIntent: 'FAQ_SEARCH'
-                };
-            }
+            if (hasServiceVerb) return { intent: mapInternalIntentToConfig("FAQ_SEARCH"), score: 10, originalIntent: "FAQ_SEARCH" };
 
-            // C. COMPLAINT VERBS (Third Priority)
             const hasComplaintVerb = tokens.some(t => VERBS_COMPLAINT.includes(t));
-            if (hasComplaintVerb) {
-                console.log('[IntentRules] 📢 Complaint Verb Detected -> Force FAQ_SEARCH');
-                return {
-                    intent: window.VoiceConfig.INTENT.FAQ_SEARCH,
-                    score: 10,
-                    originalIntent: 'FAQ_SEARCH'
-                };
-            }
+            if (hasComplaintVerb) return { intent: mapInternalIntentToConfig("NAV_COMPLAINT"), score: 10, originalIntent: "NAV_COMPLAINT" };
 
-            // --- 2. AMBIGUOUS NOUN CHECK ---
             const hasAmbiguousNoun = tokens.some(t => NOUNS_AMBIGUOUS.includes(t));
-            if (hasAmbiguousNoun) {
-                console.log('[IntentRules] ❓ Ambiguous Noun Detected (No Service Verb) -> Default to NAV_NEWS');
-                return {
-                    intent: window.VoiceConfig.INTENT.NAVIGATE_BERITA,
-                    score: 5,
-                    originalIntent: 'NAV_NEWS'
-                };
-            }
+            if (hasAmbiguousNoun) return { intent: mapInternalIntentToConfig("NAV_NEWS"), score: 5, originalIntent: "NAV_NEWS" };
 
-            // --- 3. FALLBACK: STANDARD KEYWORD MATCHING ---
             let bestMatch = null;
             let highestScore = 0;
-            const Keywords = window.VoiceConfig.keywords;
-
-            for (const rule of Keywords) {
+            for (const rule of RULES) {
                 let score = 0;
-                tokens.forEach(token => {
-                    if (rule.words.includes(token)) score += 1;
-                });
-
-                if (score > 0 && score >= highestScore) {
+                tokens.forEach(token => { if (rule.triggers.includes(token)) score += 1; });
+                if (score >= rule.minScore && score > highestScore) {
                     highestScore = score;
-                    bestMatch = {
-                        intent: window.VoiceConfig.INTENT[rule.intent],
-                        originalIntent: rule.intent,
-                        score: score
-                    };
+                    bestMatch = { intent: mapInternalIntentToConfig(rule.intent), score: score, originalIntent: rule.intent };
                 }
             }
-
-            console.log('[IntentRules] Best Match:', bestMatch);
             return bestMatch;
+        }
+
+        function mapInternalIntentToConfig(ruleIntent) {
+            const C = window.VoiceConfig.INTENT;
+            const MAPPING = {
+                "NAV_HOME": C.NAVIGATE_HOME,
+                "NAV_NEWS": C.NAVIGATE_BERITA,
+                "NAV_SERVICES": C.NAVIGATE_LAYANAN,
+                "NAV_INFO": C.NAVIGATE_INFO,
+                "NAV_COMPLAINT": C.NAVIGATE_PENGADUAN,
+                "NAV_PROFILE": C.NAVIGATE_PROFILE,
+                "NAV_REGION": C.NAVIGATE_WILAYAH,
+                "NAV_LOGIN": C.LOGIN,
+                "INFO_HOURS": C.INFO_HOURS,
+                "FAQ_SEARCH": C.FAQ_SEARCH
+            };
+            return MAPPING[ruleIntent] || C.UNKNOWN;
         }
 
         return { findMatch: evaluate };
@@ -242,7 +235,6 @@
             // Periodically check for "stuck" speaking state
             setInterval(() => {
                 if (state.isSpeaking && !window.speechSynthesis.speaking) {
-                    console.warn('[VoiceState] ⚠️ Detected stuck speaking state, forcing recovery...');
                     window.VoiceState.setSpeaking(false);
                     if (state.isActive) window.VoiceRecognition.start();
                 }
@@ -285,8 +277,29 @@
         let voices = [];
         function loadVoices() { if (synth) voices = synth.getVoices(); }
         if (synth) { if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = loadVoices; loadVoices(); }
+        function naturalizeText(text) {
+            if (!text) return '';
+            // 1. Remove Markdown Bold/Italic
+            let cleaned = text.replace(/\*\*/g, '').replace(/__(.*?)__/g, '$1').replace(/\*(.*?)\*/g, '$1').replace(/_(.*?)_/g, '$1');
+            // 2. Remove Headers
+            cleaned = cleaned.replace(/^#+ /gm, '');
+            // 3. Keep text from links [text](url)
+            cleaned = cleaned.replace(/\[(.*?)\]\(.*?\)/g, '$1');
+            // 4. Remove list markers at start of lines
+            cleaned = cleaned.replace(/^[*-] /gm, '').replace(/^[0-9]+\. /gm, '');
+            // 5. Remove URLs and Emails
+            cleaned = cleaned.replace(/https?:\/\/\S+/g, '').replace(/[\w\.-]+@[\w\.-]+\.\w+/g, '');
+            // 6. Handle Newlines (Double -> Period, Single -> Comma for pause)
+            cleaned = cleaned.replace(/\n\n/g, '. ').replace(/\n/g, ', ');
+            // 7. Remove special chars like quotes that might be read literally in some engines
+            cleaned = cleaned.replace(/["`]/g, '');
+            // 8. Cleanup extra spaces
+            return cleaned.replace(/\s+/g, ' ').trim();
+        }
+
         function createUtterance(text, silentStart = false) {
-            const utterance = new SpeechSynthesisUtterance(text);
+            const naturalText = naturalizeText(text);
+            const utterance = new SpeechSynthesisUtterance(naturalText);
             const voice = voices.find(v => v.lang === 'id-ID') || voices.find(v => v.lang.startsWith('id')) || voices[0];
             if (voice) { utterance.voice = voice; utterance.lang = voice.lang; } else utterance.lang = 'id-ID';
             utterance.rate = 1.0;
@@ -398,7 +411,9 @@
                 document.dispatchEvent(new CustomEvent('voice-command', { detail: { text: transcript } }));
             };
             recognition.onerror = (event) => {
-                console.log("Recognition Error:", event.error);
+                if (event.error !== 'no-speech') {
+                    console.log("Recognition Error:", event.error);
+                }
                 if (event.error === 'not-allowed' || event.error === 'service-not-allowed') window.VoiceState.setActive(false);
             };
             return true;
@@ -420,70 +435,70 @@
 
             const ruleMatch = window.VoiceIntentRules.findMatch(normalized);
 
-            let interactiveLink = null;
-            try {
-                interactiveLink = findInteractiveLink(normalized, text);
-                console.log('[VoiceParser] Interactive Link Result:', interactiveLink ? 'FOUND' : 'NULL');
-            } catch (e) {
-                console.error('[VoiceParser] Error in findInteractiveLink:', e);
+            // 3. Item Specific Logic (Variable Extraction)
+            const topic = extractTopic(normalized);
+            const targetLink = findTargetLink(topic);
+
+            // --- CONTEXTUAL CHECK ---
+            const isDetailPage = document.querySelector('article') !== null || window.location.pathname.includes('/umkm/');
+            const isContextualRequest = ['ini', 'itu', 'artikel', 'isi', 'detail', 'selengkapnya', 'produk'].includes(topic);
+
+            // A. CONTEXTUAL
+            if (isDetailPage && (isContextualRequest || !topic) && ruleMatch && ruleMatch.originalIntent === "NAV_NEWS") {
+                return { intent: window.VoiceConfig.INTENT.READ_NEWS_DETAIL, original: text };
             }
 
-            // Priority 1: Specific Link Found (HIGHEST Priority for news detail)
-            if (interactiveLink) {
-                console.log('[VoiceParser] 🔗 Link Found:', interactiveLink.textContent);
-                return { intent: window.VoiceConfig.INTENT.READ_NEWS_ITEM, payload: interactiveLink, original: text };
+            // B. DIRECT LINK FOUND
+            if (targetLink) {
+                return { intent: window.VoiceConfig.INTENT.READ_NEWS_ITEM, payload: targetLink, original: text };
             }
 
-            // Priority 2: Direct Non-Navigation Intents (FAQ,STOP, etc)
-            if (ruleMatch && !['NAVIGATE_BERITA', 'NAVIGATE_LAYANAN'].includes(ruleMatch.originalIntent)) {
-                return { intent: ruleMatch.intent, original: text, matched: ruleMatch.originalIntent };
+            // C. NOT FOUND BUT HAS TOPIC -> SEARCH
+            if (ruleMatch && ruleMatch.originalIntent === "NAV_NEWS" && topic && topic.length > 3) {
+                return { intent: 'SEARCH_NEWS', payload: { keyword: topic }, original: text };
             }
 
-            // Priority 3: Section Navigation
-            if (ruleMatch) return { intent: ruleMatch.intent, original: text, matched: ruleMatch.originalIntent };
-
-            return { intent: window.VoiceConfig.INTENT.UNKNOWN, original: text, normalized: normalized };
+            return { intent: ruleMatch ? ruleMatch.intent : window.VoiceConfig.INTENT.UNKNOWN, original: text, matched: ruleMatch ? ruleMatch.originalIntent : 'UNKNOWN' };
         }
-        function findInteractiveLink(normalizedText, originalText) {
-            // Clean concepts from normalized text to find the core subject
-            const cleanText = normalizedText
-                .replace(/\b(read|news|service|region|profile|pos1|pos2|pos3|pos_last|position|contextual|buka|lihat|klik|terkait|mengenai|tentang|seputar)\b/g, '')
-                .replace(/\s+/g, ' ')
+
+        function extractTopic(normalizedText) {
+            // Remove known Intent Keywords to isolate the "Subject"
+            return normalizedText
+                .replace(/\bread\b/g, '')     // Key: read
+                .replace(/\bnews\b/g, '')     // Key: news
+                .replace(/\bprofile\b/g, '')  // Key: profile
+                .replace(/\bcontact\b/g, '')  // Key: contact
+                .replace(/\bmenu\b/g, '')     // Key: menu
+                .replace(/\bservice\b/g, '')  // Key: service
+                .replace(/\bposition\b/g, '') // Key: position
+                .replace(/\bcontextual\b/g, '')
                 .trim();
+        }
 
-            // Also extract meaningful words from original text (remove common verbs/connectors)
-            const originalKeywords = originalText.toLowerCase()
-                .replace(/\b(baca|bacakan|buka|berita|info|kabar|terkait|mengenai|tentang|seputar|yang|di|ke|dari|untuk)\b/g, '')
-                .replace(/\s+/g, ' ')
-                .trim();
+        function findTargetLink(cleanText) {
+            if (!cleanText || cleanText.length < 3) return null;
 
-            // Search priorities: 1. Berita, 2. Global links
-            const selectors = ['#berita h3 a', '#wilayah a', '#layanan a', '.card a', 'nav a', 'main a'];
-            let allLinks = [];
-            selectors.forEach(s => { document.querySelectorAll(s).forEach(r => allLinks.push(r)); });
+            // 1. News
+            const newsLinks = document.querySelectorAll('#berita h3 a');
+            for (let link of newsLinks) { if (link.innerText.toLowerCase().includes(cleanText)) return link; }
 
-            if (allLinks.length === 0) return null;
+            // 2. UMKM
+            const umkmTitles = document.querySelectorAll('#umkm h4');
+            for (let title of umkmTitles) {
+                if (title.innerText.toLowerCase().includes(cleanText)) {
+                    const card = title.closest('.group');
+                    const btn = card ? card.querySelector('a[href*="/umkm/"]') : null;
+                    if (btn) return btn;
+                }
+            }
 
-            // Strict Positional Matching using concepts
-            if (normalizedText.includes('pos1')) return allLinks[0];
-            if (normalizedText.includes('pos2') && allLinks.length > 1) return allLinks[1];
-            if (normalizedText.includes('pos3') && allLinks.length > 2) return allLinks[2];
-            if (normalizedText.includes('pos_last')) return allLinks[allLinks.length - 1];
-
-            // Check minimum length
-            if (originalKeywords.length < 3 && !['kk', 'ktp', 'wa'].includes(originalKeywords)) return null;
-
-            // ALWAYS use original keywords (not normalized) for searching
-            const searchKeyword = originalKeywords;
-            console.log('[VoiceParser] Searching for keyword:', searchKeyword);
-
-            for (let link of allLinks) {
-                const titleStr = (link.textContent || link.innerText).toLowerCase();
-
-                // Match against original keywords
-                if (searchKeyword && titleStr.includes(searchKeyword)) {
-                    console.log('[VoiceParser] ✅ Matched:', titleStr);
-                    return link;
+            // 3. Layanan
+            const serviceTitles = document.querySelectorAll('#layanan h3');
+            for (let title of serviceTitles) {
+                if (title.innerText.toLowerCase().includes(cleanText)) {
+                    const card = title.closest('.card');
+                    const btn = card ? card.querySelector('button') : null;
+                    if (btn) return btn;
                 }
             }
             return null;
@@ -510,21 +525,42 @@
                         navigateTo('top');
                     }
                     break;
-                case Intent.NAVIGATE_BERITA: navigateTo('berita'); readNewsSummary(); break;
+                case Intent.NAVIGATE_BERITA: navigateTo('berita'); readTargetSummary(); break;
                 case Intent.NAVIGATE_LAYANAN: navigateTo('layanan'); readServices(); break;
-                case Intent.NAVIGATE_WILAYAH: navigateTo('wilayah'); Speech.speak("Menampilkan potensi wilayah dan pariwisata."); break;
+                case Intent.NAVIGATE_WILAYAH: navigateTo('umkm'); Speech.speak("Menampilkan UMKM dan Lowongan Kerja."); break;
+                case Intent.NAVIGATE_INFO: navigateTo('info-hari-ini'); Speech.speak("Menampilkan informasi hari ini."); break;
+                case Intent.NAVIGATE_PENGADUAN: navigateTo('pengaduan'); Speech.speak("Menampilkan layanan pengaduan warga."); break;
                 case Intent.LOGIN: Speech.speak(Config.messages.navigateLogin); setTimeout(() => window.location.assign('/login'), 0); break;
                 case Intent.INFO_HOURS: Speech.speak(Config.messages.infoHours); break;
                 case Intent.READ_NEWS_ITEM:
-                    if (!parseResult.payload) { Speech.speak("Maaf, saya tidak menemukan berita."); break; }
-                    const url = parseResult.payload.getAttribute('href');
-                    const title = parseResult.payload.textContent;
-                    window.VoiceState.setPendingAction('READ_DETAIL', { title: title });
-                    Speech.speak(`Membuka berita: ${title}`);
-                    setTimeout(() => window.location.assign(url), 100);
+                    {
+                        const target = parseResult.payload;
+                        if (!target) break;
+                        const url = target.getAttribute('href');
+                        const title = target.innerText || target.textContent;
+                        window.VoiceState.setPendingAction('READ_DETAIL', { title: title });
+                        Speech.speak(`Membuka: ${title}`);
+                        setTimeout(() => {
+                            if (target.tagName.toLowerCase() === 'button') {
+                                target.click();
+                            } else {
+                                window.location.assign(url);
+                            }
+                        }, 100);
+                    }
                     break;
-                case Intent.READ_NEWS_DETAIL: readNewsDetailContent(); break;
+                case Intent.READ_NEWS_DETAIL: readGenericDetail(); break;
                 case Intent.NAVIGATE_PROFILE: navigateTo('profil'); Speech.speak("Menampilkan profil kecamatan."); break;
+                case 'SEARCH_NEWS':
+                    {
+                        const keyword = parseResult.payload.keyword;
+                        Speech.speak(`Mencari berita tentang ${keyword}.`);
+                        // Implement actual search logic here, e.g., redirect to search page or filter current view
+                        // For now, just log
+                        console.log(`[VoiceActions] Searching for news: ${keyword}`);
+                        // Example: window.location.assign(`/search?q=${encodeURIComponent(keyword)}`);
+                    }
+                    break;
                 case Intent.FAQ_SEARCH:
                     let query = parseResult.original || "";
                     if (query) {
@@ -558,30 +594,22 @@
             const pending = window.VoiceState.getPendingAction();
             if (pending && pending.action === 'READ_DETAIL') {
                 window.VoiceState.setPendingAction(null);
-                setTimeout(() => readNewsDetailContent(pending.payload.title), 300);
+                setTimeout(() => readGenericDetail(pending.payload.title), 300);
             }
         }
-        function readNewsDetailContent(knownTitle) {
-            if (!window.VoiceState.isActive()) return;
-
-            let titleEl = document.querySelector('h1') || document.querySelector('.post-title') || document.querySelector('article h1') || document.querySelector('main h1');
-            let titleText = knownTitle || (titleEl ? titleEl.textContent.trim() : "Halaman");
-
-            let contentEl = document.querySelector('article') || document.querySelector('.article-content') || document.querySelector('.content') || document.querySelector('.post-body') || document.querySelector('main');
-
-            if (!contentEl) {
-                window.VoiceSpeech.speak(`Sudah membuka ${titleText}. Silakan baca informasi yang tersedia.`);
-                return;
-            }
-            let paragraphs = Array.from(contentEl.querySelectorAll('p')).map(p => p.textContent.trim()).filter(t => t.length > 20);
+        function readGenericDetail(knownTitle) {
+            let titleEl = document.querySelector('h1') || document.querySelector('.post-title') || document.querySelector('article h2') || document.querySelector('.card-title');
+            let titleText = knownTitle || (titleEl ? titleEl.textContent.trim() : "Informasi");
+            let contentEl = document.querySelector('article') || document.querySelector('.article-content') || document.querySelector('.prose') || document.querySelector('.description');
+            if (!contentEl) { window.VoiceSpeech.speak(`Saya sudah membuka detail ${titleText}.`); return; }
+            let paragraphs = Array.from(contentEl.querySelectorAll('p, li')).map(p => p.textContent.trim()).filter(t => t.length > 20);
             if (paragraphs.length === 0) {
                 const rawText = contentEl.textContent;
                 const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 25);
-                paragraphs = lines.length > 1 ? lines : (rawText.match(/[^.!?]+[.!?]+/g) || [rawText]).map(s => s.trim()).filter(s => s.length > 10).slice(0, 5);
+                paragraphs = lines.length > 1 ? lines : [rawText];
             }
-            let sentences = [`Menampilkan berita: ${titleText}.`];
-            sentences = sentences.concat(paragraphs);
-            sentences.push("Sekian berita ini. Katakan 'kembali' untuk ke menu utama.");
+            let sentences = [`Menampilkan detail: ${titleText}.`].concat(paragraphs.slice(0, 8));
+            sentences.push("Sekian informasi ini. Katakan 'kembali' untuk ke menu utama.");
             window.VoiceSpeech.speakSequence(sentences);
         }
         function navigateTo(id) {

@@ -95,14 +95,15 @@
                                         <div class="fw-bold text-slate-800 small text-truncate" style="max-width: 300px;">
                                             {{ basename($dokumen->file_path) }}
                                         </div>
-                                        <a href="{{ asset('storage/' . $dokumen->file_path) }}" target="_blank"
-                                            class="small text-primary text-decoration-none">
+                                        <a href="{{ route('desa.administrasi.file.dokumen', $dokumen->id) }}"
+                                            target="_blank" class="small text-primary text-decoration-none">
                                             <i class="fas fa-eye me-1"></i> Lihat file saat ini
                                         </a>
                                     </div>
                                 </div>
 
                                 <x-desa.form.upload label="Ganti File Scan (Opsional)" name="file_dokumen"
+                                    :downloadUrl="$dokumen->file_path ? route('desa.administrasi.file.dokumen', $dokumen->id) : null"
                                     helper="Kosongkan jika tidak ingin mengganti file. Gunakan format PDF (Maks. 5MB)." />
                             </div>
 

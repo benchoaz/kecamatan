@@ -81,6 +81,22 @@ class ApplicationProfileService
         return (bool) ($this->getProfile()->hero_image_active ?? false);
     }
 
+    public function getHeroBg()
+    {
+        $path = $this->getProfile()->hero_bg_path;
+        return $path ? asset('storage/' . $path) : null;
+    }
+
+    public function getHeroBgOpacity()
+    {
+        return $this->getProfile()->hero_bg_opacity ?? 10;
+    }
+
+    public function getHeroBgBlur()
+    {
+        return $this->getProfile()->hero_bg_blur ?? 6;
+    }
+
     public function clearCache()
     {
         Cache::forget($this->cacheKey);

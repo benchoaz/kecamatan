@@ -56,4 +56,14 @@ class Desa extends Model
     {
         return $this->hasMany(DokumenDesa::class, 'desa_id');
     }
+
+    public function trantibumKejadians()
+    {
+        return $this->hasMany(TrantibumKejadian::class, 'desa_id');
+    }
+
+    public function relawans()
+    {
+        return $this->hasMany(TrantibumRelawan::class, 'desa_id');
+    }
 }

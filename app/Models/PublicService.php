@@ -21,6 +21,11 @@ class PublicService extends Model
         return $this->belongsTo(Desa::class);
     }
 
+    public function attachments()
+    {
+        return $this->hasMany(PublicServiceAttachment::class, 'public_service_id');
+    }
+
     public function handler()
     {
         return $this->belongsTo(User::class, 'handled_by');

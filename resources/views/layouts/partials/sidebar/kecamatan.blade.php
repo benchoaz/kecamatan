@@ -10,7 +10,7 @@
                 @endif
             </div>
             <div class="logo-text">
-                <span class="logo-title fw-bold text-uppercase">{{ appProfile()->region_level }}</span>
+                <span class="logo-title fw-bold text-uppercase">DASHBOARD</span>
                 <span class="logo-subtitle tracking-wider">{{ strtoupper(appProfile()->region_name) }}</span>
             </div>
         </div>
@@ -28,16 +28,7 @@
                         <span class="nav-text">Beranda Pusat</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('kecamatan.verifikasi.index') }}"
-                        class="nav-link {{ request()->is('kecamatan/verifikasi*') ? 'active' : '' }}">
-                        <span class="nav-icon"><i class="fas fa-check-double"></i></span>
-                        <span class="nav-text">Verifikasi Desa</span>
-                        @php $pendingCount = \App\Models\Submission::where('status', 'submitted')->count(); @endphp
-                        @if($pendingCount > 0) <span
-                        class="nav-badge bg-danger shadow-sm text-white">{{ $pendingCount }}</span> @endif
-                    </a>
-                </li>
+
             </ul>
         </div>
 
@@ -49,9 +40,8 @@
                         class="nav-link {{ request()->is('kecamatan/pelayanan/inbox*') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="fas fa-inbox"></i></span>
                         <span class="nav-text">Inbox Pengaduan</span>
-                        @php $unreadCount = \App\Models\PublicService::where('status', 'Menunggu Klarifikasi')->count(); @endphp
-                        @if($unreadCount > 0)
-                            <span class="nav-badge bg-teal-600 shadow-sm text-white">{{ $unreadCount }}</span>
+                        @if(($unreadServiceCount ?? 0) > 0)
+                            <span class="nav-badge bg-teal-600 shadow-sm text-white">{{ $unreadServiceCount }}</span>
                         @endif
                     </a>
                 </li>
@@ -67,6 +57,13 @@
                         class="nav-link {{ request()->is('kecamatan/pelayanan/faq*') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="fas fa-robot"></i></span>
                         <span class="nav-text">FAQ Administrasi</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('kecamatan.pelayanan.layanan.index') }}"
+                        class="nav-link {{ request()->is('kecamatan/pelayanan/layanan*') ? 'active' : '' }}">
+                        <span class="nav-icon"><i class="fas fa-layer-group"></i></span>
+                        <span class="nav-text">Daftar Layanan</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -156,19 +153,19 @@
                         <li class="nav-submenu-item">
                             <a href="{{ route('kecamatan.trantibum.index') }}"
                                 class="nav-sublink {{ request()->routeIs('kecamatan.trantibum.index') ? 'active' : '' }}">
-                                <i class="fas fa-display me-2 small"></i> Monitoring Wilayah
+                                <i class="fas fa-chart-pie me-2 small"></i> Dashboard Monitoring
                             </a>
                         </li>
                         <li class="nav-submenu-item">
-                            <a href="{{ route('kecamatan.trantibum.tagana.index') }}"
-                                class="nav-sublink {{ request()->is('kecamatan/trantibum/tagana*') ? 'active' : '' }}">
-                                <i class="fas fa-phone-volume me-2 small"></i> Data TAGANA Desa
+                            <a href="{{ route('kecamatan.trantibum.kejadian') }}"
+                                class="nav-sublink {{ request()->routeIs('kecamatan.trantibum.kejadian') ? 'active' : '' }}">
+                                <i class="fas fa-list-ul me-2 small"></i> Data Laporan
                             </a>
                         </li>
                         <li class="nav-submenu-item">
-                            <a href="{{ route('kecamatan.trantibum.emergency.index') }}"
-                                class="nav-sublink {{ request()->is('kecamatan/trantibum/emergency*') ? 'active' : '' }}">
-                                <i class="fas fa-headset me-2 small"></i> Pusat No. Darurat
+                            <a href="{{ route('kecamatan.trantibum.relawan') }}"
+                                class="nav-sublink {{ request()->routeIs('kecamatan.trantibum.relawan') ? 'active' : '' }}">
+                                <i class="fas fa-users-cog me-2 small"></i> Relawan Tangguh
                             </a>
                         </li>
                     </ul>
@@ -195,6 +192,20 @@
                         <span class="nav-text">Berita & Artikel</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('kecamatan.umkm.index') }}"
+                        class="nav-link {{ Route::is('kecamatan.umkm.*') ? 'active' : '' }}">
+                        <span class="nav-icon"><i class="fas fa-store text-orange-500"></i></span>
+                        <span class="nav-text">Etalase UMKM</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('kecamatan.loker.index') }}"
+                        class="nav-link {{ Route::is('kecamatan.loker.*') ? 'active' : '' }}">
+                        <span class="nav-icon"><i class="fas fa-briefcase text-blue-500"></i></span>
+                        <span class="nav-text">Lowongan Kerja</span>
+                    </a>
+                </li>
             </ul>
         </div>
 
@@ -203,8 +214,8 @@
                 <span class="nav-section-title">KONFIGURASI SISTEM</span>
                 <ul class="nav-menu">
                     <li class="nav-item">
-                        <a href="{{ route('kecamatan.users.index') }}"
-                            class="nav-link {{ request()->routeIs('kecamatan.users.*') ? 'active' : '' }}">
+                        <a href="/kecamatan/manajemen/users"
+                            class="nav-link {{ request()->is('kecamatan/manajemen/users*') ? 'active' : '' }}">
                             <span class="nav-icon"><i class="fas fa-user-gear"></i></span>
                             <span class="nav-text">Manajemen Pengguna</span>
                         </a>
@@ -230,12 +241,15 @@
                             <span class="nav-text">Manajemen Fitur</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <span class="nav-icon"><i class="fas fa-file-invoice"></i></span>
-                            <span class="nav-text">Audit Aktivitas</span>
-                        </a>
-                    </li>
+                    @if(auth()->user()->isSuperAdmin())
+                        <li class="nav-item">
+                            <a href="/kecamatan/manajemen/audit-logs"
+                                class="nav-link {{ request()->is('kecamatan/manajemen/audit-logs*') ? 'active' : '' }}">
+                                <span class="nav-icon"><i class="fas fa-file-invoice"></i></span>
+                                <span class="nav-text">Audit Aktivitas</span>
+                            </a>
+                        </li>
+                    @endif
                 </ul>
             </div>
         @endif

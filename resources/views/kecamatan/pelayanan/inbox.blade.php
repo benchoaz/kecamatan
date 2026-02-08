@@ -23,6 +23,7 @@
                         <thead class="bg-slate-50/50 border-bottom border-slate-100">
                             <tr>
                                 <th class="ps-4 py-3 text-slate-400 text-[11px] fw-bold uppercase tracking-wider">Tanggal</th>
+                                <th class="py-3 text-slate-400 text-[11px] fw-bold uppercase tracking-wider">Pemohon</th>
                                 <th class="py-3 text-slate-400 text-[11px] fw-bold uppercase tracking-wider">Jenis Layanan</th>
                                 <th class="py-3 text-slate-400 text-[11px] fw-bold uppercase tracking-wider">Asal Wilayah</th>
                                 <th class="py-3 text-slate-400 text-[11px] fw-bold uppercase tracking-wider">Kontak (WA)</th>
@@ -34,13 +35,28 @@
                             @forelse($complaints as $item)
                                 <tr class="transition-all hover:bg-slate-50/50">
                                     <td class="ps-4 py-3">
-                                        <div class="fw-semibold text-slate-700 small">{{ $item->created_at->format('d M Y') }}</div>
-                                        <div class="text-[10px] text-slate-400">{{ $item->created_at->format('H:i') }} WIB</div>
+                                        <div class="fw-semibold text-slate-700 small">{{ $item->created_at->format('d/m/y') }}</div>
+                                        <div class="text-[10px] text-slate-400 text-nowrap">{{ $item->created_at->format('H:i') }} WIB</div>
                                     </td>
                                     <td class="py-3">
-                                        <span class="text-[11px] fw-bold px-2 py-1 rounded-pill
-                                            {{ $item->jenis_layanan == 'Pengaduan Pelayanan' ? 'bg-rose-50 text-rose-500' :
-                                               ($item->jenis_layanan == 'Permohonan Informasi' ? 'bg-blue-50 text-blue-500' : 'bg-emerald-50 text-emerald-500') }}">
+                                        <div class="fw-bold text-slate-800 small">
+                                            {{ $item->nama_pemohon ?? 'Sistem Bot' }}
+                                            @if(str_contains($item->uraian, '[ANONIM]'))
+                                                <i class="fas fa-user-secret text-slate-400 ms-1" title="Pelapor meminta anonimitas"></i>
+                                            @endif
+                                        </div>
+                                        <div class="text-[10px] text-slate-400 d-flex align-items-center gap-1">
+                                            Pemohon
+                                            @if(str_contains($item->uraian, '[RAHASIA]'))
+                                                <span class="badge bg-rose-100 text-rose-600 border border-rose-200 text-[8px] px-1 py-0">RAHASIA</span>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td class="py-3">
+                                        <span class="text-[10px] fw-bold px-2 py-1 rounded-pill
+                                            {{ $item->jenis_layanan == 'Pengaduan' ? 'bg-rose-50 text-rose-500' :
+                                               ($item->jenis_layanan == 'Aspirasi' ? 'bg-amber-50 text-amber-500' : 
+                                               ($item->jenis_layanan == 'Permintaan Informasi' ? 'bg-blue-50 text-blue-500' : 'bg-slate-50 text-slate-500')) }}">
                                             {{ strtoupper($item->jenis_layanan) }}
                                         </span>
                                     </td>

@@ -36,12 +36,43 @@ class ApplicationProfileController extends Controller
             'hero_image_path' => 'nullable|image|mimes:png,webp|max:5120', // Limit 5MB, PNG/WebP preferred
             'hero_image_alt' => 'nullable|string|max:100',
             'hero_image_active' => 'nullable|in:0,1,on',
+            'hero_bg_path' => 'nullable|image|mimes:jpeg,png,jpg|max:3072', // Max 3MB for background
+            'hero_bg_opacity' => 'nullable|integer|min:0|max:100',
+            'hero_bg_blur' => 'nullable|integer|min:0|max:20',
+            'is_menu_pengaduan_active' => 'nullable|in:0,1,on',
+            'is_menu_umkm_active' => 'nullable|in:0,1,on',
+            'address' => 'nullable|string|max:1000',
+            'phone' => 'nullable|string|max:50',
+            'whatsapp_complaint' => 'nullable|string|max:50',
+            'facebook_url' => 'nullable|url|max:255',
+            'instagram_url' => 'nullable|url|max:255',
+            'youtube_url' => 'nullable|url|max:255',
+            'office_hours_mon_thu' => 'nullable|string|max:100',
+            'office_hours_fri' => 'nullable|string|max:100',
         ]);
 
         $profile = AppProfile::first() ?? new AppProfile();
 
-        $data = $request->only(['app_name', 'region_name', 'region_level', 'tagline', 'hero_image_alt']);
+        $data = $request->only([
+            'app_name',
+            'region_name',
+            'region_level',
+            'tagline',
+            'hero_image_alt',
+            'hero_bg_opacity',
+            'hero_bg_blur',
+            'address',
+            'phone',
+            'whatsapp_complaint',
+            'facebook_url',
+            'instagram_url',
+            'youtube_url',
+            'office_hours_mon_thu',
+            'office_hours_fri'
+        ]);
         $data['hero_image_active'] = $request->has('hero_image_active') ? true : false;
+        $data['is_menu_pengaduan_active'] = $request->has('is_menu_pengaduan_active') ? true : false;
+        $data['is_menu_umkm_active'] = $request->has('is_menu_umkm_active') ? true : false;
         $data['updated_by'] = auth()->id();
 
         // Handle File Uploads
@@ -50,7 +81,8 @@ class ApplicationProfileController extends Controller
             'image_umkm' => 'image_umkm',
             'image_pariwisata' => 'image_pariwisata',
             'image_festival' => 'image_festival',
-            'hero_image_path' => 'hero_image_path'
+            'hero_image_path' => 'hero_image_path',
+            'hero_bg_path' => 'hero_bg_path'
         ];
 
         foreach ($fileFields as $requestKey => $dbColumn) {
@@ -66,6 +98,9 @@ class ApplicationProfileController extends Controller
                 }
                 if ($requestKey === 'hero_image_path') {
                     $path = 'media';
+                }
+                if ($requestKey === 'hero_bg_path') {
+                    $path = 'backgrounds';
                 }
 
                 $data[$dbColumn] = $request->file($requestKey)->store($path, 'public');

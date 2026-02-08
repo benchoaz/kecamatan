@@ -6,11 +6,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName;
+use Filament\Panel;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser, HasName
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, \App\Traits\Auditable;
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->status === self::STATUS_AKTIF;
+    }
+
+    public function getFilamentName(): string
+    {
+        return $this->nama_lengkap ?? $this->username;
+    }
 
     protected $fillable = [
         'nama_lengkap',
@@ -20,6 +33,8 @@ class User extends Authenticatable
         'desa_id',
         'status',
         'last_login',
+        'foto',
+        'no_hp',
     ];
 
     const STATUS_AKTIF = 'aktif';

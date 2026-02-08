@@ -3,94 +3,63 @@
 namespace App\Http\Controllers\Kecamatan;
 
 use App\Http\Controllers\Controller;
-use App\Models\Submission;
+use App\Models\TrantibumKejadian;
+use App\Models\TrantibumRelawan;
 use Illuminate\Http\Request;
 
 class TrantibumController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
-        abort_unless($user->desa_id === null, 403);
+        // Dashboard Stats
+        $stats = [
+            'total_kejadian' => TrantibumKejadian::count(),
+            'kejadian_bulan_ini' => TrantibumKejadian::whereMonth('waktu_kejadian', now()->month)->count(),
+            'total_relawan' => TrantibumRelawan::where('status_aktif', true)->count(),
+            'desa_terdampak' => TrantibumKejadian::distinct('desa_id')->count('desa_id'),
+        ];
 
-        $allReports = Submission::whereHas('menu', function ($q) {
-            $q->where('kode_menu', 'trantibum');
-        })
-            ->with(['desa', 'aspek'])
-            ->latest()
-            ->take(20)
+        // Recent Incidents
+        $recent_incidents = TrantibumKejadian::with('desa')
+            ->latest('waktu_kejadian')
+            ->take(5)
             ->get();
 
-        return view('kecamatan.trantibum.kecamatan.index', compact('allReports'));
+        // Incidents by Category Chart Data
+        $categories = TrantibumKejadian::selectRaw('kategori, count(*) as count')
+            ->groupBy('kategori')
+            ->pluck('count', 'kategori');
+
+        return view('kecamatan.trantibum.index', compact('stats', 'recent_incidents', 'categories'));
     }
 
-    public function taganaIndex()
+    public function kejadian(Request $request)
     {
-        $user = auth()->user();
-        abort_unless($user->desa_id === null, 403);
+        $query = TrantibumKejadian::with('desa')->latest('waktu_kejadian');
 
-        $reports = Submission::whereHas('aspek', function ($q) {
-            $q->where('kode_aspek', 'tran_tagana');
-        })
-            ->with(['desa', 'jawabanIndikator.indikator'])
-            ->latest()
-            ->get();
-
-        return view('kecamatan.trantibum.kecamatan.tagana', compact('reports'));
-    }
-
-    public function emergencyIndex()
-    {
-        $user = auth()->user();
-        abort_unless($user->desa_id === null, 403);
-
-        return view('kecamatan.trantibum.kecamatan.darurat');
-    }
-
-    public function show($id)
-    {
-        $report = Submission::with(['desa', 'aspek', 'jawabanIndikator', 'buktiDukung', 'verifikasi'])->findOrFail($id);
-        $layout = "layouts.kecamatan";
-
-        return view('kecamatan.trantibum.show', compact('report', 'layout'));
-    }
-    public function exportAudit()
-    {
-        $desa_id = request('desa_id');
-        $desa = \App\Models\Desa::find($desa_id);
-
-        if (!$desa && auth()->user()->desa_id) {
-            $desa = auth()->user()->desa;
+        if ($request->kategori) {
+            $query->where('kategori', $request->kategori);
         }
 
-        abort_unless($desa, 404, 'Desa tidak ditemukan.');
-
-        $zipFile = new \PhpZip\ZipFile();
-        $zipName = "Paket_Audit_Trantibum_" . str_replace(' ', '_', $desa->nama_desa) . "_" . date('Ymd') . ".zip";
-
-        // Get Submissions for Trantibum
-        $submissions = Submission::where('desa_id', $desa->id)
-            ->whereHas('menu', function ($q) {
-                $q->where('kode_menu', 'trantibum');
-            })
-            ->with(['buktiDukung', 'aspek'])
-            ->get();
-
-        foreach ($submissions as $sub) {
-            $folderName = $sub->aspek->nama_aspek ?? 'Dokumen_Lainnya';
-            $folderName = preg_replace('/[^A-Za-z0-9_\-]/', '_', $folderName); // Sanitize
-
-            foreach ($sub->buktiDukung as $bukti) {
-                $fullPath = storage_path('app/local/' . $bukti->file_path);
-                if (file_exists($fullPath)) {
-                    $zipFile->addFile($fullPath, $folderName . "/" . basename($bukti->file_path));
-                }
-            }
+        if ($request->desa_id) {
+            $query->where('desa_id', $request->desa_id);
         }
 
-        $zipFile->saveAsFile(storage_path('app/temp/' . $zipName));
-        $zipFile->close();
+        $kejadians = $query->paginate(10);
 
-        return response()->download(storage_path('app/temp/' . $zipName))->deleteFileAfterSend(true);
+        return view('kecamatan.trantibum.kejadian', compact('kejadians'));
+    }
+
+    public function relawan(Request $request)
+    {
+        $query = TrantibumRelawan::with('desa')->where('status_aktif', true);
+
+        if ($request->desa_id) {
+            $query->where('desa_id', $request->desa_id);
+        }
+
+        $relawans = $query->latest()->paginate(12);
+
+        return view('kecamatan.trantibum.relawan', compact('relawans'));
     }
 }

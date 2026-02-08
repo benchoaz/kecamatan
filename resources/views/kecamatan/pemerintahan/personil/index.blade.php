@@ -99,7 +99,7 @@
             </div>
         </div>
     @else
-        <div class="card border-0 shadow-premium rounded-4 overflow-hidden">
+        <div class="card border-0 shadow-premium rounded-4">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
                     <thead class="bg-primary-900 text-white small fw-bold">
@@ -109,6 +109,7 @@
                             <th class="py-3">MASA JABATAN</th>
                             <th class="py-3">LEGALITAS (SK)</th>
                             <th class="py-3">KONTAK</th>
+                            <th class="py-3">STATUS</th>
                             <th class="text-end pe-4 py-3">AKSI</th>
                         </tr>
                     </thead>
@@ -119,7 +120,7 @@
                                     <div class="d-flex align-items-center gap-3">
                                         <div class="personil-photo">
                                             @if($p->foto)
-                                                <img src="{{ route('files.show', ['uuid' => 'local', 'filename' => str_replace('/', '_', $p->foto)]) }}"
+                                                <img src="{{ route('kecamatan.file.personil-foto', $p->id) }}"
                                                     alt="Foto {{ $p->nama }}" class="rounded-circle object-fit-cover"
                                                     style="width: 48px; height: 48px; border: 2px solid var(--brand-100);">
                                             @else
@@ -164,7 +165,7 @@
                                         <small class="text-tertiary">No. SK:</small>
                                         <span class="small fw-semibold text-primary-900">{{ $p->nomor_sk ?? '-' }}</span>
                                         @if($p->file_sk)
-                                            <a href="{{ route('files.show', ['uuid' => 'local', 'filename' => str_replace('/', '_', $p->file_sk)]) }}"
+                                            <a href="{{ route('kecamatan.file.personil', $p->id) }}"
                                                 target="_blank" class="text-brand-600 small mt-1 text-decoration-none fw-bold">
                                                 <i class="fas fa-file-pdf me-1"></i> Buka Dokumen
                                             </a>
@@ -181,24 +182,35 @@
                                         <span class="text-tertiary small">Tidak ada nomor</span>
                                     @endif
                                 </td>
+                                <td>
+                                    <span class="badge {{ $p->status_badge }} rounded-pill px-3">{{ $p->status_label }}</span>
+                                </td>
                                 <td class="text-end pe-4">
-                                    <div class="dropdown">
-                                        <button class="btn btn-light btn-sm rounded-circle shadow-sm" data-bs-toggle="dropdown"
-                                            style="width: 32px; height: 32px;">
-                                            <i class="fas fa-ellipsis-vertical text-secondary"></i>
+                                    <div class="d-flex align-items-center justify-content-end gap-1">
+                                        <a href="#" class="btn btn-icon btn-light rounded-circle shadow-sm text-primary-600" title="Edit Profil">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </a>
+
+                                        @if($p->status != 'diterima')
+                                            <form action="{{ route('kecamatan.pemerintahan.detail.personil.verify', $p->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                <input type="hidden" name="status" value="diterima">
+                                                <button type="submit" class="btn btn-icon btn-success rounded-circle shadow-sm text-white" title="Verifikasi / Terima">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            </form>
+                                            
+                                            <button type="button" class="btn btn-icon btn-warning rounded-circle shadow-sm text-white" data-bs-toggle="modal" data-bs-target="#revisionModal{{ $p->id }}" title="Minta Revisi">
+                                                <i class="fas fa-reply"></i>
+                                            </button>
+                                        @endif
+
+                                        <button type="button" class="btn btn-icon btn-light rounded-circle shadow-sm text-danger" title="Nonaktifkan">
+                                            <i class="fas fa-power-off"></i>
                                         </button>
-                                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-3">
-                                            <li><a class="dropdown-item py-2" href="#"><i
-                                                        class="fas fa-user-edit me-2 text-brand-600"></i> Edit Profil</a></li>
-                                            <li><a class="dropdown-item py-2" href="#"><i
-                                                        class="fas fa-history me-2 text-primary-400"></i> Riwayat SK</a></li>
-                                            <li>
-                                                <hr class="dropdown-divider opacity-50">
-                                            </li>
-                                            <li><a class="dropdown-item py-2 text-danger" href="#"><i
-                                                        class="fas fa-user-slash me-2"></i> Nonaktifkan</a></li>
-                                        </ul>
                                     </div>
+
+
                                 </td>
                             </tr>
                         @empty
@@ -337,6 +349,36 @@
         </div>
     </div>
 
+    <!-- Modals for Revision moved outside table -->
+    @section('modal')
+        @if(isset($personils))
+            @foreach($personils as $p)
+                <div class="modal fade" id="revisionModal{{ $p->id }}" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content border-0 shadow-lg rounded-4">
+                            <div class="modal-header bg-warning-subtle text-warning-emphasis fw-bold">
+                                Catatan Revisi ({{ $p->nama }})
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <form action="{{ route('kecamatan.pemerintahan.detail.personil.verify', $p->id) }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="status" value="dikembalikan">
+                                <div class="modal-body text-start">
+                                    <label class="form-label fw-bold small">Alasan Pengembalian</label>
+                                    <textarea name="catatan" class="form-control" rows="3" required placeholder="Jelaskan data yang perlu diperbaiki..."></textarea>
+                                </div>
+                                <div class="modal-footer border-0">
+                                    <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-warning rounded-pill px-4">Kirim Revisi</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        @endif
+    @endsection
+
 @endsection
 
 @push('styles')
@@ -348,6 +390,14 @@
 
         .bg-danger-soft {
             background-color: rgba(239, 68, 68, 0.1);
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .fw-500 {

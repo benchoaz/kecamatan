@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Dashboard Monitoring') - {{ appProfile()->app_name }}</title>
+    <title>@yield('title', 'Dashboard Monitoring') - {{ appProfile()->region_name }}</title>
     @if(appProfile()->logo_path)
         <link rel="icon" href="{{ asset('storage/' . appProfile()->logo_path) }}" type="image/png">
     @endif
@@ -22,11 +22,15 @@
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/dashboard.css?v=2.1') }}">
     <link rel="stylesheet" href="{{ asset('css/buttons-fix.css') }}">
     <link rel="stylesheet" href="{{ asset('css/layout-fix.css') }}">
     <link rel="stylesheet" href="{{ asset('css/font-fix.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dashboard-premium.css') }}">
     <style>
         .ticker-move-internal {
             display: inline-block;
@@ -38,6 +42,38 @@
         @keyframes ticker {
             0% { transform: translateX(0); }
             100% { transform: translateX(-100%); }
+        }
+        .alert-emerald {
+            background-color: var(--success-50);
+            border: 1px solid rgba(22, 163, 74, 0.1) !important;
+        }
+        .icon-box-emerald {
+            background-color: var(--success-500);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(34, 197, 94, 0.2);
+        }
+        .text-emerald-900 { color: #064e3b; }
+        .text-emerald-700 { color: #047857; }
+        .alert-danger {
+            background-color: var(--danger-50);
+            border: 1px solid rgba(239, 68, 68, 0.1) !important;
+        }
+        .icon-box-danger {
+            background-color: var(--danger-500);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
         }
     </style>
     @stack('styles')

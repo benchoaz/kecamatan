@@ -37,4 +37,15 @@ class LembagaDesa extends Model
             default => 'Draft'
         };
     }
+
+    public function getStatusBadgeAttribute()
+    {
+        return match ($this->status) {
+            'draft' => 'bg-secondary',
+            'dikirim' => 'bg-primary',
+            'dikembalikan' => 'bg-danger',
+            'diterima' => 'bg-success',
+            default => 'bg-secondary'
+        };
+    }
 }

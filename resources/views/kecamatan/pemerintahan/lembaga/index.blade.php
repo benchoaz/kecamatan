@@ -77,7 +77,7 @@
             </div>
         </div>
     @else
-        <div class="card border-0 shadow-premium rounded-4 overflow-hidden">
+        <div class="card border-0 shadow-premium rounded-4">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
                     <thead class="bg-primary-900 text-white small fw-bold">
@@ -106,24 +106,49 @@
                                     <div class="d-flex flex-column">
                                         <span class="small fw-semibold text-primary-900">{{ $l->nomor_sk ?? 'Belum ada SK' }}</span>
                                         @if($l->file_sk)
-                                            <a href="#" class="text-brand-600 small mt-1 text-decoration-none fw-bold">
+                                            <a href="{{ route('kecamatan.file.lembaga', $l->id) }}"
+                                                class="text-brand-600 small mt-1 text-decoration-none fw-bold" target="_blank">
                                                 <i class="fas fa-file-pdf me-1"></i> Buka SK
                                             </a>
                                         @endif
                                     </div>
                                 </td>
                                 <td>
-                                    @if($l->is_active)
-                                        <span class="badge rounded-pill bg-success-50 text-success-600 px-3">AKTIF</span>
-                                    @else
-                                        <span class="badge rounded-pill bg-danger-50 text-danger-600 px-3">NONAKTIF</span>
-                                    @endif
+                                    <span
+                                        class="badge {{ $l->status_badge ?? 'bg-secondary' }} rounded-pill px-3">{{ $l->status_label ?? 'Draft' }}</span>
                                 </td>
                                 <td class="text-end pe-4">
-                                    <button class="btn btn-light btn-sm rounded-circle shadow-sm"
-                                        style="width: 32px; height: 32px;">
-                                        <i class="fas fa-edit text-secondary"></i>
-                                    </button>
+                                    <div class="d-flex align-items-center justify-content-end gap-1">
+                                        <a href="#" class="btn btn-icon btn-light rounded-circle shadow-sm text-primary-600"
+                                            title="Edit Data">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </a>
+
+                                        @if($l->status != 'diterima')
+                                            <form action="{{ route('kecamatan.pemerintahan.detail.lembaga.verify', $l->id) }}"
+                                                method="POST" class="d-inline">
+                                                @csrf
+                                                <input type="hidden" name="status" value="diterima">
+                                                <button type="submit"
+                                                    class="btn btn-icon btn-success rounded-circle shadow-sm text-white"
+                                                    title="Verifikasi / Terima">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            </form>
+
+                                            <button type="button" class="btn btn-icon btn-warning rounded-circle shadow-sm text-white"
+                                                data-bs-toggle="modal" data-bs-target="#revisionModal{{ $l->id }}" title="Minta Revisi">
+                                                <i class="fas fa-reply"></i>
+                                            </button>
+                                        @endif
+
+                                        <button type="button" class="btn btn-icon btn-light rounded-circle shadow-sm text-danger"
+                                            title="Hapus Data">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+
+
                                 </td>
                             </tr>
                         @empty
@@ -202,6 +227,37 @@
         </div>
     </div>
 
+    <!-- Modals for Revision moved outside table -->
+    @section('modal')
+        @if(isset($lembagas))
+            @foreach($lembagas as $l)
+                <div class="modal fade" id="revisionModal{{ $l->id }}" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content border-0 shadow-lg rounded-4">
+                            <div class="modal-header bg-warning-subtle text-warning-emphasis fw-bold">
+                                Catatan Revisi ({{ $l->nama_lembaga }})
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <form action="{{ route('kecamatan.pemerintahan.detail.lembaga.verify', $l->id) }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="status" value="dikembalikan">
+                                <div class="modal-body text-start">
+                                    <label class="form-label fw-bold small">Alasan Pengembalian</label>
+                                    <textarea name="catatan" class="form-control" rows="3" required
+                                        placeholder="Jelaskan data yang perlu diperbaiki..."></textarea>
+                                </div>
+                                <div class="modal-footer border-0">
+                                    <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-warning rounded-pill px-4">Kirim Revisi</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        @endif
+    @endsection
+
 @endsection
 
 @push('styles')
@@ -231,6 +287,5 @@
             padding: 0.2rem 0.6rem;
             font-size: 0.75rem;
         }
-    </style>
     </style>
 @endpush

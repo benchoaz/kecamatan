@@ -31,14 +31,23 @@ class AppServiceProvider extends ServiceProvider
             $view->with('publicAnnouncements', app(\App\Services\AnnouncementService::class)->getPublicAnnouncements());
         });
 
-        // Dashboard Announcements (Internal)
+        // Dashboard Announcements & Notifications (Internal)
         view()->composer(['desa.*', 'kecamatan.*', 'layouts.*'], function ($view) {
             if (auth()->check()) {
                 $service = app(\App\Services\AnnouncementService::class);
+
+                // Announcements
                 if (auth()->user()->desa_id) {
                     $view->with('internalAnnouncements', $service->getDesaAnnouncements(auth()->user()->desa_id));
                 } else {
                     $view->with('internalAnnouncements', $service->getInternalAnnouncements());
+
+                    // Specific for Kecamatan: Service Submissions Notifications
+                    $view->with('unreadServiceCount', \App\Models\PublicService::where('status', 'Menunggu Klarifikasi')->count());
+                    $view->with('recentUnreadServices', \App\Models\PublicService::where('status', 'Menunggu Klarifikasi')
+                        ->orderBy('created_at', 'desc')
+                        ->take(5)
+                        ->get());
                 }
             }
         });

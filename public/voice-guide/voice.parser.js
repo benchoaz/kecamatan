@@ -19,34 +19,47 @@ window.VoiceParser = (function () {
         // 2. Intent Heuristics (Rules & Scoring)
         const ruleMatch = IntentRules.findMatch(normalized);
 
-        // 3. News Specific Logic (Variable Extraction)
-        // Cek apakah user ingin membaca berita spesifik: "baca berita tentang [banjir]"
-        const newsTopic = extractNewsTopic(normalized);
-        const newsLink = findNewsLink(newsTopic);
+        // 3. News/Item Specific Logic (Variable Extraction)
+        // Cek apakah user ingin membaca berita/item spesifik: "baca umkm keripik" or "baca berita banjir"
+        const topic = extractTopic(normalized);
+        const targetLink = findTargetLink(topic);
+
+        // --- CONTEXTUAL CHECK: Are we on a detail page? ---
+        const isDetailPage = document.querySelector('article') !== null || window.location.pathname.includes('/umkm/');
+        const isContextualRequest = ['ini', 'itu', 'artikel', 'isi', 'detail', 'selengkapnya', 'produk'].includes(topic);
 
         // DECISION LOGIC
 
-        // A. DIRECT FOUND: Judul berita ditemukan di halaman ini
-        if (newsLink) {
-            console.log(`[VoiceParser] 🎯 News Link FOUND: "${newsLink.innerText}"`);
+        // A. CONTEXTUAL: Jika di halaman artikel/produk & minta baca "ini" atau "isi"
+        if (isDetailPage && (isContextualRequest || !topic) && ruleMatch && ruleMatch.originalIntent === "NAV_NEWS") {
+            console.log(`[VoiceParser] 📄 Contextual Detail requested.`);
+            return {
+                intent: Config.INTENT.READ_NEWS_DETAIL,
+                original: text
+            };
+        }
+
+        // B. DIRECT FOUND: Judul berita/item ditemukan di halaman ini
+        if (targetLink) {
+            console.log(`[VoiceParser] 🎯 Target Link FOUND: "${targetLink.innerText}"`);
             return {
                 intent: Config.INTENT.READ_NEWS_ITEM,
-                payload: newsLink,
+                payload: targetLink,
                 original: text
             };
         }
 
-        // B. NOT FOUND BUT HAS TOPIC: Intent News + Topic -> SEARCH_NEWS
-        if (ruleMatch && ruleMatch.originalIntent === "NAV_NEWS" && newsTopic && newsTopic.length > 3) {
-            console.log(`[VoiceParser] 🔍 News Topic "${newsTopic}" NOT FOUND on this page. Escalating to SEARCH_NEWS.`);
+        // C. NOT FOUND BUT HAS TOPIC: Intent News + Topic -> SEARCH_NEWS
+        if (ruleMatch && ruleMatch.originalIntent === "NAV_NEWS" && topic && topic.length > 3) {
+            console.log(`[VoiceParser] 🔍 Topic "${topic}" NOT FOUND on this page. Escalating to SEARCH_NEWS.`);
             return {
                 intent: Config.INTENT.SEARCH_NEWS,
-                payload: { keyword: newsTopic }, // Pass keyword for next page
+                payload: { keyword: topic }, // Pass keyword for next page
                 original: text
             };
         }
 
-        // C. GENERIC MATCH: "Baca berita" (Tanpa topik spesifik atau topik terlalu pendek)
+        // D. GENERIC MATCH: "Baca berita" (Tanpa topik spesifik atau topik terlalu pendek)
         if (ruleMatch) {
             console.log(`[VoiceParser] Match Rule: ${ruleMatch.originalIntent} (Score: ${ruleMatch.score})`);
             return {
@@ -68,46 +81,63 @@ window.VoiceParser = (function () {
     }
 
     // Helper: Extract variable topic from sentence
-    function extractNewsTopic(normalizedText) {
+    function extractTopic(normalizedText) {
+        // Remove known Intent Keywords to isolate the "Subject"
         return normalizedText
-            .replace(/baca/g, '')
-            .replace(/bacakan/g, '') // Added bacakan
-            .replace(/berita/g, '')
-            .replace(/tentang/g, '')
-            .replace(/info/g, '')
-            .replace(/kabar/g, '')
-            .replace(/kegiatan/g, '')
-            .replace(/pertama/g, '')
-            .replace(/kedua/g, '')
-            .replace(/ketiga/g, '')
+            .replace(/\bread\b/g, '')     // Key: read
+            .replace(/\bnews\b/g, '')     // Key: news
+            .replace(/\bprofile\b/g, '')  // Key: profile
+            .replace(/\bcontact\b/g, '')  // Key: contact
+            .replace(/\bmenu\b/g, '')     // Key: menu
+            .replace(/\bservice\b/g, '')  // Key: service
+            .replace(/\bposition\b/g, '') // Key: position
+            .replace(/\bcontextual\b/g, '')
             .trim();
     }
 
-    function findNewsLink(cleanText) {
-        console.log('[VoiceParser] findNewsLink for:', cleanText);
+    function findTargetLink(cleanText) {
+        console.log('[VoiceParser] findTargetLink for:', cleanText);
 
-        // If text is too short after cleaning, don't guess to avoid false triggers
         if (!cleanText || cleanText.length < 3) return null;
 
-        const links = document.querySelectorAll('#berita h3 a');
-        console.log('[VoiceParser] Found', links.length, 'news links in DOM');
+        // 1. Check NEWS (Standard anchor)
+        const newsLinks = document.querySelectorAll('#berita h3 a');
+        for (let link of newsLinks) {
+            if (link.innerText.toLowerCase().includes(cleanText)) return link;
+        }
 
-        if (links.length === 0) return null;
-
-        // 1. Strict Positional Matching cannot be done easily on cleanText content
-        // We rely on specific keywords in normalized text for that, but here we only have cleanText.
-        // Let's assume positional logic is less important for "baca berita judul X"
-
-        // 2. Fuzzy/Title Matching
-        for (let link of links) {
-            const title = link.innerText.toLowerCase();
-            if (title.includes(cleanText)) {
-                console.log('[VoiceParser] ✅ MATCH:', link.innerText);
-                return link;
+        // 2. Check UMKM (Card matching)
+        const umkmTitles = document.querySelectorAll('#umkm h4');
+        for (let title of umkmTitles) {
+            if (title.innerText.toLowerCase().includes(cleanText)) {
+                // Return the "Detail" button inside this card
+                const card = title.closest('.group');
+                const detailBtn = card ? card.querySelector('a[href*="/umkm/"]') : null;
+                if (detailBtn) return detailBtn;
             }
         }
 
-        console.log('[VoiceParser] ⏸️ No clear news match found.');
+        // 3. Check LOKER (Card matching)
+        const jobTitles = document.querySelectorAll('#umkm h4'); // Fixed selector context if in same section
+        for (let title of jobTitles) {
+            if (title.innerText.toLowerCase().includes(cleanText)) {
+                const card = title.closest('.group');
+                const waLink = card ? card.querySelector('a[href*="wa.me"]') : null;
+                if (waLink) return waLink;
+            }
+        }
+
+        // 4. Check LAYANAN (Modal trigger)
+        const serviceTitles = document.querySelectorAll('#layanan h3');
+        for (let title of serviceTitles) {
+            if (title.innerText.toLowerCase().includes(cleanText)) {
+                const card = title.closest('.card');
+                const actionBtn = card ? card.querySelector('button') : null;
+                if (actionBtn) return actionBtn;
+            }
+        }
+
+        console.log('[VoiceParser] ⏸️ No target match found.');
         return null;
     }
 

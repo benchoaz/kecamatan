@@ -74,7 +74,7 @@
                                     </td>
                                     <td class="text-end px-4">
                                         <div class="d-flex justify-content-end gap-2">
-                                            <a href="{{ asset('storage/'.$dok->file_path) }}" target="_blank" class="btn btn-sm btn-light rounded-circle shadow-sm" title="Lihat File">
+                                            <a href="{{ route('desa.administrasi.file.dokumen', $dok->id) }}" target="_blank" class="btn btn-sm btn-light rounded-circle shadow-sm" title="Lihat File">
                                                 <i class="fas fa-file-pdf text-danger"></i>
                                             </a>
                                             

@@ -5,9 +5,7 @@
 @section('content')
     <div class="dashboard container-fluid px-4 py-4">
         <!-- Modern Formal Welcome Section -->
-        <!-- Dark Professional Welcome Section -->
-        <div class="welcome-banner p-4 p-md-5 rounded-4 mb-5 position-relative overflow-hidden shadow-lg"
-            style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
+        <div class="welcome-banner premium-welcome p-4 p-md-5 rounded-4 mb-5 position-relative overflow-hidden shadow-lg animate-entrance">
             <div class="position-relative z-2">
                 <div class="d-flex align-items-center gap-2 mb-3">
                     <span
@@ -36,66 +34,60 @@
 
         <!-- Metric Cards -->
         <div class="row g-4 mb-5">
-            <div class="col-xl-3 col-md-6">
-                <div class="card border-0 shadow-premium rounded-4 h-100 overflow-hidden">
+            <div class="col-xl-3 col-md-6 animate-entrance" style="animation-delay: 0.1s">
+                <div class="card border-0 glass-card shadow-premium rounded-4 h-100 overflow-hidden stat-item">
                     <div class="card-body p-4 d-flex align-items-center gap-3">
                         <div class="flex-shrink-0 bg-brand-50 text-brand-600 rounded-4 d-flex align-items-center justify-content-center"
                             style="width: 60px; height: 60px;">
                             <i class="fas fa-users-viewfinder fa-2x"></i>
                         </div>
                         <div>
-                            <span class="d-block text-tertiary small fw-bold text-uppercase tracking-wider">Total
-                                Penduduk</span>
+                            <span class="d-block text-tertiary small fw-bold text-uppercase tracking-wider">Total Penduduk</span>
                             <h3 class="mb-0 fw-bold text-primary-900 stat-value"
-                                data-count="{{ $stats['total_penduduk'] }}">0</h3>
+                                data-count="{{ $stats['total_penduduk'] ?? 0 }}">0</h3>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 col-md-6">
-                <div class="card border-0 shadow-premium rounded-4 h-100 overflow-hidden">
+            <div class="col-xl-3 col-md-6 animate-entrance" style="animation-delay: 0.2s">
+                <div class="card border-0 glass-card shadow-premium rounded-4 h-100 overflow-hidden stat-item">
                     <div class="card-body p-4 d-flex align-items-center gap-3">
                         <div class="flex-shrink-0 bg-success-50 text-success-600 rounded-4 d-flex align-items-center justify-content-center"
                             style="width: 60px; height: 60px;">
                             <i class="fas fa-file-circle-check fa-2x"></i>
                         </div>
                         <div>
-                            <span class="d-block text-tertiary small fw-bold text-uppercase tracking-wider">Laporan
-                                Masuk</span>
-                            <h3 class="mb-0 fw-bold text-primary-900 stat-value" data-count="{{ $stats['laporan_masuk'] }}">
-                                0</h3>
+                            <span class="d-block text-tertiary small fw-bold text-uppercase tracking-wider">Laporan Masuk</span>
+                            <h3 class="mb-0 fw-bold text-primary-900 stat-value" data-count="{{ $stats['laporan_masuk'] ?? 0 }}">0</h3>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 col-md-6">
-                <div class="card border-0 shadow-premium rounded-4 h-100 overflow-hidden">
+            <div class="col-xl-3 col-md-6 animate-entrance" style="animation-delay: 0.3s">
+                <div class="card border-0 glass-card shadow-premium rounded-4 h-100 overflow-hidden stat-item">
                     <div class="card-body p-4 d-flex align-items-center gap-3">
                         <div class="flex-shrink-0 bg-info-50 text-info-500 rounded-4 d-flex align-items-center justify-content-center"
                             style="width: 60px; height: 60px;">
                             <i class="fas fa-map-location fa-2x"></i>
                         </div>
                         <div>
-                            <span class="d-block text-tertiary small fw-bold text-uppercase tracking-wider">Jumlah
-                                Desa</span>
-                            <h3 class="mb-0 fw-bold text-primary-900 stat-value" data-count="{{ $stats['jumlah_desa'] }}">0
-                            </h3>
+                            <span class="d-block text-tertiary small fw-bold text-uppercase tracking-wider">Jumlah Desa</span>
+                            <h3 class="mb-0 fw-bold text-primary-900 stat-value" data-count="{{ $stats['jumlah_desa'] ?? 0 }}">0</h3>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 col-md-6">
-                <div class="card border-0 shadow-premium rounded-4 h-100 overflow-hidden">
+            <div class="col-xl-3 col-md-6 animate-entrance" style="animation-delay: 0.4s">
+                <div class="card border-0 glass-card shadow-premium rounded-4 h-100 overflow-hidden stat-item">
                     <div class="card-body p-4 d-flex align-items-center gap-3">
                         <div class="flex-shrink-0 bg-warning-50 text-warning-500 rounded-4 d-flex align-items-center justify-content-center"
                             style="width: 60px; height: 60px;">
                             <i class="fas fa-user-clock fa-2x"></i>
                         </div>
                         <div>
-                            <span
-                                class="d-block text-tertiary small fw-bold text-uppercase tracking-wider">Pengunjung</span>
+                            <span class="d-block text-tertiary small fw-bold text-uppercase tracking-wider">Pengunjung</span>
                             <h3 class="mb-0 fw-bold text-primary-900 stat-value"
-                                data-count="{{ $stats['pengunjung_hari_ini'] }}">0</h3>
+                                data-count="{{ $stats['pengunjung_hari_ini'] ?? 0 }}">0</h3>
                         </div>
                     </div>
                 </div>
@@ -104,7 +96,7 @@
 
         <div class="row g-4">
             <!-- Domain Grid -->
-            <div class="col-xl-8">
+            <div class="col-xl-8 animate-entrance" style="animation-delay: 0.5s">
                 <div class="mb-4 d-flex align-items-center justify-content-between">
                     <h4 class="fw-bold text-primary-900 mb-0">Bidang Pengawasan Wilayah</h4>
                     <span class="text-tertiary small">Pilih modul untuk monitor wilayah</span>
@@ -112,10 +104,10 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <a href="{{ route('kecamatan.pemerintahan.index') }}" class="text-decoration-none">
-                            <div class="card border-0 shadow-sm rounded-4 domain-premium p-3 h-100">
+                            <div class="card border-0 shadow-sm rounded-4 domain-premium-v2 p-4 h-100">
                                 <div class="d-flex align-items-center gap-3">
-                                    <div class="bg-primary-900 text-white rounded-3 d-flex align-items-center justify-content-center"
-                                        style="width: 50px; height: 50px;">
+                                    <div class="icon-box bg-primary-900 text-white rounded-4 d-flex align-items-center justify-content-center shadow-lg"
+                                        style="width: 55px; height: 55px;">
                                         <i class="fas fa-shield-halved fa-lg"></i>
                                     </div>
                                     <div>
@@ -128,10 +120,10 @@
                     </div>
                     <div class="col-md-6">
                         <a href="{{ route('kecamatan.ekbang.index') }}" class="text-decoration-none">
-                            <div class="card border-0 shadow-sm rounded-4 domain-premium p-3 h-100">
+                            <div class="card border-0 shadow-sm rounded-4 domain-premium-v2 p-4 h-100">
                                 <div class="d-flex align-items-center gap-3">
-                                    <div class="bg-brand-600 text-white rounded-3 d-flex align-items-center justify-content-center"
-                                        style="width: 50px; height: 50px;">
+                                    <div class="icon-box bg-brand-600 text-white rounded-4 d-flex align-items-center justify-content-center shadow-lg"
+                                        style="width: 55px; height: 55px;">
                                         <i class="fas fa-chart-pie fa-lg"></i>
                                     </div>
                                     <div>
@@ -144,10 +136,10 @@
                     </div>
                     <div class="col-md-6">
                         <a href="{{ route('kecamatan.kesra.index') }}" class="text-decoration-none">
-                            <div class="card border-0 shadow-sm rounded-4 domain-premium p-3 h-100">
+                            <div class="card border-0 shadow-sm rounded-4 domain-premium-v2 p-4 h-100">
                                 <div class="d-flex align-items-center gap-3">
-                                    <div class="bg-success-600 text-white rounded-3 d-flex align-items-center justify-content-center"
-                                        style="width: 50px; height: 50px;">
+                                    <div class="icon-box bg-success-600 text-white rounded-4 d-flex align-items-center justify-content-center shadow-lg"
+                                        style="width: 55px; height: 55px;">
                                         <i class="fas fa-hand-holding-heart fa-lg"></i>
                                     </div>
                                     <div>
@@ -160,10 +152,10 @@
                     </div>
                     <div class="col-md-6">
                         <a href="{{ route('kecamatan.trantibum.index') }}" class="text-decoration-none">
-                            <div class="card border-0 shadow-sm rounded-4 domain-premium p-3 h-100">
+                            <div class="card border-0 shadow-sm rounded-4 domain-premium-v2 p-4 h-100">
                                 <div class="d-flex align-items-center gap-3">
-                                    <div class="bg-danger text-white rounded-3 d-flex align-items-center justify-content-center"
-                                        style="width: 50px; height: 50px;">
+                                    <div class="icon-box bg-danger text-white rounded-4 d-flex align-items-center justify-content-center shadow-lg"
+                                        style="width: 55px; height: 55px;">
                                         <i class="fas fa-mask-ventilator fa-lg"></i>
                                     </div>
                                     <div>
@@ -178,9 +170,9 @@
             </div>
 
             <!-- Activity Log -->
-            <div class="col-xl-4">
-                <div class="card border-0 shadow-premium rounded-4 overflow-hidden h-100">
-                    <div class="card-header bg-white border-0 py-3 px-4">
+            <div class="col-xl-4 animate-entrance" style="animation-delay: 0.6s">
+                <div class="card border-0 glass-card shadow-premium rounded-4 overflow-hidden h-100">
+                    <div class="card-header bg-white bg-opacity-50 border-0 py-3 px-4">
                         <h5 class="fw-bold text-primary-900 mb-0">Audit Aktivitas Wilayah</h5>
                     </div>
                     <div class="card-body p-0">
@@ -202,7 +194,7 @@
                             @endforeach
                         </div>
                     </div>
-                    <div class="card-footer bg-white border-0 text-center py-3">
+                    <div class="card-footer bg-white bg-opacity-50 border-0 text-center py-3">
                         <a href="{{ route('kecamatan.laporan.index') }}"
                             class="small text-brand-600 fw-bold text-decoration-none">LIHAT SEMUA LOG <i
                                 class="fas fa-arrow-right ms-1"></i></a>
@@ -213,7 +205,52 @@
     </div>
 @endsection
 
+@push('styles')
+<style>
+    /* Final Safeguard Styles */
+    .animate-entrance {
+        opacity: 1 !important;
+        transform: none !important;
+        animation: fadeInUp 0.6s ease-out both !important;
+    }
+    
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.85) !important;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    }
+</style>
+@endpush
+
 @push('scripts')
-    <script>     document.addEventListener('DOMContentLoaded', function () {         const counters = document.querySelectorAll('.stat-value');         counters.forEach(counter => {             const target = parseInt(counter.getAttribute('data-count'));             const duration = 1500;             const step = target / (duration / 16);             let current = 0;             const timer = setInterval(() => {                 current += step;                 if (current >= target) {                     counter.textContent = target.toLocaleString('id-ID');                     clearInterval(timer);                 } else {                     counter.textContent = Math.floor(current).toLocaleString('id-ID');                 }             }, 16);         });     });
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const counters = document.querySelectorAll('.stat-value');
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-count')) || 0;
+                if (target === 0) {
+                    counter.textContent = '0';
+                    return;
+                }
+                const duration = 1500;
+                const step = target / (duration / 16);
+                let current = 0;
+                const timer = setInterval(() => {
+                    current += step;
+                    if (current >= target) {
+                        counter.textContent = target.toLocaleString('id-ID');
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = Math.floor(current).toLocaleString('id-ID');
+                    }
+                }, 16);
+            });
+        });
     </script>
 @endpush

@@ -99,6 +99,7 @@
                             <th class="ps-4 py-3 text-muted small fw-bold text-uppercase">Kode Desa</th>
                             <th class="py-3 text-muted small fw-bold text-uppercase">Nama Desa</th>
                             <th class="py-3 text-muted small fw-bold text-uppercase">Kecamatan</th>
+                            <th class="py-3 text-muted small fw-bold text-uppercase">Website</th>
                             <th class="py-3 text-muted small fw-bold text-uppercase text-center">Status</th>
                             <th class="pe-4 py-3 text-end" style="width: 150px;">Aksi</th>
                         </tr>
@@ -109,6 +110,16 @@
                                 <td class="ps-4 py-3 fw-bold text-primary">{{ $desa->kode_desa }}</td>
                                 <td>{{ $desa->nama_desa }}</td>
                                 <td>{{ $desa->kecamatan }}</td>
+                                <td>
+                                    @if($desa->website)
+                                        <a href="{{ $desa->website }}" target="_blank"
+                                            class="btn btn-xs btn-light border py-1 px-2 rounded-3" style="font-size: 10px;">
+                                            <i class="fas fa-external-link-alt text-primary me-1"></i> Profil Desa
+                                        </a>
+                                    @else
+                                        <span class="text-muted small">-</span>
+                                    @endif
+                                </td>
                                 <td class="text-center">
                                     @if($desa->status == 'aktif')
                                         <span class="badge bg-soft-success text-success rounded-pill px-3">Aktif</span>
@@ -118,7 +129,7 @@
                                 </td>
                                 <td class="pe-4 text-end">
                                     <button type="button" class="btn btn-sm btn-icon btn-light rounded-circle me-1"
-                                        onclick="editDesa('{{ $desa->id }}', '{{ $desa->nama_desa }}', '{{ $desa->status }}', '{{ $desa->kode_desa }}')"
+                                        onclick="editDesa('{{ $desa->id }}', '{{ $desa->nama_desa }}', '{{ $desa->status }}', '{{ $desa->kode_desa }}', '{{ $desa->website }}')"
                                         title="Edit Data" style="background-color: #3b82f6; color: white; border: none;">
                                         <i class="fas fa-edit"></i>
                                     </button>
@@ -136,7 +147,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center py-5">
+                                <td colspan="6" class="text-center py-5">
                                     <p class="text-muted mb-0">Tidak ada data desa ditemukan.</p>
                                 </td>
                             </tr>
@@ -151,7 +162,9 @@
             @endif
         </div>
     </div>
+@endsection
 
+@section('modal')
     <!-- Add Modal -->
     <div class="modal fade" id="addDesaModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -185,11 +198,17 @@
                                 <input type="text" name="kabupaten" class="form-control" value="Probolinggo" required>
                             </div>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Link Website Desa (Opsional)</label>
+                            <input type="text" name="website" class="form-control"
+                                placeholder="Contoh: www.nama-desa.desa.id">
+                        </div>
                         <input type="hidden" name="status" value="aktif">
                     </div>
                     <div class="modal-footer border-0 p-4 pt-0">
                         <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary px-4" style="background-color: #4f46e5; border-color: #4f46e5; color: white;">Simpan Desa</button>
+                        <button type="submit" class="btn btn-primary px-4"
+                            style="background-color: #4f46e5; border-color: #4f46e5; color: white;">Simpan Desa</button>
                     </div>
                 </form>
             </div>
@@ -218,6 +237,11 @@
                             <label class="form-label fw-bold">Nama Desa</label>
                             <input type="text" name="nama_desa" id="edit_nama_desa" class="form-control" required>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Link Website Desa</label>
+                            <input type="text" name="website" id="edit_website" class="form-control"
+                                placeholder="Contoh: www.nama-desa.desa.id">
+                        </div>
                         <div class="mb-0">
                             <label class="form-label fw-bold">Status Referensi</label>
                             <select name="status" id="edit_status" class="form-select">
@@ -234,23 +258,39 @@
             </div>
         </div>
     </div>
+@endsection
 
-    @push('scripts')
-        <script>
-            function editDesa(id, nama, status, kode) {
-                const form = document.getElementById('editDesaForm');
-                form.action = `/kecamatan/master/desa/${id}`;
-                document.getElementById('edit_nama_desa').value = nama;
-                document.getElementById('edit_status').value = status;
-                document.getElementById('edit_kode_desa').value = kode;
+@push('scripts')
+    <script>
+        function editDesa(id, nama, status, kode, website) {
+            const form = document.getElementById('editDesaForm');
+            form.action = `/kecamatan/master/desa/${id}`;
 
-                const modal = new bootstrap.Modal(document.getElementById('editDesaModal'));
-                modal.show();
-            }
-        </script>
-    @endpush
+            // Update input values
+            document.getElementById('edit_nama_desa').value = nama;
+            document.getElementById('edit_status').value = status;
+            document.getElementById('edit_kode_desa').value = kode;
+            document.getElementById('edit_website').value = website || '';
 
+            // Show modal using getOrCreateInstance to prevent multiple backdrops
+            const modalEl = document.getElementById('editDesaModal');
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+        }
+    </script>
+@endpush
+
+@push('styles')
     <style>
+        /* Force Modal to be on top of backdrop */
+        .modal {
+            z-index: 1060 !important;
+        }
+
+        .modal-backdrop {
+            z-index: 1050 !important;
+        }
+
         .bg-soft-success {
             background: rgba(16, 185, 129, 0.1);
         }
@@ -274,4 +314,4 @@
             background: #14b8a6;
         }
     </style>
-@endsection
+@endpush

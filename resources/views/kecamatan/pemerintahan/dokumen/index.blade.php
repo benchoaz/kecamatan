@@ -126,7 +126,7 @@
                                         </td>
                                         <td class="text-slate-600">{{ $d->created_at->format('d M Y') }}</td>
                                         <td class="text-center">
-                                            <a href="#"
+                                            <a href="{{ route('kecamatan.file.dokumen', $d->id) }}" target="_blank"
                                                 class="btn btn-sm btn-light border text-indigo-600 px-3 rounded-pill shadow-sm">
                                                 <i class="fas fa-file-pdf me-1"></i> Lihat PDF
                                             </a>
@@ -152,7 +152,8 @@
                                                 </div>
                                                 <h5 class="text-slate-800 fw-bold">Belum Ada Arsip</h5>
                                                 <p class="text-slate-500 small mx-auto" style="max-width: 300px;">
-                                                    Desa ini belum mengunggah dokumen digital {{ strtolower($tipe_filter ?? 'perencanaan pembangunan') }}.
+                                                    Desa ini belum mengunggah dokumen digital
+                                                    {{ strtolower($tipe_filter ?? 'perencanaan pembangunan') }}.
                                                 </p>
                                             </div>
                                         </td>
