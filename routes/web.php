@@ -82,6 +82,13 @@ Route::prefix('berita')->name('public.berita.')->group(function () {
     Route::get('/{slug}', [\App\Http\Controllers\PublicBeritaController::class, 'show'])->name('show');
 });
 
+// Public Work Directory Routes (Direktori Kerja & Jasa Warga)
+use App\Http\Controllers\WorkDirectoryController;
+Route::prefix('kerja')->name('kerja.')->group(function () {
+    Route::get('/', [WorkDirectoryController::class, 'index'])->name('index');
+    Route::get('/{id}', [WorkDirectoryController::class, 'show'])->name('show');
+});
+
 // Auth Routes
 Route::get('/login', [AuthController::class, 'login'])->name('login')->middleware('guest');
 Route::post('/login', [AuthController::class, 'authenticate']);
