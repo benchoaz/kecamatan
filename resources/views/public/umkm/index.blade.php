@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Etalase UMKM Lokal - Kecamatan Besuk')
+@section('title', 'Etalase UMKM Lokal - ' . appProfile()->region_level . ' ' . appProfile()->region_name)
 
 @section('content')
     <section class="py-20 bg-slate-50 min-h-screen">
@@ -14,7 +14,7 @@
                         <span class="text-slate-400">Etalase UMKM</span>
                     </nav>
                     <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Etalase UMKM Lokal</h1>
-                    <p class="text-slate-500 text-lg">Dukungan ekonomi kreatif warga Kecamatan Besuk. Produk berkualitas,
+                    <p class="text-slate-500 text-lg">Dukungan ekonomi kreatif warga {{ appProfile()->region_level }} {{ appProfile()->region_name }}. Produk berkualitas,
                         harga terjangkau, langsung dari produsen.</p>
                 </div>
 

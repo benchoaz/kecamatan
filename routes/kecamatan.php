@@ -77,6 +77,9 @@ Route::middleware(['auth', 'role:Operator Kecamatan,Super Admin'])->prefix('keca
     Route::get('/settings/features', [ApplicationProfileController::class, 'features'])->name('settings.features');
     Route::post('/settings/features/toggle', [ApplicationProfileController::class, 'toggleFeature'])->name('settings.profile.toggle-feature');
 
+    Route::get('/settings/geospasial', [\App\Http\Controllers\Kecamatan\GeospasialWilayahController::class, 'index'])->name('settings.geospasial');
+    Route::post('/settings/geospasial/upload', [\App\Http\Controllers\Kecamatan\GeospasialWilayahController::class, 'upload'])->name('settings.geospasial.upload');
+
     // Ekbang (Monitoring Side)
     Route::middleware(['menu.toggle:ekbang'])->prefix('ekbang')->name('ekbang.')->group(function () {
         Route::get('/', [EkbangController::class, 'index'])->name('index');

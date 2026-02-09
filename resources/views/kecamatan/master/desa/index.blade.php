@@ -191,7 +191,8 @@
                         <div class="row g-2">
                             <div class="col-6">
                                 <label class="form-label fw-bold">Kecamatan</label>
-                                <input type="text" name="kecamatan" class="form-control" value="Besuk" required>
+                                <input type="text" name="kecamatan" class="form-control"
+                                    value="{{ appProfile()->region_name }}" required>
                             </div>
                             <div class="col-6">
                                 <label class="form-label fw-bold">Kabupaten</label>

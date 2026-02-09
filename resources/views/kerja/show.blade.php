@@ -1,12 +1,12 @@
-@extends('layouts.app')
+@extends('layouts.public')
 
-@section('title', $workItem->job_title . ' - ' . $workItem->display_name . ' – Kecamatan Besuk')
+@section('title', $workItem->job_title . ' - ' . $workItem->display_name . ' – ' . appProfile()->region_level . ' ' . appProfile()->region_name)
 
 @section('meta')
     <meta name="description"
-        content="{{ $workItem->job_title }} oleh {{ $workItem->display_name }} di {{ $workItem->service_area ?? 'Kecamatan Besuk' }}. {{ $workItem->short_description }}">
+        content="{{ $workItem->job_title }} oleh {{ $workItem->display_name }} di {{ $workItem->service_area ?? appProfile()->region_level . ' ' . appProfile()->region_name }}. {{ $workItem->short_description }}">
     <meta name="keywords"
-        content="{{ $workItem->job_title }}, {{ $workItem->display_name }}, jasa {{ strtolower($workItem->job_category) }}, Kecamatan Besuk">
+        content="{{ $workItem->job_title }}, {{ $workItem->display_name }}, jasa {{ strtolower($workItem->job_category) }}, {{ appProfile()->region_name }}">
 @endsection
 
 @section('content')
@@ -144,7 +144,8 @@
                             <div>
                                 <h4 class="font-bold text-amber-900 mb-2">Perhatian</h4>
                                 <p class="text-amber-800 leading-relaxed text-sm">
-                                    Informasi ini disediakan oleh <strong>Pemerintah Kecamatan Besuk</strong>
+                                    Informasi ini disediakan oleh <strong>Pemerintah {{ appProfile()->region_level }}
+                                        {{ appProfile()->region_name }}</strong>
                                     berdasarkan pendataan yang ada. Pemerintah kecamatan hanya memfasilitasi informasi
                                     dan tidak terlibat dalam hubungan kerja, negosiasi harga, atau transaksi apapun.
                                     Harap berhati-hati dan pastikan kesepakatan yang jelas sebelum menggunakan jasa.
@@ -182,7 +183,8 @@
                         <div class="mt-6 pt-6 border-t border-slate-200">
                             <p class="text-xs text-slate-500 text-center">
                                 <i class="fas fa-shield-alt mr-1"></i>
-                                Data terverifikasi oleh<br>Pemerintah Kecamatan Besuk
+                                Data terverifikasi oleh<br>Pemerintah {{ appProfile()->region_level }}
+                                {{ appProfile()->region_name }}
                             </p>
                         </div>
                     </div>

@@ -64,7 +64,7 @@
                                     </div>
                                     <div>
                                         <div class="fw-bold text-slate-800">Desa {{ $report->desa->nama_desa }}</div>
-                                        <div class="text-slate-400 small">Region Besuk</div>
+                                        <div class="text-slate-400 small">Region {{ appProfile()->region_name }}</div>
                                     </div>
                                 </div>
                             </td>
@@ -86,7 +86,8 @@
                             <td class="text-center">
                                 <div class="text-slate-600 small fw-bold">{{ $report->created_at->format('d/m/Y') }}</div>
                                 <div class="text-slate-400" style="font-size: 0.75rem;">
-                                    {{ $report->created_at->diffForHumans() }}</div>
+                                    {{ $report->created_at->diffForHumans() }}
+                                </div>
                             </td>
                             <td class="text-end pe-4">
                                 <a href="{{ route('kecamatan.trantibum.show', $report->id) }}" class="btn-action-circle">

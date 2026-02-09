@@ -64,7 +64,8 @@
                 <div class="card-body p-4">
                     <span class="text-slate-500 small fw-bold text-uppercase tracking-wider">Cakupan Monitoring</span>
                     <h2 class="fw-900 text-slate-900 mt-2 mb-1">{{ $totalDesa }} Desa</h2>
-                    <p class="text-slate-500 small mb-0">Wilayah kerja Kecamatan Besuk</p>
+                    <p class="text-slate-500 small mb-0">Wilayah kerja {{ appProfile()->region_level }}
+                        {{ appProfile()->region_name }}</p>
                 </div>
             </div>
         </div>

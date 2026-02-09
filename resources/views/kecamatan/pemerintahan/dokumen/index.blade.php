@@ -46,7 +46,8 @@
                                 </div>
                                 <div>
                                     <h5 class="fw-bold text-slate-800 mb-0">Desa {{ $desa->nama_desa }}</h5>
-                                    <span class="text-slate-400 small">Kecamatan Besuk</span>
+                                    <span class="text-slate-400 small">{{ appProfile()->region_level }}
+                                        {{ appProfile()->region_name }}</span>
                                 </div>
                             </div>
 

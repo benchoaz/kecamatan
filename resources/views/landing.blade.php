@@ -6,34 +6,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     {{-- SEO Meta Tags --}}
-    <title>Kecamatan Besuk Kabupaten Probolinggo – Layanan & Informasi Publik</title>
+    <title>{{ appProfile()->region_level }} {{ appProfile()->region_name }}
+        {{ $appProfile->region_parent ?? 'Kabupaten Probolinggo' }} – Layanan & Informasi Publik
+    </title>
     <meta name="description"
-        content="Website resmi Kecamatan Besuk Kabupaten Probolinggo yang menyediakan informasi layanan pemerintahan, berita kecamatan, peta desa, serta etalase UMKM warga.">
+        content="Website resmi {{ appProfile()->region_level }} {{ appProfile()->region_name }} yang menyediakan informasi layanan pemerintahan, berita kecamatan, peta desa, serta etalase UMKM warga.">
     <meta name="keywords"
-        content="Kecamatan Besuk, Kabupaten Probolinggo, layanan kecamatan, desa Besuk, UMKM Besuk, kantor kecamatan Besuk, pelayanan publik Probolinggo">
-    <meta name="author" content="Pemerintah Kecamatan Besuk">
+        content="{{ appProfile()->region_level }} {{ appProfile()->region_name }}, layanan kecamatan, desa {{ appProfile()->region_name }}, UMKM {{ appProfile()->region_name }}, kantor kecamatan {{ appProfile()->region_name }}, pelayanan publik">
+    <meta name="author" content="Pemerintah {{ appProfile()->region_level }} {{ appProfile()->region_name }}">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ url('/') }}">
 
     {{-- Open Graph / Facebook --}}
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url('/') }}">
-    <meta property="og:title" content="Kecamatan Besuk Kabupaten Probolinggo – Layanan & Informasi Publik">
+    <meta property="og:title"
+        content="{{ appProfile()->region_level }} {{ appProfile()->region_name }} – Layanan & Informasi Publik">
     <meta property="og:description"
-        content="Website resmi Kecamatan Besuk Kabupaten Probolinggo yang menyediakan informasi layanan pemerintahan, berita kecamatan, peta desa, serta etalase UMKM warga.">
+        content="Website resmi {{ appProfile()->region_level }} {{ appProfile()->region_name }} yang menyediakan informasi layanan pemerintahan, berita kecamatan, peta desa, serta etalase UMKM warga.">
     @if(appProfile()->logo_path)
         <meta property="og:image" content="{{ asset('storage/' . appProfile()->logo_path) }}">
     @endif
 
     {{-- Twitter Card --}}
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Kecamatan Besuk Kabupaten Probolinggo">
+    <meta name="twitter:title" content="{{ appProfile()->region_level }} {{ appProfile()->region_name }}">
     <meta name="twitter:description"
-        content="Website resmi Kecamatan Besuk Kabupaten Probolinggo untuk layanan publik dan informasi warga.">
+        content="Website resmi {{ appProfile()->region_level }} {{ appProfile()->region_name }} untuk layanan publik dan informasi warga.">
 
     {{-- Geo Tags for Local SEO --}}
     <meta name="geo.region" content="ID-JI">
-    <meta name="geo.placename" content="Kecamatan Besuk, Kabupaten Probolinggo">
+    <meta name="geo.placename" content="{{ appProfile()->region_level }} {{ appProfile()->region_name }}">
     <meta name="geo.position" content="-7.8;113.3">
     <meta name="ICBM" content="-7.8, 113.3">
 
@@ -124,15 +127,15 @@
     {
       "@context": "https://schema.org",
       "@type": "GovernmentOrganization",
-      "name": "Kecamatan Besuk",
-      "description": "Pemerintah Kecamatan Besuk Kabupaten Probolinggo - Layanan Administrasi dan Informasi Publik",
+      "name": "{{ appProfile()->region_level }} {{ appProfile()->region_name }}",
+      "description": "Pemerintah {{ appProfile()->region_level }} {{ appProfile()->region_name }} - Layanan Administrasi dan Informasi Publik",
       "url": "{{ url('/') }}",
-      "telephone": "{{ appProfile()->phone ?? '+62-335-XXXXXXX' }}",
-      "email": "{{ appProfile()->email ?? 'kecamatanbesuk@probolinggokab.go.id' }}",
+      "telephone": "{{ appProfile()->phone ?? '+62-XXXXXXX' }}",
+      "email": "{{ appProfile()->email ?? 'kontak@domain.go.id' }}",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "{{ appProfile()->address ?? 'Jl. Raya Besuk' }}",
-        "addressLocality": "Besuk",
+        "streetAddress": "{{ appProfile()->address ?? 'Alamat Kantor' }}",
+        "addressLocality": "{{ appProfile()->region_name }}",
         "addressRegion": "Jawa Timur",
         "postalCode": "67219",
         "addressCountry": "ID"
@@ -144,7 +147,7 @@
       },
       "areaServed": {
         "@type": "AdministrativeArea",
-        "name": "Kecamatan Besuk, Kabupaten Probolinggo"
+        "name": "{{ appProfile()->region_level }} {{ appProfile()->region_name }}"
       },
       "sameAs": [
         "https://probolinggokab.go.id"
@@ -165,7 +168,7 @@
             <a href="/" class="flex items-center gap-3">
                 @if(appProfile()->logo_path)
                     <img src="{{ asset('storage/' . appProfile()->logo_path) }}"
-                        alt="LogoKecamatan Besuk Kabupaten Probolinggo"
+                        alt="Logo {{ appProfile()->region_level }} {{ appProfile()->region_name }}"
                         class="w-12 h-12 object-contain rounded-lg bg-white shadow-sm p-1"
                         style="max-height: 48px; width: auto;">
                 @else
@@ -244,7 +247,8 @@
                     </ul>
                 </li>
                 <li><a href="{{ route('kerja.index') }}"
-                        class="text-sm font-medium text-gray-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg">Pekerjaan & Jasa</a>
+                        class="text-sm font-medium text-gray-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg">Pekerjaan
+                        & Jasa</a>
                 </li>
                 <li><a href="#berita"
                         class="text-sm font-medium text-gray-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg">Berita</a>
@@ -420,15 +424,17 @@
 
                     <h1 class="text-5xl md:text-7xl font-black text-[#1e293b] mb-6 leading-[1.1] tracking-tight"
                         style="text-shadow: 0 1px 2px rgba(255,255,255,0.5);">
-                        Kecamatan Besuk<br>
-                        <span class="text-[#0f766e]">Kabupaten Probolinggo</span>
+                        {{ appProfile()->region_level }} {{ appProfile()->region_name }}<br>
+                        <span class="text-[#0f766e]">{{ $appProfile->region_parent ?? 'Kabupaten Probolinggo' }}</span>
                     </h1>
 
                     <p class="text-lg md:text-xl text-[#475569] mb-6 leading-relaxed font-medium max-w-xl"
                         style="text-shadow: 0 1px 1px rgba(255,255,255,0.8);">
-                        Website resmi <strong>Kecamatan Besuk Kabupaten Probolinggo</strong> yang menyediakan informasi
-                        <strong>layanan pemerintahan</strong>, berita kecamatan, peta <strong>desa di Kecamatan
-                            Besuk</strong>, serta etalase <strong>UMKM warga</strong>.
+                        Website resmi <strong>{{ appProfile()->region_level }} {{ appProfile()->region_name }}</strong>
+                        yang menyediakan informasi
+                        <strong>layanan pemerintahan</strong>, berita {{ appProfile()->region_name }}, peta <strong>desa
+                            di {{ appProfile()->region_level }}
+                            {{ appProfile()->region_name }}</strong>, serta etalase <strong>UMKM warga</strong>.
                     </p>
 
                     <p class="text-base md:text-lg text-[#64748b] mb-10 leading-relaxed"
@@ -519,17 +525,17 @@
                     <p class="text-[10px] text-slate-500 font-medium">KTP, KK, Akte & Surat Pindah</p>
                 </div>
 
-                <div onclick="openSubmissionModal('Bantuan Sosial', 'Surat Keterangan Tidak Mampu')"
+                <div onclick="openSubmissionModal('Direktori Kerja', '1. Foto KTP (Untuk Verifikasi), 2. Foto Diri atau Tempat Usaha')"
                     class="bg-white/90 backdrop-blur-xl p-6 rounded-[2rem] shadow-xl border border-white hover:scale-105 transition-all cursor-pointer group">
                     <div
                         class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                        <i class="fas fa-hand-holding-heart text-xl"></i>
+                        <i class="fas fa-briefcase text-xl"></i>
                     </div>
-                    <h3 class="font-black text-slate-800 text-sm mb-1">Bantuan Sosial</h3>
-                    <p class="text-[10px] text-slate-500 font-medium">DTKS, SKTM & Hibah</p>
+                    <h3 class="font-black text-slate-800 text-sm mb-1">Daftarkan Jasa/Pekerjaan</h3>
+                    <p class="text-[10px] text-slate-500 font-medium">Direktori Kerja & Jasa Warga</p>
                 </div>
 
-                <div onclick="openSubmissionModal('Bantuan UMKM', 'Saya ingin dibantu mendaftarkan produk UMKM saya agar tampil di website.')"
+                <div onclick="openSubmissionModal('Bantuan UMKM', '1. Foto KTP (Untuk Verifikasi), 2. Foto Produk atau Tempat Usaha')"
                     class="bg-white/90 backdrop-blur-xl p-6 rounded-[2rem] shadow-xl border border-white hover:scale-105 transition-all cursor-pointer group">
                     <div
                         class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-amber-600 group-hover:text-white transition-colors">
@@ -708,7 +714,8 @@
                             </div>
                             <div>
                                 <h4 class="font-black text-slate-800 text-sm">Peta Interaktif</h4>
-                                <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Kecamatan Besuk
+                                <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">
+                                    {{ appProfile()->region_level }} {{ appProfile()->region_name }}
                                 </p>
                             </div>
                         </div>
@@ -946,166 +953,181 @@
         </div>
     </div>
 
-    <!-- Lowongan Kerja (Loker) Section -->
-    <div id="loker" class="py-20 bg-white">
-        <div class="container mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-                <div class="max-w-xl">
-                    <div
-                        class="inline-flex items-center gap-2 bg-indigo-50 text-indigo-700 px-4 py-2 rounded-full mb-4 text-xs font-bold uppercase tracking-widest">
-                        <i class="fas fa-briefcase"></i>
-                        <span>Peluang Karir</span>
-                    </div>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-2">Informasi Lowongan Kerja</h2>
-                    <p class="text-gray-500 text-sm md:text-base leading-relaxed">
-                        Temukan peluang karir terbaik dan kembangkan potensi diri bersama mitra kami.
-                    </p>
-                </div>
-                <div class="text-slate-400 text-xs font-medium italic">
-                    Bekerjasama dengan Dinas Tenaga Kerja
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                @forelse($jobs as $job)
-                    <div
-                        class="group bg-slate-50 hover:bg-white p-6 rounded-[2.5rem] border border-transparent hover:border-indigo-100 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300">
-                        <div class="flex flex-col h-full">
-                            <div class="flex items-center gap-4 mb-6">
-                                <div
-                                    class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shrink-0 shadow-sm border border-slate-100 group-hover:border-indigo-100">
-                                    <i class="fas fa-building text-indigo-500 text-xl"></i>
-                                </div>
-                                <div>
-                                    <h4
-                                        class="text-xs font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">
-                                        {{ Str::limit($job->company_name ?? 'Mitra Kecamatan', 20) }}
-                                    </h4>
-                                    <p class="text-[10px] text-indigo-600 font-bold flex items-center gap-1">
-                                        <i class="fas fa-map-marker-alt"></i> Wilayah Kecamatan
-                                    </p>
-                                </div>
-                            </div>
-
-                            <h3
-                                class="text-lg font-bold text-gray-800 mb-3 group-hover:text-indigo-600 transition-colors leading-tight">
-                                {{ $job->title }}
-                            </h3>
-
-                            <p class="text-xs text-slate-500 line-clamp-2 mb-6 leading-relaxed">
-                                {{ Str::limit($job->description, 80) }}
-                            </p>
-
-                            <div class="mt-auto pt-4 border-t border-slate-100/50 flex items-center justify-between">
-                                <span class="text-[10px] font-medium text-slate-400">Posting
-                                    {{ $job->created_at ? $job->created_at->diffForHumans() : 'Baru' }}</span>
-                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $job->contact_wa) }}" target="_blank"
-                                    class="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 group/link">
-                                    Lamar <i
-                                        class="fas fa-arrow-right text-[10px] group-hover/link:translate-x-1 transition-transform"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                @empty
-                    <div class="col-span-full py-16 text-center text-slate-400 italic">
-                        Belum ada lowongan kerja tersedia saat ini.
-                    </div>
-                @endforelse
-            </div>
-        </div>
-    </div>
-
-    <!-- Direktori Kerja & Jasa Warga Section -->
-    <div id="kerja" class="py-24 bg-emerald-50/40 relative overflow-hidden">
+    <!-- PUSAT KERJA & JASA RAKYAT -->
+    <div id="pusat-kerja" class="py-24 bg-indigo-50/30 border-t border-slate-100 relative overflow-hidden">
         {{-- Decorative Elements --}}
-        <div class="absolute top-0 right-0 w-96 h-96 bg-emerald-200/20 rounded-full blur-3xl -mr-48 -mt-48"></div>
-        <div class="absolute bottom-0 left-0 w-72 h-72 bg-teal-200/20 rounded-full blur-3xl -ml-36 -mb-36"></div>
+        <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-200/10 rounded-full blur-3xl -mr-48 -mt-48"></div>
+        <div class="absolute bottom-0 left-0 w-72 h-72 bg-emerald-200/10 rounded-full blur-3xl -ml-36 -mb-36"></div>
 
         <div class="container mx-auto px-6 relative z-10">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-                <div class="max-w-xl">
-                    <div
-                        class="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full mb-4 text-xs font-bold uppercase tracking-widest">
-                        <i class="fas fa-hand-holding-heart"></i>
-                        <span>Ekonomi Rakyat</span>
-                    </div>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-2">Direktori Kerja & Jasa</h2>
-                    <p class="text-gray-500 text-sm md:text-base leading-relaxed">
-                        Papan informasi digital untuk pekerjaan harian dan jasa rakyat mandiri di wilayah Kecamatan
-                        Besuk.
-                    </p>
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <div
+                    class="inline-flex items-center gap-2 bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full mb-6 text-xs font-bold uppercase tracking-widest">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Portal Ekonomi & Karier</span>
                 </div>
-                <a href="{{ route('kerja.index') }}"
-                    class="group flex items-center text-sm font-bold text-emerald-600 hover:text-emerald-700 transition-colors bg-white px-6 py-3 rounded-2xl shadow-sm border border-emerald-100">
-                    Lihat Semua
-                    <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
-                </a>
+                <h2 class="text-4xl md:text-5xl font-black text-slate-800 mb-6 tracking-tight">Pusat Kerja & Jasa</h2>
+                <p class="text-lg text-slate-600 leading-relaxed font-medium">
+                    Kami membantu warga {{ appProfile()->region_name }} menemukan peluang kerja di kantor/toko maupun
+                    mencari bantuan jasa tukang
+                    harian dari warga sekitar.
+                </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                @forelse($workItems as $work)
+            {{-- 1. BAGIAN LOWONGAN KERJA FORMAL (Cari Pegawai) --}}
+            <div class="mb-20">
+                <div class="flex items-center gap-3 mb-8">
                     <div
-                        class="group bg-white p-6 rounded-[2.5rem] border border-slate-100 hover:border-emerald-200 hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300">
-                        <div class="flex flex-col h-full">
-                            <div class="flex items-center gap-4 mb-6">
-                                <div
-                                    class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center shrink-0 shadow-sm border border-emerald-100 group-hover:bg-emerald-600 transition-colors duration-300">
-                                    <i
-                                        class="fas {{ $work->icon }} text-emerald-600 text-2xl group-hover:text-white transition-colors"></i>
-                                </div>
-                                <div>
-                                    <h4
-                                        class="text-xs font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">
-                                        {{ $work->job_category }}
-                                    </h4>
-                                    <p class="text-sm text-emerald-600 font-bold">
-                                        {{ $work->display_name }}
-                                    </p>
-                                </div>
-                            </div>
+                        class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-extrabold text-slate-800 uppercase tracking-tight">Cari Pekerjaan
+                            (Kantor/Toko)</h3>
+                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Lowongan dari
+                            Perusahaan atau Instansi</p>
+                    </div>
+                </div>
 
-                            <h3 class="text-xl font-bold text-gray-800 mb-3 leading-tight">
-                                {{ $work->job_title }}
-                            </h3>
-
-                            <div class="space-y-2 mb-6">
-                                <div class="flex items-center gap-2 text-xs text-slate-500">
-                                    <i class="fas fa-map-marker-alt text-emerald-500 w-4"></i>
-                                    <span>{{ $item->service_area ?? 'Kecamatan Besuk' }}</span>
-                                </div>
-                                @if($work->service_time)
-                                    <div class="flex items-center gap-2 text-xs text-slate-500">
-                                        <i class="fas fa-clock text-emerald-500 w-4"></i>
-                                        <span>{{ $work->service_time }}</span>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    @forelse($jobs as $job)
+                        <div
+                            class="group bg-white p-6 rounded-[2.5rem] border border-slate-100 hover:border-indigo-100 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300">
+                            <div class="flex flex-col h-full">
+                                <div class="flex items-center gap-4 mb-6">
+                                    <div
+                                        class="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center shrink-0 border border-slate-100 group-hover:border-indigo-100">
+                                        <i class="fas fa-building text-indigo-500 text-xl"></i>
                                     </div>
-                                @endif
-                            </div>
-
-                            <div class="mt-auto pt-6 border-t border-slate-50 flex items-center justify-between">
-                                <a href="{{ route('kerja.show', $work->id) }}"
-                                    class="text-xs font-bold text-slate-400 hover:text-emerald-600 transition-colors">
-                                    Detail Info
-                                </a>
-                                <a href="{{ $work->whatsapp_link }}" target="_blank"
-                                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-200">
-                                    <i class="fab fa-whatsapp"></i> Hubungi
-                                </a>
+                                    <div>
+                                        <h4
+                                            class="text-xs font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">
+                                            {{ Str::limit($job->company_name ?? 'Mitra Kecamatan', 20) }}
+                                        </h4>
+                                        <p class="text-[10px] text-indigo-600 font-bold flex items-center gap-1">
+                                            <i class="fas fa-map-marker-alt"></i> Wilayah Kecamatan
+                                        </p>
+                                    </div>
+                                </div>
+                                <h3
+                                    class="text-lg font-bold text-gray-800 mb-3 group-hover:text-indigo-600 transition-colors leading-tight">
+                                    {{ $job->title }}
+                                </h3>
+                                <p class="text-xs text-slate-500 line-clamp-2 mb-6 leading-relaxed">
+                                    {{ Str::limit($job->description, 80) }}
+                                </p>
+                                <div class="mt-auto pt-4 border-t border-slate-100/50 flex items-center justify-between">
+                                    <span class="text-[10px] font-medium text-slate-400">Posting
+                                        {{ $job->created_at ? $job->created_at->diffForHumans() : 'Baru' }}</span>
+                                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $job->contact_wa) }}"
+                                        target="_blank"
+                                        class="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 group/link">
+                                        Lamar <i
+                                            class="fas fa-arrow-right text-[10px] group-hover/link:translate-x-1 transition-transform"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @empty
-                    <div class="col-span-full py-12 text-center">
-                        <p class="text-slate-400 italic">Data direktori kerja belum tersedia.</p>
-                    </div>
-                @endforelse
+                    @empty
+                        <div
+                            class="col-span-full py-10 bg-white/50 rounded-3xl border border-dashed border-slate-200 text-center text-slate-400 italic text-sm">
+                            <i class="fas fa-info-circle mr-2"></i> Belum ada info lowongan kerja formal (kantor/toko) untuk
+                            saat ini.
+                        </div>
+                    @endforelse
+                </div>
             </div>
 
-            {{-- Disclaimer Minimalist --}}
-            <div class="mt-12 text-center">
+            {{-- 2. BAGIAN DIREKTORI KERJA (Cari Tukang / Bantuan Jasa) --}}
+            <div id="jasa-warga">
+                <div class="flex items-center justify-between mb-8">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-extrabold text-slate-800 uppercase tracking-tight">Cari Tukang &
+                                Bantuan Jasa (Harian)</h3>
+                            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Keahlian
+                                Perorangan Tetangga Sekitar</p>
+                        </div>
+                    </div>
+                    <a href="{{ route('kerja.index') }}"
+                        class="hidden md:flex group items-center text-xs font-bold text-emerald-600 hover:text-emerald-700 transition-colors bg-white px-5 py-2.5 rounded-xl shadow-sm border border-emerald-100">
+                        Lihat Semua Tukang
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @forelse($workItems as $work)
+                        <div
+                            class="group bg-white p-6 rounded-[2.5rem] border border-slate-100 hover:border-emerald-200 hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300">
+                            <div class="flex flex-col h-full">
+                                <div class="flex items-center gap-4 mb-6">
+                                    <div
+                                        class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center shrink-0 shadow-sm border border-emerald-100 group-hover:bg-emerald-600 transition-colors duration-300">
+                                        <i
+                                            class="fas {{ $work->icon }} text-emerald-600 text-2xl group-hover:text-white transition-colors"></i>
+                                    </div>
+                                    <div>
+                                        <h4
+                                            class="text-xs font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">
+                                            {{ $work->job_category }}
+                                        </h4>
+                                        <p class="text-sm text-emerald-600 font-bold">
+                                            {{ $work->display_name }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-3 leading-tight">
+                                    {{ $work->job_title }}
+                                </h3>
+                                <div class="space-y-2 mb-6">
+                                    <div class="flex items-center gap-2 text-xs text-slate-500">
+                                        <i class="fas fa-map-marker-alt text-emerald-500 w-4"></i>
+                                        <span>{{ $work->service_area ?? appProfile()->region_level . ' ' . appProfile()->region_name }}</span>
+                                    </div>
+                                    @if($work->service_time)
+                                        <div class="flex items-center gap-2 text-xs text-slate-500">
+                                            <i class="fas fa-clock text-emerald-500 w-4"></i>
+                                            <span>{{ $work->service_time }}</span>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="mt-auto pt-6 border-t border-slate-50 flex items-center justify-between">
+                                    <a href="{{ route('kerja.show', $work->id) }}"
+                                        class="text-xs font-bold text-slate-400 hover:text-emerald-600 transition-colors">Detail
+                                        Info</a>
+                                    <a href="{{ $work->whatsapp_link }}" target="_blank"
+                                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-200">
+                                        <i class="fab fa-whatsapp"></i> Hubungi
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="col-span-full py-12 text-center">
+                            <p class="text-slate-400 italic text-sm">Data bantuan jasa harian belum tersedia.</p>
+                        </div>
+                    @endforelse
+                </div>
+
+                <div class="mt-12 text-center md:hidden">
+                    <a href="{{ route('kerja.index') }}"
+                        class="inline-flex items-center gap-2 px-8 py-4 bg-emerald-600 text-white rounded-2xl font-bold shadow-xl shadow-emerald-200">
+                        Lihat Semua Tukang <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            {{-- Legend / Disclaimer Minimalist --}}
+            <div class="mt-16 text-center border-t border-slate-200/50 pt-8">
                 <p class="text-[10px] text-slate-400 max-w-2xl mx-auto leading-relaxed italic">
-                    * Informasi ditampilkan berdasarkan pendataan Kecamatan Besuk. Pemerintah tidak terlibat dalam
-                    hubungan kerja atau transaksi secara langsung.
+                    * Informasi ini dikelola langsung oleh Pemerintah {{ appProfile()->region_level }}
+                    {{ appProfile()->region_name }} untuk membantu ekonomi rakyat.
+                    Kami tidak mengambil keuntungan atau terlibat dalam transaksi finansial antara warga.
                 </p>
             </div>
         </div>
@@ -1254,23 +1276,246 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-slate-800 text-gray-300 py-8mb-20 lg:mb-0">
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="text-center md:text-left">
-                    <h4 class="text-white text-lg font-bold mb-1">
-                        {{ appProfile()->region_name }}
-                    </h4>
-                    <p class="text-xs text-gray-400">{{ appProfile()->app_name }} • {{ appProfile()->tagline }}</p>
+    <!-- Premium SEO Optimized Footer -->
+    <footer
+        class="bg-[#0f172a] text-slate-400 pt-24 pb-12 border-t border-slate-800 mb-20 lg:mb-0 relative overflow-hidden">
+        {{-- Subtle Background Glows --}}
+        <div
+            class="absolute top-0 right-0 w-[500px] h-[500px] bg-teal-500/5 blur-[120px] rounded-full pointer-events-none">
+        </div>
+        <div
+            class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/5 blur-[100px] rounded-full pointer-events-none">
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            {{-- Main Footer Grid --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-20">
+
+                <!-- Col 1: Brand & About (4 cols) -->
+                <div class="lg:col-span-4 space-y-8">
+                    <div class="flex items-center gap-4">
+                        <div class="p-3 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl">
+                            <img src="{{ appProfile()->logo_path ? asset('storage/' . appProfile()->logo_path) : asset('img/logo-default.png') }}"
+                                alt="Logo {{ appProfile()->region_name }}"
+                                class="h-12 w-auto brightness-110 drop-shadow-[0_0_10px_rgba(20,184,166,0.3)]">
+                        </div>
+                        <div>
+                            <h4 class="text-white font-black text-2xl leading-none uppercase tracking-tighter">
+                                {{ appProfile()->region_name }}
+                            </h4>
+                            <p
+                                class="text-[10px] text-teal-400 font-extrabold uppercase tracking-[0.3em] mt-1.5 flex items-center gap-2">
+                                <span class="w-4 h-px bg-teal-500/50"></span>
+                                {{ appProfile()->tagline }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h5
+                            class="text-white font-bold text-sm uppercase tracking-widest border-l-4 border-teal-500 pl-3">
+                            Tentang Portal</h5>
+                        <p class="text-sm leading-relaxed text-slate-400/80">
+                            <strong>{{ appProfile()->app_name }}</strong> adalah platform digital resmi yang berfungsi
+                            sebagai pusat layanan informasi,
+                            pengaduan publik, dan etalase ekonomi kreatif untuk wilayah {{ appProfile()->region_level }}
+                            {{ appProfile()->region_name }}.
+                            Kami berdedikasi untuk menciptakan ekosistem pemerintahan yang transparan, profesional, dan
+                            melayani.
+                        </p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h5 class="text-white font-bold text-[10px] uppercase tracking-[0.2em] opacity-50">Ikuti Kami
+                        </h5>
+                        <div class="flex gap-3">
+                            @if(appProfile()->facebook_url)
+                                <a href="{{ appProfile()->facebook_url }}" target="_blank"
+                                    class="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-blue-600 hover:border-blue-500 transition-all shadow-xl group"
+                                    aria-label="Facebook">
+                                    <i class="fab fa-facebook-f group-hover:scale-125 transition-transform"></i>
+                                </a>
+                            @endif
+                            @if(appProfile()->instagram_url)
+                                <a href="{{ appProfile()->instagram_url }}" target="_blank"
+                                    class="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-gradient-to-tr hover:from-orange-500 hover:to-pink-600 hover:border-pink-500 transition-all shadow-xl group"
+                                    aria-label="Instagram">
+                                    <i class="fab fa-instagram group-hover:scale-125 transition-transform"></i>
+                                </a>
+                            @endif
+                            @if(appProfile()->youtube_url)
+                                <a href="{{ appProfile()->youtube_url }}" target="_blank"
+                                    class="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-red-600 hover:border-red-500 transition-all shadow-xl group"
+                                    aria-label="YouTube">
+                                    <i class="fab fa-youtube group-hover:scale-125 transition-transform"></i>
+                                </a>
+                            @endif
+                            @if(appProfile()->x_url)
+                                <a href="{{ appProfile()->x_url }}" target="_blank"
+                                    class="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-slate-800 hover:border-slate-700 transition-all shadow-xl group"
+                                    aria-label="X">
+                                    <i class="fab fa-x-twitter group-hover:scale-125 transition-transform"></i>
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Col 2: Navigation (2 cols) -->
+                    <div class="lg:col-span-2">
+                        <h5 class="text-white font-bold mb-8 flex items-center gap-3">
+                            <span
+                                class="w-6 h-6 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center text-xs">
+                                <i class="fas fa-link"></i>
+                            </span>
+                            Navigasi
+                        </h5>
+                        <ul class="space-y-4 text-sm font-medium">
+                            <li><a href="/" class="hover:text-teal-400 transition-colors flex items-center gap-3 group">
+                                    <span
+                                        class="w-1.5 h-1.5 rounded-full bg-slate-700 group-hover:bg-teal-500 transition-colors"></span>
+                                    Beranda</a></li>
+                            <li><a href="#layanan"
+                                    class="hover:text-teal-400 transition-colors flex items-center gap-3 group">
+                                    <span
+                                        class="w-1.5 h-1.5 rounded-full bg-slate-700 group-hover:bg-teal-500 transition-colors"></span>
+                                    Layanan Publik</a></li>
+                            <li><a href="#berita"
+                                    class="hover:text-teal-400 transition-colors flex items-center gap-3 group">
+                                    <span
+                                        class="w-1.5 h-1.5 rounded-full bg-slate-700 group-hover:bg-teal-500 transition-colors"></span>
+                                    Berita Terbaru</a></li>
+                            <li><a href="#umkm"
+                                    class="hover:text-teal-400 transition-colors flex items-center gap-3 group">
+                                    <span
+                                        class="w-1.5 h-1.5 rounded-full bg-slate-700 group-hover:bg-teal-500 transition-colors"></span>
+                                    Ekonomi Kreatif</a></li>
+                            <li><a href="{{ route('kerja.index') }}"
+                                    class="hover:text-teal-400 transition-colors flex items-center gap-3 group">
+                                    <span
+                                        class="w-1.5 h-1.5 rounded-full bg-slate-700 group-hover:bg-teal-500 transition-colors"></span>
+                                    Direktori Kerja</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Col 3: Contact Details (3 cols) -->
+                    <div class="lg:col-span-3">
+                        <h5 class="text-white font-bold mb-8 flex items-center gap-3">
+                            <span
+                                class="w-6 h-6 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center text-xs">
+                                <i class="fas fa-headset"></i>
+                            </span>
+                            Hubungi Kami
+                        </h5>
+                        <ul class="space-y-8 text-sm">
+                            <li class="flex gap-4">
+                                <div
+                                    class="w-12 h-12 shrink-0 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-teal-500 shadow-inner">
+                                    <i class="fas fa-map-marker-alt text-xl"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <span
+                                        class="block text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1.5">Kantor
+                                        Pemerintahan</span>
+                                    <p class="text-white font-bold leading-snug">
+                                        {{ appProfile()->address ?? 'Alamat Belum Diatur' }}
+                                    </p>
+                                </div>
+                            </li>
+                            <li class="flex gap-4">
+                                <div
+                                    class="w-12 h-12 shrink-0 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-blue-500 shadow-inner">
+                                    <i class="fas fa-phone-alt text-xl"></i>
+                                </div>
+                                <div>
+                                    <span
+                                        class="block text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1.5">Hotline
+                                        Resmi</span>
+                                    <p class="text-white font-bold text-lg leading-none">
+                                        {{ appProfile()->phone ?? '(0335) 123456' }}
+                                    </p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Col 4: Operations (3 cols) -->
+                    <div class="lg:col-span-3">
+                        <h5 class="text-white font-bold mb-8 flex items-center gap-3">
+                            <span
+                                class="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs">
+                                <i class="fas fa-clock"></i>
+                            </span>
+                            Waktu Pelayanan
+                        </h5>
+                        <div
+                            class="bg-gradient-to-br from-slate-800 to-slate-900 p-7 rounded-[2.5rem] border border-slate-700/50 shadow-2xl relative">
+                            <div
+                                class="absolute -top-3 -right-3 w-10 h-10 bg-teal-500 rounded-2xl flex items-center justify-center text-white shadow-lg animate-pulse">
+                                <i class="fas fa-door-open"></i>
+                            </div>
+                            <ul class="space-y-5">
+                                <li class="flex flex-col">
+                                    <span class="text-xs text-slate-500 font-bold mb-1 uppercase tracking-tighter">Senin
+                                        s/d
+                                        Kamis</span>
+                                    <span
+                                        class="text-white font-black text-lg">{{ appProfile()->office_hours_mon_thu ?? '08:00 - 15:30 WIB' }}</span>
+                                </li>
+                                <li class="flex flex-col">
+                                    <span
+                                        class="text-xs text-slate-500 font-bold mb-1 uppercase tracking-tighter">Jumat</span>
+                                    <span
+                                        class="text-white font-black text-lg">{{ appProfile()->office_hours_fri ?? '08:00 - 11:30 WIB' }}</span>
+                                </li>
+                                <li class="flex items-center gap-3 pt-2">
+                                    <span class="w-10 h-0.5 bg-rose-500/30"></span>
+                                    <span class="text-[10px] font-black text-rose-500 uppercase tracking-[0.2em]">Sabtu
+                                        -
+                                        Minggu Libur</span>
+                                    <span class="w-10 h-0.5 bg-rose-500/30"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                <div class="text-center md:text-right">
-                    <p class="text-xs text-gray-400">Copyright © {{ date('Y') }} All Rights Reserved.</p>
-                    <p class="text-[10px] text-gray-500 mt-1">Platform ini adalah portal internal resmi ASN/Petugas
-                        Kecamatan.</p>
+
+                {{-- Bottom Attribution Bar --}}
+                <div
+                    class="pt-10 border-t border-slate-800/80 flex flex-col lg:flex-row justify-between items-center gap-8">
+                    <div
+                        class="flex flex-col md:flex-row items-center gap-4 md:gap-8 order-2 lg:order-1 text-center md:text-left">
+                        <p class="text-sm text-slate-500">
+                            Copyright &copy; {{ date('Y') }} <span
+                                class="text-white font-black uppercase">{{ appProfile()->region_name }}</span>.
+                            <span class="hidden md:inline text-slate-700 mx-2">|</span>
+                            Seluruh Hak Cipta Dilindungi.
+                        </p>
+                    </div>
+
+                    <div class="flex flex-wrap justify-center items-center gap-3 order-1 lg:order-2">
+                        <div
+                            class="flex items-center gap-2 px-4 py-2 bg-slate-800/50 rounded-xl border border-slate-700/50">
+                            <i class="fas fa-shield-alt text-teal-500 text-xs"></i>
+                            <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest">Portal Resmi
+                                Pemerintah</span>
+                        </div>
+                        <div
+                            class="flex items-center gap-2 px-4 py-2 bg-slate-800/50 rounded-xl border border-slate-700/50">
+                            <i class="fas fa-bolt text-amber-500 text-xs"></i>
+                            <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest">Powered by
+                                Sae-Digital</span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Essential SEO Keywords (Visually Hidden but indexable) --}}
+                <div class="sr-only">
+                    Layanan publik {{ appProfile()->region_name }}, Pemerintahan {{ appProfile()->region_level }}
+                    {{ appProfile()->region_name }},
+                    UMKM {{ appProfile()->region_name }}, Pengaduan Masyarakat, Berita {{ appProfile()->region_name }},
+                    Kabupaten Probolinggo, Jawa Timur, Indonesia.
                 </div>
             </div>
-        </div>
     </footer>
 
     <!-- Accessibility Assets -->
@@ -1385,7 +1630,9 @@
                             @foreach($desas as $desa)
                                 <option value="{{ $desa->id }}">{{ $desa->nama_desa }}</option>
                             @endforeach
-                            <option value="999">Luar Wilayah Kecamatan Besuk</option>
+                            <option value="999">Luar Wilayah {{ appProfile()->region_level }}
+                                {{ appProfile()->region_name }}
+                            </option>
                         </select>
                     </div>
 
@@ -1394,6 +1641,49 @@
                             Layanan</label>
                         <input type="text" id="inputJenisLayanan" name="jenis_layanan" readonly
                             class="input input-bordered bg-slate-100 border-slate-200 h-11 rounded-xl font-bold text-teal-700 text-xs">
+                    </div>
+                </div>
+
+                <!-- Job Directory Specific Selection (Click-only) -->
+                <div id="jobSelectionArea" class="hidden space-y-3">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 px-1 block">Pilih
+                        Kategori Jasa / Pekerjaan</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <button type="button" onclick="setJobType('Jasa Harian', 'Tukang / Jasa Profesional')"
+                            class="job-type-btn p-3 rounded-2xl border border-slate-200 bg-white hover:border-teal-500 hover:bg-teal-50 transition-all flex flex-col items-center text-center group">
+                            <div
+                                class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center mb-2 group-hover:bg-white">
+                                <i class="fas fa-tools text-teal-600"></i>
+                            </div>
+                            <span class="text-[9px] font-black text-slate-700 leading-tight">Jasa Harian</span>
+                        </button>
+
+                        <button type="button" onclick="setJobType('Transportasi', 'Ojek / Angkutan Rakyat')"
+                            class="job-type-btn p-3 rounded-2xl border border-slate-200 bg-white hover:border-teal-500 hover:bg-teal-50 transition-all flex flex-col items-center text-center group">
+                            <div
+                                class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center mb-2 group-hover:bg-white">
+                                <i class="fas fa-motorcycle text-teal-600"></i>
+                            </div>
+                            <span class="text-[9px] font-black text-slate-700 leading-tight">Transportasi</span>
+                        </button>
+
+                        <button type="button" onclick="setJobType('Jasa Keliling', 'Kuliner / Sayur Keliling')"
+                            class="job-type-btn p-3 rounded-2xl border border-slate-200 bg-white hover:border-teal-500 hover:bg-teal-50 transition-all flex flex-col items-center text-center group">
+                            <div
+                                class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center mb-2 group-hover:bg-white">
+                                <i class="fas fa-store text-teal-600"></i>
+                            </div>
+                            <span class="text-[9px] font-black text-slate-700 leading-tight">Jasa Keliling</span>
+                        </button>
+
+                        <button type="button" onclick="setJobType('Lainnya', 'Tenaga Kerja / Pekerja Umum')"
+                            class="job-type-btn p-3 rounded-2xl border border-slate-200 bg-white hover:border-teal-500 hover:bg-teal-50 transition-all flex flex-col items-center text-center group">
+                            <div
+                                class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center mb-2 group-hover:bg-white">
+                                <i class="fas fa-users text-teal-600"></i>
+                            </div>
+                            <span class="text-[9px] font-black text-slate-700 leading-tight">Lainnya</span>
+                        </button>
                     </div>
                 </div>
 
@@ -1455,112 +1745,6 @@
         </div>
     </dialog>
 
-    <!-- Pengaduan & Aspirasi Section (ENHANCED) -->
-    <div id="pengaduan" class="py-24 bg-slate-900 overflow-hidden relative">
-        <!-- Decoration -->
-        <div
-            class="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl">
-        </div>
-        <div
-            class="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl">
-        </div>
-
-        <div class="container mx-auto px-6 relative z-10">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                <div class="text-white">
-                    <div
-                        class="inline-flex items-center gap-2 bg-teal-500/20 text-teal-300 px-4 py-2 rounded-full mb-6 text-[10px] font-black uppercase tracking-widest">
-                        <i class="fas fa-bullhorn"></i>
-                        <span>Pengaduan & Aspirasi</span>
-                    </div>
-                    <h2 class="text-3xl md:text-5xl font-black mb-6 leading-tight">Transparansi Penanganan Masalah
-                    </h2>
-                    <p class="text-slate-400 text-lg mb-10 leading-relaxed font-medium">
-                        Warga menyampaikan laporan, desa merespon, dan kecamatan memantau proses hingga tuntas.
-                    </p>
-
-                    <!-- Workflow Alur -->
-                    <div class="space-y-6">
-                        <div class="flex gap-5">
-                            <div
-                                class="w-10 h-10 bg-teal-500 text-slate-900 rounded-xl flex items-center justify-center font-black shrink-0">
-                                1</div>
-                            <div>
-                                <h4 class="font-bold text-teal-300">Warga Menyampaikan Laporan</h4>
-                                <p class="text-sm text-slate-400 mt-1">Gunakan formulir online atau hubungi admin
-                                    WhatsApp resmi kami.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-5">
-                            <div
-                                class="w-10 h-10 bg-slate-800 text-teal-300 rounded-xl flex items-center justify-center font-black shrink-0 border border-slate-700">
-                                2</div>
-                            <div>
-                                <h4 class="font-bold text-slate-200">Diteruskan & Diproses di Desa</h4>
-                                <p class="text-sm text-slate-400 mt-1">Laporan masuk ke dashboad desa terkait untuk
-                                    verifikasi lapangan.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-5">
-                            <div
-                                class="w-10 h-10 bg-slate-800 text-teal-300 rounded-xl flex items-center justify-center font-black shrink-0 border border-slate-700">
-                                3</div>
-                            <div>
-                                <h4 class="font-bold text-slate-200">Kecamatan Memantau & Menindaklanjuti</h4>
-                                <p class="text-sm text-slate-400 mt-1">Tim kecamatan memastikan solusi diberikan
-                                    secara
-                                    tepat waktu.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[3rem] p-8 lg:p-12">
-                    <h4 class="text-lg font-bold text-white mb-8 flex items-center gap-3">
-                        <i class="fas fa-check-double text-teal-500"></i>
-                        Laporan Selesai Terkini
-                    </h4>
-
-                    <div class="space-y-6">
-                        @forelse($resolvedComplaints as $res)
-                            <div
-                                class="bg-white/5 rounded-2xl p-5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all group">
-                                <div class="flex justify-between items-start mb-3">
-                                    <div class="flex flex-col">
-                                        <span
-                                            class="text-[9px] font-black text-teal-400 uppercase tracking-widest">{{ $res->jenis_layanan }}</span>
-                                        <span
-                                            class="text-xs font-bold text-white mt-1">{{ Str::limit($res->uraian, 60) }}</span>
-                                    </div>
-                                    <span
-                                        class="bg-teal-500/20 text-teal-400 text-[8px] font-black px-2 py-1 rounded-full border border-teal-500/30 uppercase tracking-widest">Selesai</span>
-                                </div>
-                                <div
-                                    class="flex items-center gap-2 text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-4">
-                                    <i class="fas fa-map-marker-alt text-teal-500"></i>
-                                    <span>Lokasi: {{ $res->desa->nama_desa ?? 'Pihak Kecamatan' }}</span>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="text-center py-10 opacity-50">
-                                <i class="fas fa-box-open text-4xl mb-4 text-slate-700"></i>
-                                <p class="text-slate-500 text-sm italic">Belum ada pengaduan publik yang bisa
-                                    ditampilkan di
-                                    sini.</p>
-                            </div>
-                        @endforelse
-                    </div>
-
-                    <div class="mt-10">
-                        <button onclick="openBotWithQuery('Cara membuat pengaduan')"
-                            class="btn btn-block bg-teal-600 hover:bg-teal-700 border-0 text-white font-black rounded-2xl py-4 h-auto shadow-xl">
-                            Ajukan Laporan Sekarang <i class="fas fa-arrow-right ml-2 text-xs"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Administrative Bot Portal -->
     <dialog id="publicServiceModal" class="modal">
@@ -1829,6 +2013,27 @@
             }
         }
 
+        function setJobType(cat, placeholder) {
+            const uraianField = document.querySelector('textarea[name="uraian"]');
+
+            // Reset and Highlight button
+            document.querySelectorAll('.job-type-btn').forEach(btn => {
+                btn.classList.remove('bg-teal-50', 'border-teal-500', 'ring-2', 'ring-teal-200');
+                btn.classList.add('bg-white', 'border-slate-200');
+            });
+
+            const activeBtn = event.currentTarget;
+            activeBtn.classList.add('bg-teal-50', 'border-teal-500', 'ring-2', 'ring-teal-200');
+            activeBtn.classList.remove('bg-white', 'border-slate-200');
+
+            uraianField.value = `KATEGORI: ${cat}\nJENIS JASA: ${placeholder}\n\n1. Wilayah: {{ appProfile()->region_level }} {{ appProfile()->region_name }}\n2. Jam Kerja: 08:00 - 17:00\n3. Info Tambahan: `;
+            uraianField.focus();
+
+            // Move cursor to end of text
+            const len = uraianField.value.length;
+            uraianField.setSelectionRange(len, len);
+        }
+
         // --- PERMOHONAN LAYANAN LOGIC ---
         const permohonanModal = document.getElementById('permohonanModal');
         const submissionForm = document.getElementById('submissionForm');
@@ -1837,6 +2042,17 @@
         function openSubmissionModal(serviceName, requirements = '') {
             document.getElementById('modalServiceTitle').innerText = 'Ajukan: ' + serviceName;
             document.getElementById('inputJenisLayanan').value = serviceName;
+
+            const jobSelection = document.getElementById('jobSelectionArea');
+            const uraianField = document.querySelector('textarea[name="uraian"]');
+
+            if (serviceName === 'Direktori Kerja') {
+                if (jobSelection) jobSelection.classList.remove('hidden');
+                uraianField.placeholder = "Pilih kategori di atas atau ketik detail jasa Anda di sini...";
+            } else {
+                if (jobSelection) jobSelection.classList.add('hidden');
+                uraianField.placeholder = "Contoh: Mengajukan pembuatan KK baru karena penambahan anggota keluarga...";
+            }
 
             // Clear and Parse Requirements
             if (dynamicAttachments) {
@@ -1864,6 +2080,9 @@
 
                 if (reqList.length > 0) {
                     reqList.forEach(label => addAttachmentField(label));
+                } else if (serviceName === 'Direktori Kerja') {
+                    addAttachmentField('Foto Diri (Saat Bekerja/Depan Lokasi)');
+                    addAttachmentField('Identitas (KTP)');
                 } else {
                     // Fallback default fields
                     addAttachmentField('KTP / Identitas');
@@ -2093,12 +2312,30 @@
             opacity: 0.6
         }).addTo(map);
 
-        // --- LAYER 1: KECAMATAN OUTER GLOW ---
-        fetch('/data/layer_kecamatan.geojson')
+        // --- CONFIG & UTILS ---
+        const activeRegionName = "{{ strtoupper(appProfile()->region_name) }}";
+        const geoBaseDir = "/data/geo";
+
+        // Helper to find name in various GeoJSON property schemes
+        const getGeoName = (props) => {
+            return (props.NM_KEC || props.nm_kecamatan || props.name || props.NAMOBJ || props.village_name || "").toUpperCase();
+        };
+
+        // --- LAYER 1: KECAMATAN OUTER GLOW (Dynamic Filtering) ---
+        fetch(`${geoBaseDir}/layer_kecamatan.geojson`)
             .then(res => res.json())
             .then(data => {
+                // Filter features to match the active region name from settings
+                const filteredFeatures = data.features.filter(f => {
+                    const featName = getGeoName(f.properties);
+                    return featName.includes(activeRegionName) || activeRegionName.includes(featName);
+                });
+
+                // Use filtered data if found, otherwise use original as fallback
+                const renderData = filteredFeatures.length > 0 ? { ...data, features: filteredFeatures } : data;
+
                 // Shadow/Glow Layer
-                L.geoJSON(data, {
+                L.geoJSON(renderData, {
                     style: {
                         color: '#0d9488',
                         weight: 15,
@@ -2109,7 +2346,7 @@
                 }).addTo(map);
 
                 // Main Boundary
-                L.geoJSON(data, {
+                L.geoJSON(renderData, {
                     style: {
                         color: '#1e293b',
                         weight: 4,
@@ -2120,11 +2357,18 @@
                         interactive: false
                     }
                 }).addTo(map);
-            });
 
-        // --- LAYER 2: 17 DESA (Premium Interactive) ---
+                // If we have a specific region, adjust initial zoom to it
+                if (filteredFeatures.length > 0) {
+                    const bounds = L.geoJSON(renderData).getBounds();
+                    map.fitBounds(bounds, { padding: [100, 100] });
+                }
+            })
+            .catch(err => console.error("Error loading Kecamatan layer:", err));
+
+        // --- LAYER 2: VILLAGES / DESA (Interactive) ---
         let desaLayer;
-        fetch('/data/layer_desa.geojson')
+        fetch(`${geoBaseDir}/layer_desa.geojson`)
             .then(res => res.json())
             .then(data => {
                 desaLayer = L.geoJSON(data, {
@@ -2139,11 +2383,7 @@
                         };
                     },
                     onEachFeature: function (feature, layer) {
-                        // Extract and clean the name
-                        const rawName = feature.properties.nm_kelurahan || feature.properties.name || "";
-                        const nama = rawName.trim().toUpperCase();
-
-                        // Generate the slug for the tatadesa.com domain
+                        const nama = getGeoName(feature.properties);
                         const slug = nama.toLowerCase().replace(/\s+/g, '');
                         const url = `https://${slug}.tatadesa.com`;
 
@@ -2175,7 +2415,6 @@
                                 desaLayer.resetStyle(e.target);
                             },
                             click: function (e) {
-                                // Smooth zoom into the village
                                 map.flyToBounds(e.target.getBounds(), {
                                     padding: [80, 80],
                                     duration: 1.2
@@ -2211,11 +2450,15 @@
                     }
                 }).addTo(map);
 
-                map.fitBounds(desaLayer.getBounds(), { padding: [60, 60] });
-            });
+                // Initial fit to villages if no kecamatan bounds set yet
+                if (!desaLayer.getBounds().isEmpty()) {
+                    map.fitBounds(desaLayer.getBounds(), { padding: [60, 60] });
+                }
+            })
+            .catch(err => console.error("Error loading Desa layer:", err));
 
         // --- LAYER 3: PULSING POI ---
-        fetch('/data/layer_poi.geojson')
+        fetch(`${geoBaseDir}/layer_poi.geojson`)
             .then(res => res.json())
             .then(data => {
                 L.geoJSON(data, {

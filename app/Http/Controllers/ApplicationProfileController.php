@@ -47,6 +47,7 @@ class ApplicationProfileController extends Controller
             'facebook_url' => 'nullable|url|max:255',
             'instagram_url' => 'nullable|url|max:255',
             'youtube_url' => 'nullable|url|max:255',
+            'x_url' => 'nullable|url|max:255',
             'office_hours_mon_thu' => 'nullable|string|max:100',
             'office_hours_fri' => 'nullable|string|max:100',
         ]);
@@ -67,6 +68,7 @@ class ApplicationProfileController extends Controller
             'facebook_url',
             'instagram_url',
             'youtube_url',
+            'x_url',
             'office_hours_mon_thu',
             'office_hours_fri'
         ]);

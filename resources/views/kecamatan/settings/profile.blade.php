@@ -36,7 +36,7 @@
             </div>
         @endif
 
-        @if($errors->any())
+        @if(isset($errors) && is_object($errors) && $errors->any())
             <div class="alert alert-danger border-0 shadow-sm rounded-4 p-4 mb-4 animate__animated animate__shakeX">
                 <div class="d-flex align-items-center gap-3">
                     <div class="icon-box icon-box-danger sm">
@@ -83,7 +83,7 @@
                                     <input type="text" name="region_name"
                                         value="{{ old('region_name', $profile->region_name) }}"
                                         class="form-control form-control-lg bg-slate-50 border-slate-200 rounded-3"
-                                        placeholder="Contoh: Kecamatan Besuk" required>
+                                        placeholder="Contoh: Nama Wilayah Anda" required>
                                     <div class="form-text text-[11px] text-slate-400 mt-1">Muncul sebagai identitas wilayah
                                         pada sidebar dan laporan.</div>
                                 </div>
@@ -316,7 +316,7 @@
                                                             <input type="text" name="hero_image_alt"
                                                                 value="{{ old('hero_image_alt', $profile->hero_image_alt) }}"
                                                                 class="form-control bg-slate-50 border-slate-200 rounded-3 text-sm"
-                                                                placeholder="Contoh: Bpk. Camat Besuk">
+                                                                placeholder="Contoh: Bpk. Camat {{ $profile->region_name ?? 'Wilayah' }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -417,7 +417,7 @@
                                                 <textarea name="address"
                                                     class="form-control bg-white border-slate-200 rounded-3 text-sm"
                                                     rows="2"
-                                                    placeholder="Contoh: Jl. Raya Besuk No. 1, Besuk, Kab. Probolinggo">{{ old('address', $profile->address) }}</textarea>
+                                                    placeholder="Contoh: Jl. Raya Utama No. 1, {{ $profile->region_name ?? 'Wilayah' }}, Kab. Probolinggo">{{ old('address', $profile->address) }}</textarea>
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="form-label text-slate-700 fw-semibold">Nomor Telepon
@@ -460,21 +460,28 @@
                                                 <input type="url" name="instagram_url"
                                                     value="{{ old('instagram_url', $profile->instagram_url) }}"
                                                     class="form-control bg-white border-slate-200 rounded-3 text-sm"
-                                                    placeholder="https://instagram.com/kecamatan.besuk">
+                                                    placeholder="https://instagram.com/{{ Str::slug($profile->region_name ?? 'wilayah') }}">
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="form-label text-slate-700 fw-semibold">Link Facebook</label>
                                                 <input type="url" name="facebook_url"
                                                     value="{{ old('facebook_url', $profile->facebook_url) }}"
                                                     class="form-control bg-white border-slate-200 rounded-3 text-sm"
-                                                    placeholder="https://facebook.com/kecamatan.besuk">
+                                                    placeholder="https://facebook.com/{{ Str::slug($profile->region_name ?? 'wilayah') }}">
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="form-label text-slate-700 fw-semibold">Link YouTube</label>
                                                 <input type="url" name="youtube_url"
                                                     value="{{ old('youtube_url', $profile->youtube_url) }}"
                                                     class="form-control bg-white border-slate-200 rounded-3 text-sm"
-                                                    placeholder="https://youtube.com/@kecamatanbesuk">
+                                                    placeholder="https://youtube.com/@{{ Str::slug($profile->region_name ?? 'wilayah') }}">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label text-slate-700 fw-semibold">Link X
+                                                    (Twitter)</label>
+                                                <input type="url" name="x_url" value="{{ old('x_url', $profile->x_url) }}"
+                                                    class="form-control bg-white border-slate-200 rounded-3 text-sm"
+                                                    placeholder="https://x.com/{{ Str::slug($profile->region_name ?? 'wilayah') }}">
                                             </div>
                                         </div>
                                     </div>

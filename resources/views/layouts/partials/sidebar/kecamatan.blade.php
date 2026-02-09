@@ -228,6 +228,13 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a href="{{ route('kecamatan.settings.geospasial') }}"
+                            class="nav-link {{ request()->routeIs('kecamatan.settings.geospasial') ? 'active' : '' }}">
+                            <span class="nav-icon"><i class="fas fa-map-location-dot"></i></span>
+                            <span class="nav-text">Geospasial Wilayah</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="{{ route('kecamatan.settings.profile') }}"
                             class="nav-link {{ request()->routeIs('kecamatan.settings.profile') ? 'active' : '' }}">
                             <span class="nav-icon"><i class="fas fa-sliders"></i></span>

@@ -25,9 +25,9 @@
 
     <!-- Official Header (Visible on print) -->
     <div class="d-none d-print-block text-center mb-5">
-        <h4 class="fw-bold mb-0">PEMERINTAH KABUPATEN PROBOLINGGO</h4>
-        <h3 class="fw-bold mb-0">KECAMATAN BESUK</h3>
-        <p class="mb-0">Alamat: Jl. Raya Besuk No. 123, Kode Pos 67283</p>
+        <h4 class="fw-bold mb-0">PEMERINTAH {{ strtoupper(appProfile()->region_parent ?? 'KABUPATEN PROBOLINGGO') }}</h4>
+        <h3 class="fw-bold mb-0">{{ strtoupper(appProfile()->region_level . ' ' . appProfile()->region_name) }}</h3>
+        <p class="mb-0">Alamat: {{ appProfile()->address ?? 'Alamat Kantor' }}</p>
         <hr style="border: 2px solid #000; opacity: 1;">
         <h5 class="fw-bold mt-4">LAPORAN MONITORING DAN EVALUASI EKONOMI PEMBANGUNAN</h5>
         <p>Periode Tahun Anggaran {{ $year }}</p>
@@ -121,7 +121,7 @@
             <div class="col-4 text-end">
                 <div class="d-none d-print-block mt-4" style="margin-right: 50px;">
                     <p class="mb-0 small">Mengetahui,</p>
-                    <p class="fw-bold mb-5 small">Camat Besuk</p>
+                    <p class="fw-bold mb-5 small">Camat {{ appProfile()->region_name }}</p>
                     <p class="fw-bold mb-0">__________________________</p>
                     <p class="small mb-0">NIP. ..................................</p>
                 </div>

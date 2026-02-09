@@ -103,7 +103,7 @@
                         <div>
                             <h5 class="font-bold text-slate-800 text-sm mb-1 uppercase">Pengiriman</h5>
                             <p class="text-xs text-slate-500">Tanyakan kepada penjual apakah mendukung jasa kirim atau COD
-                                di wilayah Besuk.</p>
+                                di wilayah {{ appProfile()->region_name }}.</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-4">
@@ -113,8 +113,8 @@
                         </div>
                         <div>
                             <h5 class="font-bold text-slate-800 text-sm mb-1 uppercase">Lokasi UMKM</h5>
-                            <p class="text-xs text-slate-500">Merupakan UMKM yang terverifikasi berada di wilayah Kecamatan
-                                Besuk.</p>
+                            <p class="text-xs text-slate-500">Merupakan UMKM yang terverifikasi berada di wilayah {{ appProfile()->region_level }}
+                                {{ appProfile()->region_name }}.</p>
                         </div>
                     </div>
                 </div>

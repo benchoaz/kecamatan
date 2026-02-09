@@ -61,7 +61,8 @@
                                         </div>
                                         <div>
                                             <div class="fw-bold text-primary-900">Desa {{ $desa->nama_desa }}</div>
-                                            <small class="text-tertiary">Kecamatan Besuk</small>
+                                            <small class="text-tertiary">{{ appProfile()->region_level }}
+                                                {{ appProfile()->region_name }}</small>
                                         </div>
                                     </div>
                                 </td>
@@ -120,8 +121,8 @@
                                     <div class="d-flex align-items-center gap-3">
                                         <div class="personil-photo">
                                             @if($p->foto)
-                                                <img src="{{ route('kecamatan.file.personil-foto', $p->id) }}"
-                                                    alt="Foto {{ $p->nama }}" class="rounded-circle object-fit-cover"
+                                                <img src="{{ route('kecamatan.file.personil-foto', $p->id) }}" alt="Foto {{ $p->nama }}"
+                                                    class="rounded-circle object-fit-cover"
                                                     style="width: 48px; height: 48px; border: 2px solid var(--brand-100);">
                                             @else
                                                 <div class="rounded-circle bg-brand-50 text-brand-600 d-flex align-items-center justify-content-center fw-bold shadow-sm"
@@ -165,8 +166,8 @@
                                         <small class="text-tertiary">No. SK:</small>
                                         <span class="small fw-semibold text-primary-900">{{ $p->nomor_sk ?? '-' }}</span>
                                         @if($p->file_sk)
-                                            <a href="{{ route('kecamatan.file.personil', $p->id) }}"
-                                                target="_blank" class="text-brand-600 small mt-1 text-decoration-none fw-bold">
+                                            <a href="{{ route('kecamatan.file.personil', $p->id) }}" target="_blank"
+                                                class="text-brand-600 small mt-1 text-decoration-none fw-bold">
                                                 <i class="fas fa-file-pdf me-1"></i> Buka Dokumen
                                             </a>
                                         @endif
@@ -187,25 +188,31 @@
                                 </td>
                                 <td class="text-end pe-4">
                                     <div class="d-flex align-items-center justify-content-end gap-1">
-                                        <a href="#" class="btn btn-icon btn-light rounded-circle shadow-sm text-primary-600" title="Edit Profil">
+                                        <a href="#" class="btn btn-icon btn-light rounded-circle shadow-sm text-primary-600"
+                                            title="Edit Profil">
                                             <i class="fas fa-pencil-alt"></i>
                                         </a>
 
                                         @if($p->status != 'diterima')
-                                            <form action="{{ route('kecamatan.pemerintahan.detail.personil.verify', $p->id) }}" method="POST" class="d-inline">
+                                            <form action="{{ route('kecamatan.pemerintahan.detail.personil.verify', $p->id) }}"
+                                                method="POST" class="d-inline">
                                                 @csrf
                                                 <input type="hidden" name="status" value="diterima">
-                                                <button type="submit" class="btn btn-icon btn-success rounded-circle shadow-sm text-white" title="Verifikasi / Terima">
+                                                <button type="submit"
+                                                    class="btn btn-icon btn-success rounded-circle shadow-sm text-white"
+                                                    title="Verifikasi / Terima">
                                                     <i class="fas fa-check"></i>
                                                 </button>
                                             </form>
-                                            
-                                            <button type="button" class="btn btn-icon btn-warning rounded-circle shadow-sm text-white" data-bs-toggle="modal" data-bs-target="#revisionModal{{ $p->id }}" title="Minta Revisi">
+
+                                            <button type="button" class="btn btn-icon btn-warning rounded-circle shadow-sm text-white"
+                                                data-bs-toggle="modal" data-bs-target="#revisionModal{{ $p->id }}" title="Minta Revisi">
                                                 <i class="fas fa-reply"></i>
                                             </button>
                                         @endif
 
-                                        <button type="button" class="btn btn-icon btn-light rounded-circle shadow-sm text-danger" title="Nonaktifkan">
+                                        <button type="button" class="btn btn-icon btn-light rounded-circle shadow-sm text-danger"
+                                            title="Nonaktifkan">
                                             <i class="fas fa-power-off"></i>
                                         </button>
                                     </div>
@@ -365,7 +372,8 @@
                                 <input type="hidden" name="status" value="dikembalikan">
                                 <div class="modal-body text-start">
                                     <label class="form-label fw-bold small">Alasan Pengembalian</label>
-                                    <textarea name="catatan" class="form-control" rows="3" required placeholder="Jelaskan data yang perlu diperbaiki..."></textarea>
+                                    <textarea name="catatan" class="form-control" rows="3" required
+                                        placeholder="Jelaskan data yang perlu diperbaiki..."></textarea>
                                 </div>
                                 <div class="modal-footer border-0">
                                     <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Batal</button>

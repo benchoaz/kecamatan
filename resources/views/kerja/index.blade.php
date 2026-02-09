@@ -1,11 +1,12 @@
-@extends('layouts.app')
+@extends('layouts.public')
 
-@section('title', 'Direktori Kerja & Jasa Warga – Kecamatan Besuk Kabupaten Probolinggo')
+@section('title', 'Direktori Kerja & Jasa Warga – ' . appProfile()->region_level . ' ' . appProfile()->region_name)
 
 @section('meta')
     <meta name="description"
-        content="Direktori kerja dan jasa warga di wilayah Kecamatan Besuk Kabupaten Probolinggo. Temukan tukang, ojek, jasa keliling, dan pekerjaan harian lainnya.">
-    <meta name="keywords" content="kerja Besuk, jasa warga Besuk, tukang Besuk, ojek Besuk, buruh harian Probolinggo">
+        content="Direktori kerja dan jasa warga di wilayah {{ appProfile()->region_level }} {{ appProfile()->region_name }}. Temukan tukang, ojek, jasa keliling, dan pekerjaan harian lainnya.">
+    <meta name="keywords"
+        content="kerja {{ appProfile()->region_name }}, jasa warga {{ appProfile()->region_name }}, tukang {{ appProfile()->region_name }}, ojek {{ appProfile()->region_name }}, buruh harian">
 @endsection
 
 @section('content')
@@ -19,20 +20,23 @@
                         Direktori Kerja & Jasa Warga
                     </h1>
                     <p class="text-xl text-teal-50 mb-6">
-                        Direktori kerja dan jasa warga di wilayah <strong>Kecamatan Besuk Kabupaten Probolinggo</strong>.
+                        Direktori kerja dan jasa warga di wilayah <strong>{{ appProfile()->region_level }}
+                            {{ appProfile()->region_name }}</strong>.
                         Temukan tukang, ojek, jasa keliling, dan pekerjaan harian yang Anda butuhkan.
                     </p>
 
                     {{-- Search Bar --}}
-                    <form method="GET" action="{{ route('kerja.index') }}" class="flex gap-3">
-                        <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari jasa atau pekerjaan..."
-                            class="flex-1 px-6 py-4 rounded-xl text-slate-800 text-lg focus:ring-4 focus:ring-teal-300"
-                            aria-label="Cari jasa atau pekerjaan">
-                        <button type="submit"
-                            class="px-8 py-4 bg-white text-teal-600 rounded-xl font-bold hover:bg-teal-50 transition-all shadow-lg">
-                            <i class="fas fa-search mr-2"></i> Cari
-                        </button>
-                    </form>
+                    <div class="mt-8">
+                        <form method="GET" action="{{ route('kerja.index') }}" class="flex flex-col md:flex-row gap-3">
+                            <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari jasa atau pekerjaan..."
+                                class="flex-1 px-6 py-4 rounded-xl text-slate-800 text-lg focus:ring-4 focus:ring-teal-300 shadow-inner"
+                                aria-label="Cari jasa atau pekerjaan">
+                            <button type="submit"
+                                class="px-8 py-4 bg-white text-teal-600 rounded-xl font-bold hover:bg-teal-50 transition-all shadow-lg flex items-center justify-center gap-2">
+                                <i class="fas fa-search"></i> Cari Sekarang
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -59,6 +63,39 @@
                             {{ $cat }}
                         </a>
                     @endforeach
+                </div>
+            </div>
+        </div>
+
+        {{-- Info Daftar --}}
+        <div class="container mx-auto px-6 mt-8">
+            <div
+                class="bg-teal-600 rounded-3xl shadow-xl p-8 text-white flex flex-col lg:flex-row items-center justify-between gap-8 overflow-hidden relative border border-white/20">
+                <div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
+                <div class="absolute -bottom-12 -left-12 w-48 h-48 bg-emerald-400/20 rounded-full blur-3xl"></div>
+
+                <div class="relative z-10 flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
+                    <div
+                        class="w-20 h-20 bg-white/20 backdrop-blur-md rounded-[2rem] flex items-center justify-center text-4xl shadow-2xl border border-white/30 transform rotate-3">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <div class="max-w-xl">
+                        <h4 class="text-2xl md:text-3xl font-black mb-2 tracking-tight">Ingin Jasa Anda Terdaftar?</h4>
+                        <p class="text-teal-50 text-base md:text-lg leading-relaxed opacity-90">
+                            Khusus warga wilayah {{ appProfile()->region_level }} {{ appProfile()->region_name }}.
+                            Pendaftaran gratis dan validasi data dilakukan langsung oleh petugas kecamatan agar informasi
+                            tetap terpercaya.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="relative z-10 w-full lg:w-auto">
+                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', appProfile()->phone ?? '') }}?text=Halo%20Admin%20{{ appProfile()->region_level }}%20{{ appProfile()->region_name }},%20saya%20ingin%20mendaftarkan%20jasa/pekerjaan%20saya%20di%20Direktori%20Kerja."
+                        target="_blank"
+                        class="flex items-center justify-center gap-3 px-10 py-5 bg-white text-teal-600 rounded-2xl font-black hover:bg-teal-50 transition-all shadow-2xl hover:scale-105 active:scale-95 text-lg w-full md:w-auto">
+                        <i class="fab fa-whatsapp text-2xl"></i>
+                        Daftar Lewat WhatsApp
+                    </a>
                 </div>
             </div>
         </div>
@@ -150,7 +187,8 @@
                         <h4 class="font-bold text-amber-900 mb-2">Disclaimer</h4>
                         <p class="text-amber-800 leading-relaxed">
                             Informasi pekerjaan dan jasa warga ditampilkan berdasarkan pendataan yang dimiliki oleh
-                            <strong>Pemerintah Kecamatan Besuk</strong>. Pemerintah kecamatan hanya memfasilitasi informasi
+                            <strong>Pemerintah {{ appProfile()->region_level }} {{ appProfile()->region_name }}</strong>.
+                            Pemerintah kecamatan hanya memfasilitasi informasi
                             dan tidak terlibat dalam hubungan kerja atau transaksi.
                         </p>
                     </div>

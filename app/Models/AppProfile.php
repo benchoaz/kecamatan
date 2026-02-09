@@ -32,6 +32,7 @@ class AppProfile extends Model
         'facebook_url',
         'instagram_url',
         'youtube_url',
+        'x_url',
         'office_hours_mon_thu',
         'office_hours_fri',
         'updated_by'

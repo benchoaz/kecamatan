@@ -5,7 +5,8 @@
 @section('content')
     <div class="dashboard container-fluid px-4 py-4">
         <!-- Modern Formal Welcome Section -->
-        <div class="welcome-banner premium-welcome p-4 p-md-5 rounded-4 mb-5 position-relative overflow-hidden shadow-lg animate-entrance">
+        <div
+            class="welcome-banner premium-welcome p-4 p-md-5 rounded-4 mb-5 position-relative overflow-hidden shadow-lg animate-entrance">
             <div class="position-relative z-2">
                 <div class="d-flex align-items-center gap-2 mb-3">
                     <span
@@ -20,7 +21,8 @@
                             Selamat Datang, <span class="text-info">{{ auth()->user()->nama_lengkap }}</span>
                         </h1>
                         <p class="text-slate-300 fs-5 mb-0 opacity-80">
-                            Pusat Komando Operasional & Monitoring Administrasi Kecamatan Besuk.
+                            Pusat Komando Operasional & Monitoring Administrasi {{ appProfile()->region_level }}
+                            {{ appProfile()->region_name }}.
                         </p>
                     </div>
                 </div>
@@ -42,7 +44,8 @@
                             <i class="fas fa-users-viewfinder fa-2x"></i>
                         </div>
                         <div>
-                            <span class="d-block text-tertiary small fw-bold text-uppercase tracking-wider">Total Penduduk</span>
+                            <span class="d-block text-tertiary small fw-bold text-uppercase tracking-wider">Total
+                                Penduduk</span>
                             <h3 class="mb-0 fw-bold text-primary-900 stat-value"
                                 data-count="{{ $stats['total_penduduk'] ?? 0 }}">0</h3>
                         </div>
@@ -57,8 +60,10 @@
                             <i class="fas fa-file-circle-check fa-2x"></i>
                         </div>
                         <div>
-                            <span class="d-block text-tertiary small fw-bold text-uppercase tracking-wider">Laporan Masuk</span>
-                            <h3 class="mb-0 fw-bold text-primary-900 stat-value" data-count="{{ $stats['laporan_masuk'] ?? 0 }}">0</h3>
+                            <span class="d-block text-tertiary small fw-bold text-uppercase tracking-wider">Laporan
+                                Masuk</span>
+                            <h3 class="mb-0 fw-bold text-primary-900 stat-value"
+                                data-count="{{ $stats['laporan_masuk'] ?? 0 }}">0</h3>
                         </div>
                     </div>
                 </div>
@@ -71,8 +76,10 @@
                             <i class="fas fa-map-location fa-2x"></i>
                         </div>
                         <div>
-                            <span class="d-block text-tertiary small fw-bold text-uppercase tracking-wider">Jumlah Desa</span>
-                            <h3 class="mb-0 fw-bold text-primary-900 stat-value" data-count="{{ $stats['jumlah_desa'] ?? 0 }}">0</h3>
+                            <span class="d-block text-tertiary small fw-bold text-uppercase tracking-wider">Jumlah
+                                Desa</span>
+                            <h3 class="mb-0 fw-bold text-primary-900 stat-value"
+                                data-count="{{ $stats['jumlah_desa'] ?? 0 }}">0</h3>
                         </div>
                     </div>
                 </div>
@@ -85,7 +92,8 @@
                             <i class="fas fa-user-clock fa-2x"></i>
                         </div>
                         <div>
-                            <span class="d-block text-tertiary small fw-bold text-uppercase tracking-wider">Pengunjung</span>
+                            <span
+                                class="d-block text-tertiary small fw-bold text-uppercase tracking-wider">Pengunjung</span>
                             <h3 class="mb-0 fw-bold text-primary-900 stat-value"
                                 data-count="{{ $stats['pengunjung_hari_ini'] ?? 0 }}">0</h3>
                         </div>
@@ -206,26 +214,33 @@
 @endsection
 
 @push('styles')
-<style>
-    /* Final Safeguard Styles */
-    .animate-entrance {
-        opacity: 1 !important;
-        transform: none !important;
-        animation: fadeInUp 0.6s ease-out both !important;
-    }
-    
-    @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+    <style>
+        /* Final Safeguard Styles */
+        .animate-entrance {
+            opacity: 1 !important;
+            transform: none !important;
+            animation: fadeInUp 0.6s ease-out both !important;
+        }
 
-    .glass-card {
-        background: rgba(255, 255, 255, 0.85) !important;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.5) !important;
-    }
-</style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85) !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5) !important;
+        }
+    </style>
 @endpush
 
 @push('scripts')

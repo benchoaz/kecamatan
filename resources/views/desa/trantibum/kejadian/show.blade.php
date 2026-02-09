@@ -33,7 +33,8 @@
                             <ol class="list-unstyled ms-3">
                                 <li>1. Bapak Bupati {{ appProfile()->region_name }}</li>
                                 <li>2. Bapak Wabup {{ appProfile()->region_name }}</li>
-                                <li>3. Bapak Camat {{ auth()->user()->desa->kecamatan->nama_kecamatan ?? 'Besuk' }}</li>
+                                <li>3. Bapak Camat
+                                    {{ auth()->user()->desa->kecamatan->nama_kecamatan ?? appProfile()->region_name }}</li>
                             </ol>
                         </div>
 
@@ -118,7 +119,8 @@
                                 <p class="mb-5">Pembuat Laporan,<br>Kepala Desa {{ auth()->user()->desa->nama_desa }}</p>
                                 <br><br>
                                 <p class="fw-bold text-uppercase text-decoration-underline">
-                                    {{ auth()->user()->nama_lengkap }}</p>
+                                    {{ auth()->user()->nama_lengkap }}
+                                </p>
                             </div>
                         </div>
                     </div>

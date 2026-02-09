@@ -132,7 +132,8 @@
                         <div class="col-md-7">
                             <h4 class="fw-bold text-slate-900">WhatsApp Center Trantibum Kecamatan</h4>
                             <p class="text-slate-500 mb-0">Garis koordinasi langsung dengan kasi Trantibum dan jajaran
-                                Satpol PP Kecamatan Besuk untuk penanganan gangguan ketertiban umum di wilayah desa.</p>
+                                Satpol PP {{ appProfile()->region_level }} {{ appProfile()->region_name }} untuk penanganan
+                                gangguan ketertiban umum di wilayah desa.</p>
                         </div>
                         <div class="col-md-3 text-end">
                             <a href="https://wa.me/6281234567890" target="_blank"
