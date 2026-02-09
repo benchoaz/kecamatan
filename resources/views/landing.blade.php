@@ -1859,6 +1859,12 @@
                                 timer: 5000
                             });
                         }
+
+                        // 🔊 AUDIO FEEDBACK: Announce success
+                        if (window.VoiceSpeech && window.VoiceState && window.VoiceState.isActive()) {
+                            window.VoiceSpeech.speak("Pengajuan berhasil dikirim. Nomor pengajuan Anda adalah " + res.uuid);
+                        }
+
                         this.reset();
                         permohonanModal.close();
                     } else {
@@ -1871,6 +1877,11 @@
                         text: error.message,
                         confirmButtonColor: '#0d9488'
                     });
+
+                    // 🔊 AUDIO FEEDBACK: Announce error
+                    if (window.VoiceSpeech && window.VoiceState && window.VoiceState.isActive()) {
+                        window.VoiceSpeech.speak("Gagal mengirim pengajuan. " + error.message);
+                    }
                 } finally {
                     btn.disabled = false;
                     btn.innerHTML = originalText;

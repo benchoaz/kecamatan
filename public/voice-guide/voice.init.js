@@ -79,6 +79,9 @@
             if (active) {
                 console.log('[VoiceInit] Voice Guide ACTIVATED');
 
+                // 🔊 AUDIO FEEDBACK: Announce activation
+                Speech.speak("Pemandu suara aktif");
+
                 // CRITICAL FIX: Force reset welcome flag EVERY time
                 State.setPlayedWelcome(false);
                 console.log('[VoiceInit] Welcome flag FORCED to false');
@@ -91,11 +94,18 @@
                     if (State.isActive()) {
                         Actions.execute({ intent: window.VoiceConfig.INTENT.WELCOME });
                     }
-                }, 300);
+                }, 1200); // Increased to allow activation announcement
             } else {
                 console.log('[VoiceInit] Voice Guide DEACTIVATED');
-                Recognition.stop();
-                Speech.stop();
+
+                // 🔊 AUDIO FEEDBACK: Announce deactivation
+                Speech.speak("Pemandu suara nonaktif");
+
+                // Stop after announcement
+                setTimeout(() => {
+                    Recognition.stop();
+                    Speech.stop();
+                }, 1500);
             }
         });
 

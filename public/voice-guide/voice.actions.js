@@ -226,14 +226,40 @@ window.VoiceActions = (function () {
     function navigateTo(id) {
         if (id === 'top') {
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            // 🔊 AUDIO FEEDBACK: Announce return to top
+            setTimeout(() => {
+                window.VoiceSpeech.speak("Kembali ke menu utama");
+            }, 500);
         } else {
             const el = document.getElementById(id);
             if (el) {
                 el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 el.classList.add('bg-blue-50', 'transition-colors', 'duration-1000');
                 setTimeout(() => el.classList.remove('bg-blue-50'), 2000);
+
+                // 🔊 AUDIO FEEDBACK: Announce successful navigation
+                setTimeout(() => {
+                    const sectionName = getSectionName(id);
+                    window.VoiceSpeech.speak(`Menampilkan ${sectionName}`);
+                }, 800);
+            } else {
+                // 🔊 AUDIO FEEDBACK: Section not found
+                window.VoiceSpeech.speak("Maaf, bagian tersebut tidak ditemukan");
             }
         }
+    }
+
+    // Helper to get friendly section names
+    function getSectionName(id) {
+        const names = {
+            'berita': 'berita dan informasi',
+            'layanan': 'layanan publik',
+            'umkm': 'UMKM dan lowongan kerja',
+            'info-hari-ini': 'informasi hari ini',
+            'pengaduan': 'layanan pengaduan',
+            'profil': 'profil kecamatan'
+        };
+        return names[id] || id;
     }
 
     function playWelcomeSequence() {
