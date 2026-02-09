@@ -163,7 +163,10 @@ class PublicServiceController extends Controller
         }
 
         return response()->json([
-            'message' => 'Terima kasih. Laporan Anda telah kami terima dengan status "Menunggu Klarifikasi". Petugas kami akan melakukan tinjauan administratif secara selektif.'
+            'message' => 'Terima kasih. Laporan Anda telah kami terima dengan status "Menunggu Klarifikasi". Petugas kami akan melakukan tinjauan administratif secara selektif.',
+            'uuid' => $service->uuid,
+            'receipt_url' => route('receipt.download', $service->uuid),
+            'tracking_url' => route('public.tracking') . '?q=' . $service->uuid
         ]);
     }
 

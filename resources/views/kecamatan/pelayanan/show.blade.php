@@ -33,9 +33,23 @@
                                         {{ $complaint->uuid }}</p>
                                 </div>
                             </div>
-                            <span class="text-slate-400 small">
-                                {{ $complaint->created_at->format('d M Y, H:i') }} WIB
-                            </span>
+                            <div class="d-flex gap-2">
+                                <a href="{{ route('receipt.download', $complaint->uuid) }}" 
+                                   class="btn btn-sm btn-primary rounded-3" 
+                                   target="_blank"
+                                   title="Download Struk PDF">
+                                    <i class="fas fa-download me-1"></i> Struk
+                                </a>
+                                <a href="{{ route('qr.generate', $complaint->uuid) }}" 
+                                   class="btn btn-sm btn-outline-primary rounded-3" 
+                                   target="_blank"
+                                   title="Lihat QR Code">
+                                    <i class="fas fa-qrcode"></i>
+                                </a>
+                                <span class="text-slate-400 small">
+                                    {{ $complaint->created_at->format('d M Y, H:i') }} WIB
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body p-4">

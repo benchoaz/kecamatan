@@ -1753,13 +1753,40 @@
                     const res = await response.json();
 
                     if (response.ok) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Pengajuan Terkirim!',
-                            text: 'Terima kasih, berkas Anda akan segera diverifikasi oleh petugas kami.',
-                            confirmButtonColor: '#0d9488',
-                            timer: 5000
-                        });
+                        // Auto download receipt
+                        if (res.receipt_url) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '✅ Pengajuan Berhasil!',
+                                html: `
+                                    <p class="text-slate-700 mb-4">Nomor Pengajuan Anda: <strong class="text-teal-600">${res.uuid}</strong></p>
+                                    <p class="text-sm text-slate-600 mb-4">Struk pengajuan sudah siap! Silakan download dan simpan untuk tracking status.</p>
+                                    <div class="flex gap-3 justify-center mt-4">
+                                        <a href="${res.receipt_url}" 
+                                           class="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-bold shadow-lg transition-all">
+                                            <i class="fas fa-download"></i> Download Struk
+                                        </a>
+                                        <a href="${res.tracking_url}" 
+                                           class="inline-flex items-center gap-2 px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-bold shadow-lg transition-all">
+                                            <i class="fas fa-search"></i> Lacak Status
+                                        </a>
+                                    </div>
+                                `,
+                                confirmButtonText: 'Tutup',
+                                confirmButtonColor: '#0d9488',
+                                showConfirmButton: true,
+                                allowOutsideClick: false,
+                                width: '600px'
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Pengajuan Terkirim!',
+                                text: 'Terima kasih, berkas Anda akan segera diverifikasi oleh petugas kami.',
+                                confirmButtonColor: '#0d9488',
+                                timer: 5000
+                            });
+                        }
                         this.reset();
                         permohonanModal.close();
                     } else {

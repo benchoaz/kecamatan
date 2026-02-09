@@ -65,6 +65,12 @@ Route::get('/api/faq-search', [PublicServiceController::class, 'faqSearch'])->na
 Route::get('/lacak-berkas', [PublicServiceController::class, 'trackingPage'])->name('public.tracking');
 Route::post('/lacak-berkas/cek', [PublicServiceController::class, 'checkStatus'])->name('public.tracking.check');
 
+// Receipt & QR Code Routes
+use App\Http\Controllers\ReceiptController;
+Route::get('/struk/{uuid}', [ReceiptController::class, 'generateReceipt'])->name('receipt.download');
+Route::get('/struk/{uuid}/preview', [ReceiptController::class, 'previewReceipt'])->name('receipt.preview');
+Route::get('/qr/{uuid}', [ReceiptController::class, 'generateQrCode'])->name('qr.generate');
+
 // Public Berita Routes (Read-Only)
 Route::prefix('berita')->name('public.berita.')->group(function () {
     Route::get('/', [\App\Http\Controllers\PublicBeritaController::class, 'index'])->name('index');
