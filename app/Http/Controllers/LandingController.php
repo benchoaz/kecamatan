@@ -8,6 +8,7 @@ use App\Models\PelayananFaq;
 use App\Models\PublicService;
 use App\Models\UmkmLocal;
 use App\Models\JobVacancy;
+use App\Models\WorkDirectory;
 use Illuminate\Http\Request;
 
 class LandingController extends Controller
@@ -58,6 +59,9 @@ class LandingController extends Controller
         $jobs = \App\Models\JobVacancy::where('is_active', true)->latest()->take(4)->get();
         $desas = \App\Models\Desa::orderBy('nama_desa')->get();
 
+        // Work Directory - Latest jobs and services
+        $workItems = WorkDirectory::public()->latest()->take(6)->get();
+
         // Hero Section Settings
         $profileService = app(\App\Services\ApplicationProfileService::class);
         $heroBg = $profileService->getHeroBg();
@@ -77,6 +81,7 @@ class LandingController extends Controller
             'umkms',
             'jobs',
             'desas',
+            'workItems',
             'heroBg',
             'bgOpacity',
             'bgBlur',
