@@ -4,7 +4,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ appProfile()->region_name }} - {{ appProfile()->tagline ?? 'Pelayanan Profesional' }}</title>
+
+    {{-- SEO Meta Tags --}}
+    <title>Kecamatan Besuk Kabupaten Probolinggo – Layanan & Informasi Publik</title>
+    <meta name="description"
+        content="Website resmi Kecamatan Besuk Kabupaten Probolinggo yang menyediakan informasi layanan pemerintahan, berita kecamatan, peta desa, serta etalase UMKM warga.">
+    <meta name="keywords"
+        content="Kecamatan Besuk, Kabupaten Probolinggo, layanan kecamatan, desa Besuk, UMKM Besuk, kantor kecamatan Besuk, pelayanan publik Probolinggo">
+    <meta name="author" content="Pemerintah Kecamatan Besuk">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ url('/') }}">
+
+    {{-- Open Graph / Facebook --}}
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url('/') }}">
+    <meta property="og:title" content="Kecamatan Besuk Kabupaten Probolinggo – Layanan & Informasi Publik">
+    <meta property="og:description"
+        content="Website resmi Kecamatan Besuk Kabupaten Probolinggo yang menyediakan informasi layanan pemerintahan, berita kecamatan, peta desa, serta etalase UMKM warga.">
+    @if(appProfile()->logo_path)
+        <meta property="og:image" content="{{ asset('storage/' . appProfile()->logo_path) }}">
+    @endif
+
+    {{-- Twitter Card --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Kecamatan Besuk Kabupaten Probolinggo">
+    <meta name="twitter:description"
+        content="Website resmi Kecamatan Besuk Kabupaten Probolinggo untuk layanan publik dan informasi warga.">
+
+    {{-- Geo Tags for Local SEO --}}
+    <meta name="geo.region" content="ID-JI">
+    <meta name="geo.placename" content="Kecamatan Besuk, Kabupaten Probolinggo">
+    <meta name="geo.position" content="-7.8;113.3">
+    <meta name="ICBM" content="-7.8, 113.3">
+
     @if(appProfile()->logo_path)
         <link rel="icon" href="{{ asset('storage/' . appProfile()->logo_path) }}" type="image/png">
     @endif
@@ -86,6 +118,39 @@
             }
         }
     </style>
+
+    {{-- JSON-LD Structured Data for Local SEO --}}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "GovernmentOrganization",
+      "name": "Kecamatan Besuk",
+      "description": "Pemerintah Kecamatan Besuk Kabupaten Probolinggo - Layanan Administrasi dan Informasi Publik",
+      "url": "{{ url('/') }}",
+      "telephone": "{{ appProfile()->phone ?? '+62-335-XXXXXXX' }}",
+      "email": "{{ appProfile()->email ?? 'kecamatanbesuk@probolinggokab.go.id' }}",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "{{ appProfile()->address ?? 'Jl. Raya Besuk' }}",
+        "addressLocality": "Besuk",
+        "addressRegion": "Jawa Timur",
+        "postalCode": "67219",
+        "addressCountry": "ID"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "-7.8",
+        "longitude": "113.3"
+      },
+      "areaServed": {
+        "@type": "AdministrativeArea",
+        "name": "Kecamatan Besuk, Kabupaten Probolinggo"
+      },
+      "sameAs": [
+        "https://probolinggokab.go.id"
+      ]
+    }
+    </script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -99,7 +164,8 @@
         <div class="navbar-start">
             <a href="/" class="flex items-center gap-3">
                 @if(appProfile()->logo_path)
-                    <img src="{{ asset('storage/' . appProfile()->logo_path) }}" alt="Logo"
+                    <img src="{{ asset('storage/' . appProfile()->logo_path) }}"
+                        alt="LogoKecamatan Besuk Kabupaten Probolinggo"
                         class="w-12 h-12 object-contain rounded-lg bg-white shadow-sm p-1"
                         style="max-height: 48px; width: auto;">
                 @else
@@ -349,17 +415,23 @@
                             Masyarakat</span>
                     </div>
 
+
                     <h1 class="text-5xl md:text-7xl font-black text-[#1e293b] mb-6 leading-[1.1] tracking-tight"
                         style="text-shadow: 0 1px 2px rgba(255,255,255,0.5);">
-                        Pelayanan<br>
-                        Kecamatan Besuk,<br>
-                        <span class="text-[#0f766e]">Mudah & Terbuka</span>
+                        Kecamatan Besuk<br>
+                        <span class="text-[#0f766e]">Kabupaten Probolinggo</span>
                     </h1>
 
-                    <p class="text-lg md:text-xl text-[#475569] mb-10 leading-relaxed font-medium max-w-xl"
+                    <p class="text-lg md:text-xl text-[#475569] mb-6 leading-relaxed font-medium max-w-xl"
                         style="text-shadow: 0 1px 1px rgba(255,255,255,0.8);">
-                        Informasi, layanan, dan pengaduan masyarakat dalam satu pintu. Komitmen kami untuk melayani
-                        dengan integritas dan transparansi.
+                        Website resmi <strong>Kecamatan Besuk Kabupaten Probolinggo</strong> yang menyediakan informasi
+                        <strong>layanan pemerintahan</strong>, berita kecamatan, peta <strong>desa di Kecamatan
+                            Besuk</strong>, serta etalase <strong>UMKM warga</strong>.
+                    </p>
+
+                    <p class="text-base md:text-lg text-[#64748b] mb-10 leading-relaxed"
+                        style="text-shadow: 0 1px 1px rgba(255,255,255,0.8);">
+                        Sampaikan pengaduan, ajukan layanan, atau lacak status berkas Anda dengan mudah dan transparan.
                     </p>
 
                     <div class="flex flex-wrap gap-4">
@@ -389,7 +461,7 @@
                                     class="w-64 md:w-80 h-auto overflow-hidden rounded-[2.5rem] relative transition-transform duration-500 group-hover:-translate-y-2">
                                     <img src="https://kecamatanklasik.probolinggokab.go.id/wp-content/uploads/2024/11/Bupati-Probolinggo-Haris.png"
                                         class="w-full h-full object-cover grayscale-0 group-hover:scale-110 transition-transform duration-700"
-                                        alt="dr. Mohammad Haris">
+                                        alt="dr. Mohammad Haris - Bupati Kabupaten Probolinggo">
                                 </div>
                                 <div
                                     class="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[85%] bg-white/95 backdrop-blur-sm p-3 rounded-2xl shadow-xl border border-slate-100 text-center">
@@ -403,7 +475,7 @@
                                     class="w-64 md:w-80 h-auto overflow-hidden rounded-[2.5rem] relative transition-transform duration-500 group-hover:-translate-y-2 delay-75">
                                     <img src="https://kecamatanklasik.probolinggokab.go.id/wp-content/uploads/2024/11/Wakil-Bupati-Probolinggo-Fahmi.png"
                                         class="w-full h-full object-cover grayscale-0 group-hover:scale-110 transition-transform duration-700"
-                                        alt="Fahmi AHZ">
+                                        alt="Fahmi AHZ - Wakil Bupati Kabupaten Probolinggo">
                                 </div>
                                 <div
                                     class="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[85%] bg-white/95 backdrop-blur-sm p-3 rounded-2xl shadow-xl border border-slate-100 text-center">

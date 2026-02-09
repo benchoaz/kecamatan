@@ -71,6 +71,11 @@ Route::get('/struk/{uuid}', [ReceiptController::class, 'generateReceipt'])->name
 Route::get('/struk/{uuid}/preview', [ReceiptController::class, 'previewReceipt'])->name('receipt.preview');
 Route::get('/qr/{uuid}', [ReceiptController::class, 'generateQrCode'])->name('qr.generate');
 
+// SEO Routes (Sitemap & Robots)
+use App\Http\Controllers\SitemapController;
+Route::get('/sitemap.xml', [SitemapController::class, 'index']);
+Route::get('/robots.txt', [SitemapController::class, 'robots']);
+
 // Public Berita Routes (Read-Only)
 Route::prefix('berita')->name('public.berita.')->group(function () {
     Route::get('/', [\App\Http\Controllers\PublicBeritaController::class, 'index'])->name('index');
