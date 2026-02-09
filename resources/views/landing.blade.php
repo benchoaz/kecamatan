@@ -455,14 +455,14 @@
                     <p class="text-[10px] text-slate-500 font-medium">DTKS, SKTM & Hibah</p>
                 </div>
 
-                <div onclick="openSubmissionModal('Izin Usaha', 'NIB, IUMK')"
+                <div onclick="openSubmissionModal('Bantuan UMKM', 'Saya ingin dibantu mendaftarkan produk UMKM saya agar tampil di website.')"
                     class="bg-white/90 backdrop-blur-xl p-6 rounded-[2rem] shadow-xl border border-white hover:scale-105 transition-all cursor-pointer group">
                     <div
                         class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                        <i class="fas fa-store text-xl"></i>
+                        <i class="fas fa-store-alt text-xl"></i>
                     </div>
-                    <h3 class="font-black text-slate-800 text-sm mb-1">Izin Usaha</h3>
-                    <p class="text-[10px] text-slate-500 font-medium">NIB, IUMK & Rekomendasi</p>
+                    <h3 class="font-black text-slate-800 text-sm mb-1">Bantuan Daftar UMKM</h3>
+                    <p class="text-[10px] text-slate-500 font-medium">Dibantu Kecamatan Gratis</p>
                 </div>
 
                 <div onclick="openBotWithQuery('Jam Layanan')"
@@ -1798,13 +1798,13 @@
 
         // --- TRACKING LOGIC ---
         function handleTracking() {
-            const input = document.getElementById('trackingInput').value;
+            const input = document.getElementById('trackingInput').value.trim();
             if (!input) {
                 showToast('Mohon masukkan nomor WA atau ID Berkas', 'info');
                 return;
             }
-            // Open chatbot and search for tracking status
-            openBotWithQuery('Cek status berkas ' + input);
+            // Redirect to tracking page
+            window.location.href = '{{ route('public.tracking') }}?q=' + encodeURIComponent(input);
         }
 
         // --- MOBILE BOTTOM BAR LOGIC ---

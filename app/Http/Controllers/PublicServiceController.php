@@ -348,10 +348,70 @@ class PublicServiceController extends Controller
             ]);
         }
 
-        // 4. Fallback (No interpretation)
         return response()->json([
             'found' => false,
             'answer' => "Maaf, informasi terkait hal tersebut tidak ditemukan dalam database FAQ resmi kami. Silakan coba kata kunci lain (seperti: KTP, KK, Pindah) atau datang langsung ke kantor Kecamatan pada jam kerja."
         ]);
+    }
+
+    /**
+     * Public Tracking Page
+     */
+    public function trackingPage()
+    {
+        return view('public.tracking');
+    }
+
+    /**
+     * Check Status via WA or UUID
+     */
+    public function checkStatus(Request $request)
+    {
+        $request->validate([
+            'identifier' => 'required|string'
+        ]);
+
+        $identifier = $request->identifier;
+
+        // Try to find by UUID or WhatsApp
+        $service = PublicService::where('uuid', $identifier)
+            ->orWhere('whatsapp', $identifier)
+            ->with(['desa', 'handler'])
+            ->latest()
+            ->first();
+
+        if (!$service) {
+            return response()->json([
+                'found' => false,
+                'message' => 'Berkas tidak ditemukan. Pastikan nomor WA atau ID berkas sudah benar.'
+            ], 404);
+        }
+
+        // Build response
+        $response = [
+            'found' => true,
+            'uuid' => $service->uuid,
+            'jenis_layanan' => $service->jenis_layanan,
+            'status' => $service->status,
+            'created_at' => $service->created_at->format('d M Y, H:i'),
+            'public_response' => $service->public_response,
+            'completion_type' => $service->completion_type,
+        ];
+
+        // Digital completion
+        if ($service->completion_type === 'digital' && $service->result_file_path) {
+            $response['download_url'] = asset('storage/' . $service->result_file_path);
+        }
+
+        // Physical completion
+        if ($service->completion_type === 'physical') {
+            $response['pickup_info'] = [
+                'ready_at' => $service->ready_at?->format('d M Y, H:i'),
+                'pickup_person' => $service->pickup_person,
+                'pickup_notes' => $service->pickup_notes,
+            ];
+        }
+
+        return response()->json($response);
     }
 }

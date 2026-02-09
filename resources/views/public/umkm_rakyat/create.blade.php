@@ -116,7 +116,8 @@
                         <div class="flex flex-col items-center">
                             <div
                                 class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-sm border border-slate-200">
-                                <i class="fas fa-check"></i></div>
+                                <i class="fas fa-check"></i>
+                            </div>
                             <span
                                 class="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-wide">Selesai</span>
                         </div>
@@ -159,12 +160,19 @@
                                         <div class="relative">
                                             <i
                                                 class="fas fa-tag absolute left-5 top-1/2 -translate-y-1/2 text-slate-300"></i>
-                                            <input type="text" name="jenis_usaha" required
-                                                placeholder="Kuliner, Jasa Jahit, Bengkel..."
-                                                class="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-12 pr-5 py-4 text-sm font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all outline-none placeholder:text-slate-300 shadow-sm">
+                                            <select name="jenis_usaha" required
+                                                class="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-12 pr-5 py-4 text-sm font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all outline-none appearance-none cursor-pointer shadow-sm">
+                                                <option value="" disabled selected>Pilih Kategori Usaha</option>
+                                                <option value="Makanan & Minuman">Makanan & Minuman</option>
+                                                <option value="Kerajinan Tangan">Kerajinan Tangan</option>
+                                                <option value="Fashion & Konveksi">Fashion & Konveksi</option>
+                                                <option value="Pertanian & Perkebunan">Pertanian & Perkebunan</option>
+                                                <option value="Jasa">Jasa</option>
+                                                <option value="Lainnya">Lainnya</option>
+                                            </select>
+                                            <i
+                                                class="fas fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none text-xs"></i>
                                         </div>
-                                        <p class="text-[10px] text-slate-400 mt-2 ml-1">Contoh: Makanan Ringan,
-                                            Kerajinan Tangan.</p>
                                     </div>
                                     <div class="group">
                                         <label class="block text-xs font-bold text-slate-700 mb-2 ml-1">Lokasi Desa

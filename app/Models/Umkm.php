@@ -28,7 +28,11 @@ class Umkm extends Model
         'status',
         'source',
         'slug',
-        'manage_token'
+        'manage_token',
+        'ownership_status',
+        'tokopedia_url',
+        'shopee_url',
+        'tiktok_url'
     ];
 
     protected static function boot()

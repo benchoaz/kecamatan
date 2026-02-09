@@ -62,6 +62,8 @@ use App\Http\Controllers\Kecamatan\LayananPublikController;
 
 Route::post('/public-service/submit', [PublicServiceController::class, 'submit'])->name('public.service.submit');
 Route::get('/api/faq-search', [PublicServiceController::class, 'faqSearch'])->name('api.faq.search');
+Route::get('/lacak-berkas', [PublicServiceController::class, 'trackingPage'])->name('public.tracking');
+Route::post('/lacak-berkas/cek', [PublicServiceController::class, 'checkStatus'])->name('public.tracking.check');
 
 // Public Berita Routes (Read-Only)
 Route::prefix('berita')->name('public.berita.')->group(function () {
@@ -137,6 +139,8 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/create', [LayananPublikController::class, 'umkmCreate'])->name('create');
                 Route::post('/', [LayananPublikController::class, 'umkmStore'])->name('store');
                 Route::get('/{id}/edit', [LayananPublikController::class, 'umkmEdit'])->name('edit');
+                Route::get('/{id}/handover', [LayananPublikController::class, 'umkmHandover'])->name('handover');
+                Route::post('/{id}/reset-akses', [LayananPublikController::class, 'resetAkses'])->name('reset_akses');
                 Route::put('/{id}', [LayananPublikController::class, 'umkmUpdate'])->name('update');
                 Route::delete('/{id}', [LayananPublikController::class, 'umkmDestroy'])->name('destroy');
             });

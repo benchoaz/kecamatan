@@ -53,6 +53,11 @@ class PelayananController extends Controller
             'status' => 'required|string',
             'internal_notes' => 'nullable|string',
             'public_response' => 'nullable|string',
+            'completion_type' => 'nullable|in:digital,physical',
+            'result_file' => 'nullable|file|mimes:pdf|max:5120',
+            'ready_at' => 'nullable|date',
+            'pickup_person' => 'nullable|string|max:255',
+            'pickup_notes' => 'nullable|string',
         ]);
 
         $complaint = PublicService::findOrFail($id);
@@ -62,7 +67,17 @@ class PelayananController extends Controller
             'public_response' => $request->public_response,
             'handled_by' => auth()->id(),
             'handled_at' => now(),
+            'completion_type' => $request->completion_type,
+            'ready_at' => $request->ready_at,
+            'pickup_person' => $request->pickup_person,
+            'pickup_notes' => $request->pickup_notes,
         ];
+
+        // Handle PDF upload for digital completion
+        if ($request->hasFile('result_file')) {
+            $path = $request->file('result_file')->store('public_services/results', 'public');
+            $updateData['result_file_path'] = $path;
+        }
 
         if ($request->filled('public_response')) {
             $updateData['responded_at'] = now();

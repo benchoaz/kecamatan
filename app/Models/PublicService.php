@@ -14,6 +14,7 @@ class PublicService extends Model
     protected $casts = [
         'is_agreed' => 'boolean',
         'handled_at' => 'datetime',
+        'ready_at' => 'datetime',
     ];
 
     public function desa()

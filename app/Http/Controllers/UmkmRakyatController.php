@@ -180,6 +180,9 @@ class UmkmRakyatController extends Controller
             'jenis_usaha' => 'required|string',
             'deskripsi' => 'nullable|string',
             'foto_usaha' => 'nullable|image|max:2048',
+            'tokopedia_url' => 'nullable|active_url',
+            'shopee_url' => 'nullable|active_url',
+            'tiktok_url' => 'nullable|active_url',
         ]);
 
         $data = $request->except('foto_usaha');

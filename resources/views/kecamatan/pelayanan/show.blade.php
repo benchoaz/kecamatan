@@ -214,12 +214,86 @@
                                     placeholder="Catatan koordinasi internal (tidak terlihat publik)...">{{ old('internal_notes', $complaint->internal_notes) }}</textarea>
                             </div>
 
+                            {{-- Completion Tracking (NEW) --}}
+                            <div class="border-top border-slate-100 pt-4 mb-4">
+                                <label class="form-label small fw-bold text-slate-700 mb-3">
+                                    <i class="fas fa-check-circle text-success me-1"></i> Penyelesaian Berkas
+                                </label>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold text-slate-600">Jenis Penyelesaian</label>
+                                    <select name="completion_type" id="completionType" class="form-select bg-slate-50 border-slate-200 rounded-3 small">
+                                        <option value="">Belum Selesai</option>
+                                        <option value="digital" {{ old('completion_type', $complaint->completion_type) == 'digital' ? 'selected' : '' }}>
+                                            📄 Digital (Download PDF)
+                                        </option>
+                                        <option value="physical" {{ old('completion_type', $complaint->completion_type) == 'physical' ? 'selected' : '' }}>
+                                            🏢 Fisik (Ambil di Kantor)
+                                        </option>
+                                    </select>
+                                </div>
+
+                                {{-- Digital: Upload PDF --}}
+                                <div id="digitalSection" class="mb-3" style="display: {{ old('completion_type', $complaint->completion_type) == 'digital' ? 'block' : 'none' }}">
+                                    <label class="form-label small fw-bold text-slate-600">Upload Hasil (PDF)</label>
+                                    <input type="file" name="result_file" accept=".pdf" class="form-control form-control-sm bg-slate-50 border-slate-200 rounded-3">
+                                    @if($complaint->result_file_path)
+                                        <div class="mt-2">
+                                            <a href="{{ asset('storage/' . $complaint->result_file_path) }}" target="_blank" class="text-success text-xs">
+                                                <i class="fas fa-file-pdf me-1"></i> File sudah diupload
+                                            </a>
+                                        </div>
+                                    @endif
+                                    <small class="text-muted d-block mt-1">File ini bisa didownload oleh masyarakat</small>
+                                </div>
+
+                                {{-- Physical: Pickup Info --}}
+                                <div id="physicalSection" style="display: {{ old('completion_type', $complaint->completion_type) == 'physical' ? 'block' : 'none' }}">
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold text-slate-600">Siap Diambil Tanggal</label>
+                                        <input type="datetime-local" name="ready_at" 
+                                            value="{{ old('ready_at', $complaint->ready_at?->format('Y-m-d\TH:i')) }}"
+                                            class="form-control form-control-sm bg-slate-50 border-slate-200 rounded-3">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold text-slate-600">Ambil ke Petugas</label>
+                                        <input type="text" name="pickup_person" 
+                                            value="{{ old('pickup_person', $complaint->pickup_person) }}"
+                                            placeholder="Contoh: Bapak Slamet (Loket 2)"
+                                            class="form-control form-control-sm bg-slate-50 border-slate-200 rounded-3">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold text-slate-600">Catatan Pengambilan</label>
+                                        <textarea name="pickup_notes" rows="2"
+                                            class="form-control form-control-sm bg-slate-50 border-slate-200 rounded-3"
+                                            placeholder="Contoh: Bawa KTP asli, Jam operasional 08:00-14:00">{{ old('pickup_notes', $complaint->pickup_notes) }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+
                             <button type="submit" class="btn btn-primary w-100 rounded-3 fw-bold shadow-sm py-2">
                                 Simpan Tindak Lanjut
                             </button>
                         </form>
                     </div>
                 </div>
+
+                {{-- Quick Action: Bantu Daftarkan UMKM --}}
+                @if(str_contains(strtolower($complaint->jenis_layanan), 'umkm') || str_contains(strtolower($complaint->jenis_layanan), 'bantuan'))
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden border border-amber-100 bg-amber-50/10 mb-4">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <i class="fas fa-store-alt text-amber-500"></i>
+                                <h6 class="mb-0 fw-bold text-amber-900 small">Aksi Cepat: Bantuan UMKM</h6>
+                            </div>
+                            <p class="text-slate-600 mb-3 small">Permintaan ini terdeteksi sebagai bantuan pendaftaran UMKM. Klik tombol di bawah untuk langsung memproses dengan data yang sudah terisi otomatis.</p>
+                            <a href="{{ route('kecamatan.umkm.create') }}?from_inbox={{ $complaint->id }}&nama={{ urlencode($complaint->nama_pemohon) }}&wa={{ $complaint->whatsapp }}&desa={{ $complaint->desa_id ?? '' }}" 
+                                class="btn btn-warning w-100 rounded-3 fw-bold shadow-sm py-2">
+                                <i class="fas fa-hands-helping me-2"></i> Bantu Daftarkan UMKM Sekarang
+                            </a>
+                        </div>
+                    </div>
+                @endif
 
                 <div class="card border-0 shadow-sm rounded-4 overflow-hidden border border-slate-100">
                     <div class="card-body p-4 text-center">
@@ -253,4 +327,23 @@
             transform: scale(1.05);
         }
     </style>
+
+    <script>
+        // Toggle completion sections
+        document.getElementById('completionType')?.addEventListener('change', function() {
+            const digitalSection = document.getElementById('digitalSection');
+            const physicalSection = document.getElementById('physicalSection');
+            
+            if (this.value === 'digital') {
+                digitalSection.style.display = 'block';
+                physicalSection.style.display = 'none';
+            } else if (this.value === 'physical') {
+                digitalSection.style.display = 'none';
+                physicalSection.style.display = 'block';
+            } else {
+                digitalSection.style.display = 'none';
+                physicalSection.style.display = 'none';
+            }
+        });
+    </script>
 @endsection

@@ -17,15 +17,14 @@
                             <i class="fas fa-shopping-bag"></i>
                             <span>Ekonomi Kerakyatan</span>
                         </div>
-                        <h1 class="text-4xl md:text-6xl font-black mb-6 leading-tight">Jelajah UMKM Rakyat</h1>
+                        <h1 class="text-4xl md:text-6xl font-black mb-6 leading-tight">UMKM Rakyat</h1>
                         <p class="text-teal-50 font-medium text-lg leading-relaxed opacity-90">
-                            Dukung produk lokal, kembangkan potensi desa. Beli langsung dari tangan pembuatnya tanpa
-                            perantara.
+                            Lapak online milik warga.
                         </p>
                         <div class="mt-10 flex flex-wrap justify-center md:justify-start gap-4">
                             <a href="{{ route('umkm_rakyat.create') }}"
                                 class="bg-white text-teal-700 font-black px-8 py-4 rounded-2xl shadow-lg hover:bg-teal-50 transition-all transform hover:-translate-y-1 active:scale-95">
-                                Buka Etalase Saya
+                                Buka Lapak UMKM
                             </a>
                             <a href="#explore"
                                 class="bg-teal-500/30 backdrop-blur-md border border-white/20 text-white font-black px-8 py-4 rounded-2xl hover:bg-teal-500/50 transition-all">
@@ -152,14 +151,14 @@
                     <div class="col-span-full py-20 text-center">
                         <div
                             class="w-32 h-32 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-300 text-4xl animate-pulse">
-                            <i class="fas fa-search"></i>
+                            <i class="fas fa-store-slash"></i>
                         </div>
-                        <h3 class="text-xl font-black text-slate-800 mb-2">Belum ada UMKM ditemukan</h3>
-                        <p class="text-slate-500 font-medium max-w-sm mx-auto">Kami tidak dapat menemukan UMKM yang Anda cari.
-                            Silakan coba kata kunci lain.</p>
-                        <a href="{{ route('umkm_rakyat.index') }}"
-                            class="inline-block mt-8 bg-slate-900 text-white font-black px-8 py-3 rounded-2xl shadow-lg hover:bg-slate-800 transition-colors">
-                            Reset Filter
+                        <h3 class="text-xl font-black text-slate-800 mb-2">Belum ada UMKM</h3>
+                        <p class="text-slate-500 font-medium max-w-sm mx-auto mb-6">Jadilah yang pertama membuka etalase di
+                            sini!</p>
+                        <a href="{{ route('umkm_rakyat.create') }}"
+                            class="inline-block bg-teal-600 text-white font-black px-8 py-3 rounded-2xl shadow-lg hover:bg-teal-700 transition-colors">
+                            Ajak UMKM Pertama Daftar
                         </a>
                     </div>
                 @endforelse

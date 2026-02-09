@@ -107,6 +107,42 @@
                             </div>
                         </a>
                     </div>
+                        
+                    <!-- Marketplace Links (Secondary Actions) -->
+                    @if($umkm->tokopedia_url || $umkm->shopee_url || $umkm->tiktok_url)
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 w-full animate-fade-in-up" style="animation-delay: 500ms">
+                            @if($umkm->tokopedia_url)
+                                <a href="{{ $umkm->tokopedia_url }}" target="_blank"
+                                    class="flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-700 font-bold px-4 py-3 rounded-xl hover:border-[#42b549] hover:text-[#42b549] hover:bg-[#42b549]/5 transition-all shadow-sm">
+                                    <img src="https://assets.tokopedia.net/assets-tokopedia-lite/v2/zeus/kratos/6046e723.png" class="w-5 h-5" alt="Tokopedia">
+                                    <span class="text-xs">Buka di Tokopedia</span>
+                                </a>
+                            @endif
+                            @if($umkm->shopee_url)
+                                <a href="{{ $umkm->shopee_url }}" target="_blank"
+                                    class="flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-700 font-bold px-4 py-3 rounded-xl hover:border-[#ee4d2d] hover:text-[#ee4d2d] hover:bg-[#ee4d2d]/5 transition-all shadow-sm">
+                                    <img src="https://logospng.org/download/shopee/logo-shopee-icon-1024.png" class="w-5 h-5" alt="Shopee">
+                                    <span class="text-xs">Buka di Shopee</span>
+                                </a>
+                            @endif
+                            @if($umkm->tiktok_url)
+                                <a href="{{ $umkm->tiktok_url }}" target="_blank"
+                                    class="flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-700 font-bold px-4 py-3 rounded-xl hover:border-black hover:text-black hover:bg-black/5 transition-all shadow-sm">
+                                    <i class="fab fa-tiktok text-lg"></i>
+                                    <span class="text-xs">Buka di TikTok</span>
+                                </a>
+                            @endif
+                        </div>
+                        
+                        <!-- Disclaimer Marketplace -->
+                        <div class="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-100 flex gap-3 items-start animate-fade-in-up" style="animation-delay: 600ms">
+                            <i class="fas fa-info-circle text-slate-400 text-xs mt-0.5"></i>
+                            <p class="text-[10px] text-slate-500 leading-relaxed font-medium">
+                                <strong>Disclaimer:</strong> Tautan marketplace di atas dikelola langsung oleh pemilik UMKM. 
+                                Pemerintah Kecamatan tidak bertanggung jawab atas transaksi yang terjadi di platform pihak ketiga.
+                            </p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

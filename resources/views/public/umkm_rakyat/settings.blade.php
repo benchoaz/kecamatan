@@ -60,6 +60,51 @@
                         </div>
                     </div>
 
+                    <!-- Marketplace Links Section -->
+                    <div class="border-t border-slate-50 pt-8 mt-8">
+                        <div class="mb-6">
+                            <h4 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-1">
+                                <i class="fas fa-store-alt text-teal-500 mr-2"></i>Tautan Marketplace (Opsional)
+                            </h4>
+                            <p class="text-xs text-slate-500">Isi jika Anda sudah berjualan di platform lain. Kosongkan jika
+                                tidak ada.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <!-- Tokopedia -->
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <img src="https://assets.tokopedia.net/assets-tokopedia-lite/v2/zeus/kratos/6046e723.png"
+                                        class="w-5 h-5 opacity-80" alt="Tokopedia">
+                                </div>
+                                <input type="url" name="tokopedia_url" value="{{ $umkm->tokopedia_url }}"
+                                    placeholder="https://www.tokopedia.com/nama-toko-anda"
+                                    class="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl pl-12 pr-6 py-4 text-sm font-semibold text-slate-700 focus:bg-white focus:border-green-500/20 focus:ring-4 focus:ring-green-500/10 transition-all outline-none">
+                            </div>
+
+                            <!-- Shopee -->
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <img src="https://logospng.org/download/shopee/logo-shopee-icon-1024.png"
+                                        class="w-5 h-5 opacity-80" alt="Shopee">
+                                </div>
+                                <input type="url" name="shopee_url" value="{{ $umkm->shopee_url }}"
+                                    placeholder="https://shopee.co.id/nama-toko-anda"
+                                    class="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl pl-12 pr-6 py-4 text-sm font-semibold text-slate-700 focus:bg-white focus:border-orange-500/20 focus:ring-4 focus:ring-orange-500/10 transition-all outline-none">
+                            </div>
+
+                            <!-- TikTok Shop -->
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4.5 flex items-center pointer-events-none">
+                                    <i class="fab fa-tiktok text-lg text-slate-800"></i>
+                                </div>
+                                <input type="url" name="tiktok_url" value="{{ $umkm->tiktok_url }}"
+                                    placeholder="https://www.tiktok.com/@nama-toko"
+                                    class="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl pl-12 pr-6 py-4 text-sm font-semibold text-slate-700 focus:bg-white focus:border-slate-800/20 focus:ring-4 focus:ring-slate-800/10 transition-all outline-none">
+                            </div>
+                        </div>
+                    </div>
+
                     <div>
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Jenis
                             Usaha</label>
