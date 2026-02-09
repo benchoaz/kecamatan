@@ -34,7 +34,8 @@ window.VoiceActions = (function () {
 
             case Intent.NAVIGATE_BERITA: navigateTo('berita'); readTargetSummary(); break;
             case Intent.NAVIGATE_LAYANAN: navigateTo('layanan'); readServices(); break;
-            case Intent.NAVIGATE_WILAYAH: navigateTo('umkm'); Speech.speak("Menampilkan UMKM dan Lowongan Kerja."); break;
+            case Intent.NAVIGATE_WILAYAH: navigateTo('umkm'); Speech.speak("Menampilkan daftar U M K M."); break;
+            case Intent.NAVIGATE_KERJA: navigateTo('kerja'); Speech.speak("Menampilkan direktori kerja dan jasa warga."); break;
             case Intent.NAVIGATE_INFO: navigateTo('info-hari-ini'); Speech.speak("Menampilkan informasi hari ini."); break;
             case Intent.NAVIGATE_PENGADUAN: navigateTo('pengaduan'); Speech.speak("Menampilkan layanan pengaduan warga."); break;
             case Intent.NAVIGATE_PROFILE: navigateTo('profil'); Speech.speak("Menampilkan profil kecamatan."); break;

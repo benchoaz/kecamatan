@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
                 // AspekSeeder::class,
                 // IndikatorSeeder::class,
             BeritaSeeder::class,
+            WorkDirectorySeeder::class,
         ]);
     }
 }

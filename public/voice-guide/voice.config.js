@@ -19,6 +19,7 @@ window.VoiceConfig = {
         NAVIGATE_PROFILE: 'NAV_PROFILE',
         NAVIGATE_INFO: 'NAV_INFO',
         NAVIGATE_PENGADUAN: 'NAV_COMPLAINT',
+        NAVIGATE_KERJA: 'NAV_KERJA',
         READ_NEWS_ITEM: 'READ_NEWS_ITEM',
         READ_NEWS_DETAIL: 'READ_NEWS_DETAIL', // [NEW] Contextual read
         SEARCH_NEWS: 'SEARCH_NEWS', // [NEW] Multi-page search
@@ -34,7 +35,8 @@ window.VoiceConfig = {
         { intent: 'NAVIGATE_BERITA', words: ['berita', 'warta', 'kabar', 'informasi'] },
         { intent: 'NAVIGATE_LAYANAN', words: ['layanan', 'pelayanan', 'admin', 'surat', 'ktp', 'kk', 'akta', 'domisili'] },
         { intent: 'NAVIGATE_HOME', words: ['beranda', 'home', 'depan', 'utama', 'awal'] },
-        { intent: 'NAVIGATE_WILAYAH', words: ['wilayah', 'pariwisata', 'wisata', 'umkm', 'potensi', 'loker', 'lowongan'] },
+        { intent: 'NAVIGATE_WILAYAH', words: ['wilayah', 'pariwisata', 'wisata', 'umkm', 'potensi'] },
+        { intent: 'NAVIGATE_KERJA', words: ['kerja', 'jasa', 'loker', 'lowongan', 'tukang', 'direktori'] },
         { intent: 'NAVIGATE_INFO', words: ['info', 'informasi', 'pengumuman', 'hari ini'] },
         { intent: 'NAVIGATE_PENGADUAN', words: ['pengaduan', 'lapor', 'aspirasi', 'keluhan'] },
         { intent: 'LOGIN', words: ['masuk', 'login', 'operator', 'admin'] },

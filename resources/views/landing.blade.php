@@ -243,6 +243,8 @@
                             </a></li>
                     </ul>
                 </li>
+                <li><a href="{{ route('kerja.index') }}"
+                        class="text-sm font-medium text-gray-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg">Pekerjaan & Jasa</a>
                 </li>
                 <li><a href="#berita"
                         class="text-sm font-medium text-gray-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg">Berita</a>
@@ -1010,6 +1012,101 @@
                         Belum ada lowongan kerja tersedia saat ini.
                     </div>
                 @endforelse
+            </div>
+        </div>
+    </div>
+
+    <!-- Direktori Kerja & Jasa Warga Section -->
+    <div id="kerja" class="py-24 bg-emerald-50/40 relative overflow-hidden">
+        {{-- Decorative Elements --}}
+        <div class="absolute top-0 right-0 w-96 h-96 bg-emerald-200/20 rounded-full blur-3xl -mr-48 -mt-48"></div>
+        <div class="absolute bottom-0 left-0 w-72 h-72 bg-teal-200/20 rounded-full blur-3xl -ml-36 -mb-36"></div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                <div class="max-w-xl">
+                    <div
+                        class="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full mb-4 text-xs font-bold uppercase tracking-widest">
+                        <i class="fas fa-hand-holding-heart"></i>
+                        <span>Ekonomi Rakyat</span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-2">Direktori Kerja & Jasa</h2>
+                    <p class="text-gray-500 text-sm md:text-base leading-relaxed">
+                        Papan informasi digital untuk pekerjaan harian dan jasa rakyat mandiri di wilayah Kecamatan
+                        Besuk.
+                    </p>
+                </div>
+                <a href="{{ route('kerja.index') }}"
+                    class="group flex items-center text-sm font-bold text-emerald-600 hover:text-emerald-700 transition-colors bg-white px-6 py-3 rounded-2xl shadow-sm border border-emerald-100">
+                    Lihat Semua
+                    <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @forelse($workItems as $work)
+                    <div
+                        class="group bg-white p-6 rounded-[2.5rem] border border-slate-100 hover:border-emerald-200 hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300">
+                        <div class="flex flex-col h-full">
+                            <div class="flex items-center gap-4 mb-6">
+                                <div
+                                    class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center shrink-0 shadow-sm border border-emerald-100 group-hover:bg-emerald-600 transition-colors duration-300">
+                                    <i
+                                        class="fas {{ $work->icon }} text-emerald-600 text-2xl group-hover:text-white transition-colors"></i>
+                                </div>
+                                <div>
+                                    <h4
+                                        class="text-xs font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">
+                                        {{ $work->job_category }}
+                                    </h4>
+                                    <p class="text-sm text-emerald-600 font-bold">
+                                        {{ $work->display_name }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <h3 class="text-xl font-bold text-gray-800 mb-3 leading-tight">
+                                {{ $work->job_title }}
+                            </h3>
+
+                            <div class="space-y-2 mb-6">
+                                <div class="flex items-center gap-2 text-xs text-slate-500">
+                                    <i class="fas fa-map-marker-alt text-emerald-500 w-4"></i>
+                                    <span>{{ $item->service_area ?? 'Kecamatan Besuk' }}</span>
+                                </div>
+                                @if($work->service_time)
+                                    <div class="flex items-center gap-2 text-xs text-slate-500">
+                                        <i class="fas fa-clock text-emerald-500 w-4"></i>
+                                        <span>{{ $work->service_time }}</span>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div class="mt-auto pt-6 border-t border-slate-50 flex items-center justify-between">
+                                <a href="{{ route('kerja.show', $work->id) }}"
+                                    class="text-xs font-bold text-slate-400 hover:text-emerald-600 transition-colors">
+                                    Detail Info
+                                </a>
+                                <a href="{{ $work->whatsapp_link }}" target="_blank"
+                                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-200">
+                                    <i class="fab fa-whatsapp"></i> Hubungi
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="col-span-full py-12 text-center">
+                        <p class="text-slate-400 italic">Data direktori kerja belum tersedia.</p>
+                    </div>
+                @endforelse
+            </div>
+
+            {{-- Disclaimer Minimalist --}}
+            <div class="mt-12 text-center">
+                <p class="text-[10px] text-slate-400 max-w-2xl mx-auto leading-relaxed italic">
+                    * Informasi ditampilkan berdasarkan pendataan Kecamatan Besuk. Pemerintah tidak terlibat dalam
+                    hubungan kerja atau transaksi secara langsung.
+                </p>
             </div>
         </div>
     </div>

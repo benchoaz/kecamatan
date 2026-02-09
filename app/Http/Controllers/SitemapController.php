@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Umkm;
 use App\Models\Desa;
 use App\Models\Berita;
+use App\Models\WorkDirectory;
 use Illuminate\Http\Response;
 
 class SitemapController extends Controller
@@ -42,6 +43,14 @@ class SitemapController extends Controller
         foreach ($beritas as $berita) {
             $url = route('public.berita.show', $berita->slug);
             $sitemap .= $this->addUrl($url, '0.5', 'monthly', $berita->updated_at);
+        }
+
+        // Work Directory Pages
+        $sitemap .= $this->addUrl(route('kerja.index'), '0.8', 'weekly');
+        $workItems = WorkDirectory::public()->get();
+        foreach ($workItems as $work) {
+            $url = route('kerja.show', $work->id);
+            $sitemap .= $this->addUrl($url, '0.6', 'weekly', $work->updated_at);
         }
 
         $sitemap .= '</urlset>';
