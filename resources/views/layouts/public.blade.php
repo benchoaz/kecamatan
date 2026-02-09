@@ -7,7 +7,7 @@
     <link rel="icon" href="{{ appProfile()->logo_path ? asset('storage/' . appProfile()->logo_path) : '' }}"
         type="image/png">
 
-    <title>@yield('title', appProfile()->region_level . ' ' . appProfile()->region_name)</title>
+    <title>@yield('title', appProfile()->full_region_name)</title>
 
     @yield('meta')
 
@@ -48,10 +48,11 @@
         <div class="container mx-auto px-6 h-20 flex items-center justify-between">
             <a href="/" class="flex items-center gap-3 group">
                 <img src="{{ appProfile()->logo_path ? asset('storage/' . appProfile()->logo_path) : '' }}" alt="Logo"
-                    class="h-10 w-auto group-hover:scale-110 transition-transform">
+                    style="height: 60px; width: auto; object-fit: contain;"
+                    class="flex-shrink-0 group-hover:scale-110 transition-transform">
                 <div>
                     <div class="font-black text-slate-800 leading-none">
-                        {{ strtoupper(appProfile()->region_level . ' ' . appProfile()->region_name) }}
+                        {{ strtoupper(appProfile()->full_region_name) }}
                     </div>
                     <div class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">
                         {{ appProfile()->region_parent ?? 'Kabupaten Probolinggo' }}
@@ -90,21 +91,22 @@
                 <!-- Branding -->
                 <div class="space-y-6">
                     <div class="flex items-center gap-4">
-                        <div
-                            class="p-2.5 bg-white rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.05)] border border-white/10">
+                        <div class="group hover:scale-110 transition-transform duration-500 flex-shrink-0">
                             <img src="{{ appProfile()->logo_path ? asset('storage/' . appProfile()->logo_path) : asset('img/logo-default.png') }}"
-                                alt="Logo" class="h-9 w-auto">
+                                alt="Logo" style="height: 60px; width: auto; object-fit: contain;"
+                                class="brightness-110 drop-shadow-2xl">
                         </div>
                         <div>
                             <h5 class="text-white font-black text-lg uppercase tracking-tight">
-                                {{ appProfile()->region_name }}</h5>
+                                {{ appProfile()->full_region_name }}
+                            </h5>
                             <p class="text-[9px] text-teal-500 font-bold uppercase tracking-[0.3em]">
-                                {{ appProfile()->tagline }}</p>
+                                {{ appProfile()->tagline }}
+                            </p>
                         </div>
                     </div>
                     <p class="text-sm leading-relaxed max-w-xs">
-                        Portal informasi dan pelayanan publik digital resmi {{ appProfile()->region_level }}
-                        {{ appProfile()->region_name }}.
+                        Portal informasi dan pelayanan publik digital resmi {{ appProfile()->full_region_name }}.
                         Membangun tata kelola mandiri dan transparan.
                     </p>
                 </div>
@@ -179,7 +181,7 @@
             <!-- Social & Bottom Bar -->
             <div class="pt-8 border-t border-slate-800/80 flex flex-col md:flex-row justify-between items-center gap-6">
                 <p class="text-[11px] font-bold text-slate-600 uppercase tracking-widest text-center md:text-left">
-                    &copy; {{ date('Y') }} {{ appProfile()->region_name }}. Seluruh Hak Cipta Dilindungi.
+                    &copy; {{ date('Y') }} {{ appProfile()->full_region_name }}. Seluruh Hak Cipta Dilindungi.
                 </p>
                 <div class="flex items-center gap-4">
                     @if(appProfile()->facebook_url)

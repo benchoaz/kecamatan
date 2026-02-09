@@ -42,4 +42,20 @@ class AppProfile extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
+    /**
+     * Get the full region name, ensuring no double prefixes like "Kecamatan Kecamatan Besuk"
+     */
+    public function getFullRegionNameAttribute()
+    {
+        $level = ucfirst($this->region_level);
+        $name = $this->region_name;
+
+        // Check if the level is already at the beginning of the name (case-insensitive)
+        if (stripos(trim($name), $level) === 0) {
+            return $name;
+        }
+
+        return $level . ' ' . $name;
+    }
 }

@@ -109,11 +109,11 @@
                                             <div class="col-md-2 text-center border-end border-slate-200">
                                                 @if($profile->logo_path)
                                                     <img src="{{ asset('storage/' . $profile->logo_path) }}"
-                                                        class="img-fluid rounded-3 shadow-sm mb-3 d-block mx-auto"
-                                                        style="max-height: 80px; width: auto; max-width: 100%;">
+                                                        class="img-fluid mb-3 d-block mx-auto"
+                                                        style="max-height: 120px; width: auto; max-width: 100%; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1));">
                                                 @else
-                                                    <div class="bg-white p-3 rounded-3 shadow-sm mb-3 border d-inline-block">
-                                                        <i class="fas fa-landmark text-slate-200 fa-2x"></i>
+                                                    <div class="p-3 rounded-3 mb-3 d-inline-block">
+                                                        <i class="fas fa-landmark text-slate-200 fa-3x"></i>
                                                     </div>
                                                 @endif
                                                 <span class="d-block text-[10px] fw-bold text-slate-400 uppercase">Logo

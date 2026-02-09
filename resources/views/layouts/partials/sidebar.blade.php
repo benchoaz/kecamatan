@@ -6,7 +6,7 @@
                 @php $profile = \App\Models\AppProfile::first(); @endphp
                 @if($profile && $profile->logo_path)
                     <img src="{{ asset('storage/' . $profile->logo_path) }}" alt="Logo" class="img-fluid"
-                        style="max-height: 40px; border-radius: 6px;">
+                        style="max-height: 52px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));">
                 @else
                     <i class="fas fa-landmark"></i>
                 @endif

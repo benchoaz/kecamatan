@@ -77,13 +77,13 @@
                 class="absolute inset-0 w-full h-full object-cover">
             <div class="absolute inset-0 side-image-overlay flex flex-col justify-center p-12 text-white">
                 <div class="mb-8">
-                    <div
-                        class="w-28 h-28 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-xl border border-white/20">
+                    <div class="group hover:scale-110 transition-transform duration-500 flex-shrink-0">
                         @if(appProfile()->logo_path)
-                            <img src="{{ asset('storage/' . appProfile()->logo_path) }}" class="w-20 h-20 object-contain"
-                                alt="Logo">
+                            <img src="{{ asset('storage/' . appProfile()->logo_path) }}"
+                                style="height: 120px; width: auto; object-fit: contain;"
+                                class="drop-shadow-2xl brightness-110" alt="Logo">
                         @else
-                            <i class="fas fa-landmark text-white text-5xl"></i>
+                            <i class="fas fa-landmark text-white text-6xl opacity-80"></i>
                         @endif
                     </div>
                 </div>
@@ -115,13 +115,12 @@
             <div class="mb-10 text-center md:text-left">
                 <!-- Mobile Logo -->
                 <div class="md:hidden flex justify-center mb-6">
-                    <div
-                        class="w-20 h-20 bg-teal-600 rounded-2xl flex items-center justify-center shadow-lg shadow-teal-600/20 p-2">
+                    <div class="p-2">
                         @if(appProfile()->logo_path)
                             <img src="{{ asset('storage/' . appProfile()->logo_path) }}"
-                                class="w-full h-full object-contain bg-white rounded-xl p-1" alt="Logo">
+                                style="height: 90px; width: auto; object-fit: contain;" class="flex-shrink-0" alt="Logo">
                         @else
-                            <i class="fas fa-landmark text-white text-3xl"></i>
+                            <i class="fas fa-landmark text-teal-600 text-4xl"></i>
                         @endif
                     </div>
                 </div>
@@ -140,13 +139,24 @@
                 </div>
             @endif
 
-            @if ($errors->any())
+            @if (isset($errors) && is_object($errors) && $errors->any())
                 <div
                     class="alert bg-rose-50 border border-rose-100 text-rose-700 mb-6 rounded-2xl py-3 px-4 flex items-center gap-3">
                     <i class="fas fa-exclamation-circle text-rose-500"></i>
                     <div class="text-sm">
                         <span class="font-bold">Gagal Masuk</span>
                         @foreach ($errors->all() as $error)
+                            <div class="text-xs mt-0.5">{{ $error }}</div>
+                        @endforeach
+                    </div>
+                </div>
+            @elseif(isset($errors) && is_array($errors) && count($errors) > 0)
+                <div
+                    class="alert bg-rose-50 border border-rose-100 text-rose-700 mb-6 rounded-2xl py-3 px-4 flex items-center gap-3">
+                    <i class="fas fa-exclamation-circle text-rose-500"></i>
+                    <div class="text-sm">
+                        <span class="font-bold">Gagal Masuk</span>
+                        @foreach ($errors as $error)
                             <div class="text-xs mt-0.5">{{ $error }}</div>
                         @endforeach
                     </div>

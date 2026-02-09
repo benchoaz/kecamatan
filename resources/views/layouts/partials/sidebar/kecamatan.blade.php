@@ -1,17 +1,17 @@
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="logo">
-            <div class="logo-icon bg-brand-600 text-white shadow-premium">
+            <div class="logo-icon bg-transparent text-white">
                 @if(appProfile()->logo_path)
-                    <img src="{{ asset('storage/' . appProfile()->logo_path) }}" class="img-fluid rounded-1"
-                        style="max-height: 24px;">
+                    <img src="{{ asset('storage/' . appProfile()->logo_path) }}" class="img-fluid"
+                        style="max-height: 48px; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));">
                 @else
                     <i class="fas fa-landmark"></i>
                 @endif
             </div>
             <div class="logo-text">
                 <span class="logo-title fw-bold text-uppercase">DASHBOARD</span>
-                <span class="logo-subtitle tracking-wider">{{ strtoupper(appProfile()->region_name) }}</span>
+                <span class="logo-subtitle tracking-wider">{{ strtoupper(appProfile()->full_region_name) }}</span>
             </div>
         </div>
         <button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button>

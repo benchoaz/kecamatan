@@ -6,37 +6,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     {{-- SEO Meta Tags --}}
-    <title>{{ appProfile()->region_level }} {{ appProfile()->region_name }}
+    <title>{{ appProfile()->full_region_name }}
         {{ $appProfile->region_parent ?? 'Kabupaten Probolinggo' }} – Layanan & Informasi Publik
     </title>
     <meta name="description"
-        content="Website resmi {{ appProfile()->region_level }} {{ appProfile()->region_name }} yang menyediakan informasi layanan pemerintahan, berita kecamatan, peta desa, serta etalase UMKM warga.">
+        content="Website resmi {{ appProfile()->full_region_name }} yang menyediakan informasi layanan pemerintahan, berita kecamatan, peta desa, serta etalase UMKM warga.">
     <meta name="keywords"
-        content="{{ appProfile()->region_level }} {{ appProfile()->region_name }}, layanan kecamatan, desa {{ appProfile()->region_name }}, UMKM {{ appProfile()->region_name }}, kantor kecamatan {{ appProfile()->region_name }}, pelayanan publik">
-    <meta name="author" content="Pemerintah {{ appProfile()->region_level }} {{ appProfile()->region_name }}">
+        content="{{ appProfile()->full_region_name }}, layanan kecamatan, desa {{ appProfile()->region_name }}, UMKM {{ appProfile()->region_name }}, kantor kecamatan {{ appProfile()->region_name }}, pelayanan publik">
+    <meta name="author" content="Pemerintah {{ appProfile()->full_region_name }}">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ url('/') }}">
 
     {{-- Open Graph / Facebook --}}
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url('/') }}">
-    <meta property="og:title"
-        content="{{ appProfile()->region_level }} {{ appProfile()->region_name }} – Layanan & Informasi Publik">
+    <meta property="og:title" content="{{ appProfile()->full_region_name }} – Layanan & Informasi Publik">
     <meta property="og:description"
-        content="Website resmi {{ appProfile()->region_level }} {{ appProfile()->region_name }} yang menyediakan informasi layanan pemerintahan, berita kecamatan, peta desa, serta etalase UMKM warga.">
+        content="Website resmi {{ appProfile()->full_region_name }} yang menyediakan informasi layanan pemerintahan, berita kecamatan, peta desa, serta etalase UMKM warga.">
     @if(appProfile()->logo_path)
         <meta property="og:image" content="{{ asset('storage/' . appProfile()->logo_path) }}">
     @endif
 
     {{-- Twitter Card --}}
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ appProfile()->region_level }} {{ appProfile()->region_name }}">
+    <meta name="twitter:title" content="{{ appProfile()->full_region_name }}">
     <meta name="twitter:description"
-        content="Website resmi {{ appProfile()->region_level }} {{ appProfile()->region_name }} untuk layanan publik dan informasi warga.">
+        content="Website resmi {{ appProfile()->full_region_name }} untuk layanan publik dan informasi warga.">
 
     {{-- Geo Tags for Local SEO --}}
     <meta name="geo.region" content="ID-JI">
-    <meta name="geo.placename" content="{{ appProfile()->region_level }} {{ appProfile()->region_name }}">
+    <meta name="geo.placename" content="{{ appProfile()->full_region_name }}">
     <meta name="geo.position" content="-7.8;113.3">
     <meta name="ICBM" content="-7.8, 113.3">
 
@@ -164,6 +163,48 @@
                 transform: translateY(0);
             }
         }
+
+        /* Sticky Survey Tab */
+        .sticky-survey-tab {
+            position: fixed;
+            right: -100px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+            transform-origin: right bottom;
+            z-index: 100;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .sticky-survey-tab:hover {
+            right: -95px;
+        }
+
+        .survey-tab-btn {
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 15px 15px 0 0;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: -5px 0 20px rgba(13, 148, 136, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .survey-tab-btn i {
+            transform: rotate(90deg);
+        }
+
+        @media (max-width: 1023px) {
+            .sticky-survey-tab {
+                display: none;
+            }
+        }
     </style>
 
     {{-- JSON-LD Structured Data for Local SEO --}}
@@ -213,8 +254,7 @@
                 @if(appProfile()->logo_path)
                     <img src="{{ asset('storage/' . appProfile()->logo_path) }}"
                         alt="Logo {{ appProfile()->region_level }} {{ appProfile()->region_name }}"
-                        class="w-12 h-12 object-contain rounded-lg bg-white shadow-sm p-1"
-                        style="max-height: 48px; width: auto;">
+                        style="height: 60px; width: auto; object-fit: contain;" class="flex-shrink-0">
                 @else
                     <div
                         class="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center shadow-sm">
@@ -223,7 +263,7 @@
                 @endif
                 <div>
                     <div class="text-xs font-semibold text-gray-700 uppercase tracking-wide">
-                        {{ strtoupper(appProfile()->region_name) }}
+                        {{ strtoupper(appProfile()->full_region_name) }}
                     </div>
                     <div class="text-[10px] text-gray-500">{{ appProfile()->app_name }}</div>
                 </div>
@@ -466,7 +506,7 @@
 
                     <h1 class="text-5xl md:text-7xl font-black text-[#1e293b] mb-6 leading-[1.1] tracking-tight"
                         style="text-shadow: 0 1px 2px rgba(255,255,255,0.5);">
-                        {{ appProfile()->region_level }} {{ appProfile()->region_name }}<br>
+                        {{ appProfile()->full_region_name }}<br>
                         <span class="text-[#0f766e]">{{ $appProfile->region_parent ?? 'Kabupaten Probolinggo' }}</span>
                     </h1>
 
@@ -713,12 +753,16 @@
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Respon Cepat</p>
                     <div class="w-8 h-1 bg-blue-100 mx-auto mt-4 rounded-full"></div>
                 </div>
-                <div class="text-center group">
+                <div onclick="openSurveyModal()" class="text-center group cursor-pointer">
                     <div
                         class="text-4xl md:text-5xl font-black text-emerald-600 mb-2 group-hover:scale-110 transition-transform">
                         98%</div>
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Kepuasan Warga</p>
-                    <div class="w-8 h-1 bg-emerald-100 mx-auto mt-4 rounded-full"></div>
+                    <div class="w-12 h-1 bg-emerald-100 mx-auto mt-4 rounded-full group-hover:w-20 transition-all">
+                    </div>
+                    <p
+                        class="text-[9px] text-emerald-500 font-bold mt-2 opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-tighter italic">
+                        Nilai Layanan Kami <i class="fas fa-chevron-right ml-1"></i></p>
                 </div>
             </div>
         </div>
@@ -1318,6 +1362,93 @@
         </div>
     </div>
 
+    <!-- Section: Survei Kepuasan Masyarakat (SKM) - STRATEGIC LOCATION -->
+    <div id="survey-section" class="py-24 bg-white relative overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div
+                class="bg-gradient-to-br from-slate-900 via-slate-800 to-teal-900 rounded-[3rem] p-8 md:p-16 relative overflow-hidden shadow-2xl border border-white/5">
+                <!-- Ornaments -->
+                <div class="absolute -top-24 -right-24 w-64 h-64 bg-teal-500/20 rounded-full blur-3xl opacity-50"></div>
+                <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl opacity-30">
+                </div>
+
+                <div class="flex flex-col lg:flex-row items-center gap-16 relative z-10">
+                    <!-- Left: Content -->
+                    <div class="w-full lg:w-3/5 text-center lg:text-left">
+                        <div
+                            class="inline-flex items-center gap-3 bg-teal-500/10 text-teal-300 px-5 py-2 rounded-full mb-8 border border-teal-500/20">
+                            <i class="fas fa-star text-xs"></i>
+                            <span class="text-[10px] font-black uppercase tracking-[0.2em]">Partisipasi Publik</span>
+                        </div>
+                        <h2 class="text-4xl md:text-6xl font-black text-white mb-6 leading-[1.1]">
+                            Survei Kepuasan<br>
+                            <span class="text-teal-400">Masyarakat (SKM)</span>
+                        </h2>
+                        <p class="text-lg text-slate-300 mb-10 leading-relaxed font-medium max-w-2xl">
+                            Bantu kami meningkatkan kualitas pelayanan publik di
+                            <strong>{{ appProfile()->region_level }} {{ appProfile()->region_name }}</strong>.
+                            Penilaian Anda sangat berharga untuk menciptakan transparansi dan akuntabilitas yang lebih
+                            baik.
+                        </p>
+
+                        <div class="flex flex-wrap justify-center lg:justify-start gap-4">
+                            <a href="https://sukma.jatimprov.go.id/fe/survey?idUser=2710" target="_blank"
+                                class="btn bg-teal-500 hover:bg-teal-400 text-slate-900 border-0 rounded-2xl px-10 h-16 font-black shadow-[0_10px_30px_rgba(20,184,166,0.3)] transition-all">
+                                <i class="fas fa-external-link-alt mr-2 text-sm"></i>
+                                Isi Survei Sekarang
+                            </a>
+                            <button onclick="openSurveyModal()"
+                                class="btn bg-white/10 hover:bg-white/20 text-white border border-white/10 backdrop-blur-md rounded-2xl px-10 h-16 font-black transition-all">
+                                <i class="fas fa-qrcode mr-2 text-sm"></i>
+                                Scan QR Code
+                            </button>
+                        </div>
+
+                        <div class="mt-10 flex items-center justify-center lg:justify-start gap-6">
+                            <div class="flex -space-x-3">
+                                <img class="w-10 h-10 rounded-full border-2 border-slate-800"
+                                    src="https://ui-avatars.com/api/?name=Warga+1&background=0d9488&color=fff"
+                                    alt="Warga">
+                                <img class="w-10 h-10 rounded-full border-2 border-slate-800"
+                                    src="https://ui-avatars.com/api/?name=Warga+2&background=0369a1&color=fff"
+                                    alt="Warga">
+                                <img class="w-10 h-10 rounded-full border-2 border-slate-800"
+                                    src="https://ui-avatars.com/api/?name=Warga+3&background=15803d&color=fff"
+                                    alt="Warga">
+                            </div>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                                <span class="text-white">1,500+</span> Responden Telah Berpartisipasi
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Right: Visual/QR -->
+                    <div class="w-full lg:w-2/5 flex justify-center">
+                        <div class="relative group">
+                            <div
+                                class="absolute inset-0 bg-teal-500/20 blur-[50px] rounded-full group-hover:bg-teal-500/30 transition-all duration-500">
+                            </div>
+                            <div
+                                class="bg-white p-8 rounded-[2.5rem] shadow-2xl relative z-10 border border-teal-500/20 transform group-hover:rotate-3 transition-transform duration-500 max-w-[300px]">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://sukma.jatimprov.go.id/fe/survey?idUser=2710"
+                                    alt="QR Code Survei Kepuasan Masyarakat" class="w-full h-auto rounded-xl">
+                                <p
+                                    class="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest mt-6">
+                                    Scan untuk Menilai</p>
+                                <div class="mt-4 pt-4 border-t border-slate-50 flex items-center justify-center gap-2">
+                                    <img src="{{ appProfile()->logo_path ? asset('storage/' . appProfile()->logo_path) : asset('img/logo-default.png') }}"
+                                        class="h-6 w-auto opacity-50 gray-scale grayscale" alt="Logo">
+                                    <span class="text-[8px] font-bold text-slate-300 uppercase tracking-tighter">Portal
+                                        SUKMA JATIM</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Premium SEO Optimized Footer -->
     <footer
         class="bg-[#020617] text-slate-400 pt-24 pb-12 border-t border-slate-800/60 mb-20 lg:mb-0 relative overflow-hidden">
@@ -1336,10 +1467,10 @@
                 <!-- Col 1: Identity & Socials (5 cols for more breathing room) -->
                 <div class="lg:col-span-4 space-y-10">
                     <div class="flex items-center gap-5">
-                        <div
-                            class="p-3.5 bg-white shadow-[0_0_40px_rgba(255,255,255,0.05)] rounded-2xl border border-white/10 group hover:scale-105 transition-transform duration-500">
+                        <div class="group hover:scale-110 transition-transform duration-500 flex-shrink-0">
                             <img src="{{ appProfile()->logo_path ? asset('storage/' . appProfile()->logo_path) : asset('img/logo-default.png') }}"
-                                alt="Logo {{ appProfile()->region_name }}" class="h-12 w-auto brightness-105">
+                                alt="Logo {{ appProfile()->region_name }}"
+                                style="height: 80px; width: auto; object-fit: contain;" class="brightness-110 drop-shadow-2xl">
                         </div>
                         <div>
                             <h4
@@ -1544,7 +1675,7 @@
                 <div class="order-2 lg:order-1 text-center lg:text-left space-y-2">
                     <p class="text-sm text-slate-500 font-medium">
                         &copy; {{ date('Y') }} <span
-                            class="text-white font-black uppercase tracking-tighter">{{ appProfile()->region_name }}</span>.
+                            class="text-white font-black uppercase tracking-tighter">{{ appProfile()->full_region_name }}</span>.
                         Seluruh Hak Cipta Dilindungi.
                     </p>
                     <div
@@ -1615,6 +1746,14 @@
             class="btn btn-circle bg-blue-600 hover:bg-blue-700 border-0 shadow-lg w-14 h-14"
             aria-label="Buka Menu Aksesibilitas">
             <i class="fas fa-wheelchair text-white text-xl"></i>
+        </button>
+    </div>
+
+    <!-- Sticky Survey Tab (Side) -->
+    <div class="sticky-survey-tab">
+        <button onclick="openSurveyModal()" class="survey-tab-btn">
+            <i class="fas fa-star text-amber-400"></i>
+            <span>Isi Survei Kepuasan</span>
         </button>
     </div>
 
@@ -1902,6 +2041,59 @@
                     <button onclick="startClarification()"
                         class="text-[9px] font-bold text-teal-600 hover:underline">Butuh Tindak Lanjut
                         Petugas?</button>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Survei Kepuasan Masyarakat (SKM) Modal -->
+    <dialog id="surveyModal" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box max-w-md rounded-3xl bg-white p-0 overflow-hidden shadow-2xl border border-slate-100">
+            <div class="bg-gradient-to-r from-teal-600 to-teal-700 p-6 text-white text-center relative">
+                <form method="dialog">
+                    <button
+                        class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4 text-teal-100 hover:text-white"><i
+                            class="fas fa-times"></i></button>
+                </form>
+                <div
+                    class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border border-white/20">
+                    <i class="fas fa-heart text-2xl text-teal-100 animate-pulse"></i>
+                </div>
+                <h3 class="font-black text-xl leading-tight">Survei Kepuasan<br>Masyarakat</h3>
+                <p class="text-[10px] text-teal-100 font-bold uppercase tracking-[0.2em] mt-2 opacity-80">
+                    {{ appProfile()->region_name }}
+                </p>
+            </div>
+
+            <div class="p-8 text-center bg-slate-50/50">
+                <p class="text-sm text-slate-600 leading-relaxed mb-8">
+                    Silakan scan QR Code di bawah ini atau klik tombol tombol untuk melakukan penilaian survey kepuasan
+                    masyarakat melalui portal <strong>SUKMA JATIM</strong>.
+                </p>
+
+                <div class="bg-white p-6 rounded-3xl shadow-xl inline-block mb-8 border border-white mx-auto">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://sukma.jatimprov.go.id/fe/survey?idUser=2710"
+                        alt="QR Code Survei" class="w-48 h-48 rounded-lg mx-auto">
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-4">Scan QR untuk Mengisi
+                    </p>
+                </div>
+
+                <div class="space-y-3">
+                    <a href="https://sukma.jatimprov.go.id/fe/survey?idUser=2710" target="_blank"
+                        class="btn bg-teal-600 hover:bg-teal-700 text-white btn-block rounded-2xl py-4 h-auto font-black uppercase tracking-widest text-xs shadow-lg shadow-teal-100 transition-all">
+                        Lanjut ke Portal Survei <i class="fas fa-external-link-alt ml-2"></i>
+                    </a>
+                    <form method="dialog">
+                        <button
+                            class="btn btn-ghost text-slate-400 text-[10px] font-bold uppercase tracking-widest">Nanti
+                            Saja</button>
+                    </form>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-slate-200/60 flex items-center justify-center gap-2">
+                    <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-[0.1em]">Respon Anda Membantu
+                        Kami Berbenah</span>
                 </div>
             </div>
         </div>
@@ -2310,6 +2502,19 @@
         // --- MOBILE BOTTOM BAR LOGIC ---
         function toggleMobileMenu() {
             // Placeholder for any mobile menu logic if needed
+        }
+
+        // --- SURVEY MODAL LOGIC ---
+        function openSurveyModal() {
+            const modal = document.getElementById('surveyModal');
+            if (modal) {
+                modal.showModal();
+
+                // 🔊 AUDIO FEEDBACK: Option for Voice Guide
+                if (window.VoiceSpeech && window.VoiceState && window.VoiceState.isActive()) {
+                    window.VoiceSpeech.speak("Silakan sampaikan kepuasan Anda melalui survei kami. Anda dapat memindai kode QR yang muncul atau mengeklik tombol untuk lanjut ke portal survei.");
+                }
+            }
         }
     </script>
 
