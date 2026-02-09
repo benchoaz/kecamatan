@@ -88,6 +88,37 @@
             text-decoration: none !important;
         }
 
+        /* Custom Map Controls */
+        .leaflet-control-reset {
+            background-color: white !important;
+            width: 34px !important;
+            height: 34px !important;
+            line-height: 34px !important;
+            text-align: center !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: #475569 !important;
+            border: 1px solid #e2e8f0 !important;
+            margin-right: 10px !important;
+            margin-top: 5px !important;
+        }
+
+        .leaflet-control-reset:hover {
+            background-color: #f8fafc !important;
+            color: #0d9488 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 15px rgba(13, 148, 136, 0.2) !important;
+        }
+
+        .leaflet-control-reset i {
+            font-size: 14px;
+        }
+
         /* Voice Guide Fallback */
         #voice-guide-fallback {
             position: fixed;
@@ -95,6 +126,19 @@
             right: 20px;
             z-index: 9999;
             animation: slideInUp 0.3s ease-out;
+            pointer-events: auto;
+        }
+
+        @media (max-width: 1023px) {
+            #voice-guide-fallback {
+                bottom: 100px !important;
+            }
+
+            .fixed.bottom-5 {
+                bottom: 5.5rem !important;
+                /* Move up to avoid mobile bottom bar */
+                z-index: 60 !important;
+            }
         }
 
         .vg-fallback-card {
@@ -261,8 +305,6 @@
         </div>
     </div>
 
-    </div>
-
     <!-- Premium Announcement Slider -->
     @if(isset($publicAnnouncements) && $publicAnnouncements->count() > 0)
         <div
@@ -410,7 +452,7 @@
             class="absolute top-0 right-0 w-[500px] h-[500px] bg-teal-50/50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 z-15 opacity-60">
         </div>
 
-        <div class="container mx-auto px-6 relative z-20 py-12">
+        <div class="container mx-auto px-6 relative z-20 pt-20 pb-44 lg:pb-60">
             <div class="flex flex-col lg:flex-row items-center gap-12">
                 <!-- Left: Content -->
                 <div class="w-full lg:w-1/2 text-left hero-text-reveal">
@@ -1278,252 +1320,284 @@
 
     <!-- Premium SEO Optimized Footer -->
     <footer
-        class="bg-[#0f172a] text-slate-400 pt-24 pb-12 border-t border-slate-800 mb-20 lg:mb-0 relative overflow-hidden">
-        {{-- Subtle Background Glows --}}
+        class="bg-[#020617] text-slate-400 pt-24 pb-12 border-t border-slate-800/60 mb-20 lg:mb-0 relative overflow-hidden">
+        {{-- Geometric Background Elements --}}
         <div
-            class="absolute top-0 right-0 w-[500px] h-[500px] bg-teal-500/5 blur-[120px] rounded-full pointer-events-none">
+            class="absolute top-0 right-0 w-[600px] h-[600px] bg-teal-500/5 blur-[120px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/4">
         </div>
         <div
-            class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/5 blur-[100px] rounded-full pointer-events-none">
+            class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none translate-y-1/2 -translate-x-1/4">
         </div>
 
         <div class="container mx-auto px-6 relative z-10">
-            {{-- Main Footer Grid --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-20">
+            {{-- Main Footer Content Grid --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 mb-20">
 
-                <!-- Col 1: Brand & About (4 cols) -->
-                <div class="lg:col-span-4 space-y-8">
-                    <div class="flex items-center gap-4">
-                        <div class="p-3 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl">
+                <!-- Col 1: Identity & Socials (5 cols for more breathing room) -->
+                <div class="lg:col-span-4 space-y-10">
+                    <div class="flex items-center gap-5">
+                        <div
+                            class="p-3.5 bg-white shadow-[0_0_40px_rgba(255,255,255,0.05)] rounded-2xl border border-white/10 group hover:scale-105 transition-transform duration-500">
                             <img src="{{ appProfile()->logo_path ? asset('storage/' . appProfile()->logo_path) : asset('img/logo-default.png') }}"
-                                alt="Logo {{ appProfile()->region_name }}"
-                                class="h-12 w-auto brightness-110 drop-shadow-[0_0_10px_rgba(20,184,166,0.3)]">
+                                alt="Logo {{ appProfile()->region_name }}" class="h-12 w-auto brightness-105">
                         </div>
                         <div>
-                            <h4 class="text-white font-black text-2xl leading-none uppercase tracking-tighter">
+                            <h4
+                                class="text-white font-black text-2xl leading-none uppercase tracking-tighter group-hover:text-teal-400 transition-colors">
                                 {{ appProfile()->region_name }}
                             </h4>
                             <p
-                                class="text-[10px] text-teal-400 font-extrabold uppercase tracking-[0.3em] mt-1.5 flex items-center gap-2">
-                                <span class="w-4 h-px bg-teal-500/50"></span>
+                                class="text-[10px] text-teal-500 font-extrabold uppercase tracking-[0.4em] mt-2 flex items-center gap-2">
+                                <span class="w-6 h-px bg-teal-500/40"></span>
                                 {{ appProfile()->tagline }}
                             </p>
                         </div>
                     </div>
 
-                    <div class="space-y-4">
-                        <h5
-                            class="text-white font-bold text-sm uppercase tracking-widest border-l-4 border-teal-500 pl-3">
-                            Tentang Portal</h5>
-                        <p class="text-sm leading-relaxed text-slate-400/80">
-                            <strong>{{ appProfile()->app_name }}</strong> adalah platform digital resmi yang berfungsi
-                            sebagai pusat layanan informasi,
-                            pengaduan publik, dan etalase ekonomi kreatif untuk wilayah {{ appProfile()->region_level }}
-                            {{ appProfile()->region_name }}.
-                            Kami berdedikasi untuk menciptakan ekosistem pemerintahan yang transparan, profesional, dan
-                            melayani.
+                    <div class="space-y-6">
+                        <p class="text-[15px] leading-relaxed text-slate-400 font-medium max-w-sm">
+                            <span class="text-white font-bold">{{ appProfile()->app_name }}</span> — Portal informasi
+                            publik resmi terintegrasi untuk mendukung percepatan digitalisasi pelayanan masyarakat di
+                            wilayah <span class="text-teal-400">{{ appProfile()->region_level }}
+                                {{ appProfile()->region_name }}</span>.
                         </p>
-                    </div>
 
-                    <div class="space-y-4">
-                        <h5 class="text-white font-bold text-[10px] uppercase tracking-[0.2em] opacity-50">Ikuti Kami
-                        </h5>
-                        <div class="flex gap-3">
-                            @if(appProfile()->facebook_url)
-                                <a href="{{ appProfile()->facebook_url }}" target="_blank"
-                                    class="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-blue-600 hover:border-blue-500 transition-all shadow-xl group"
-                                    aria-label="Facebook">
-                                    <i class="fab fa-facebook-f group-hover:scale-125 transition-transform"></i>
-                                </a>
-                            @endif
-                            @if(appProfile()->instagram_url)
-                                <a href="{{ appProfile()->instagram_url }}" target="_blank"
-                                    class="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-gradient-to-tr hover:from-orange-500 hover:to-pink-600 hover:border-pink-500 transition-all shadow-xl group"
-                                    aria-label="Instagram">
-                                    <i class="fab fa-instagram group-hover:scale-125 transition-transform"></i>
-                                </a>
-                            @endif
-                            @if(appProfile()->youtube_url)
-                                <a href="{{ appProfile()->youtube_url }}" target="_blank"
-                                    class="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-red-600 hover:border-red-500 transition-all shadow-xl group"
-                                    aria-label="YouTube">
-                                    <i class="fab fa-youtube group-hover:scale-125 transition-transform"></i>
-                                </a>
-                            @endif
-                            @if(appProfile()->x_url)
-                                <a href="{{ appProfile()->x_url }}" target="_blank"
-                                    class="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-slate-800 hover:border-slate-700 transition-all shadow-xl group"
-                                    aria-label="X">
-                                    <i class="fab fa-x-twitter group-hover:scale-125 transition-transform"></i>
-                                </a>
-                            @endif
-                        </div>
-                    </div>
-
-                    <!-- Col 2: Navigation (2 cols) -->
-                    <div class="lg:col-span-2">
-                        <h5 class="text-white font-bold mb-8 flex items-center gap-3">
-                            <span
-                                class="w-6 h-6 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center text-xs">
-                                <i class="fas fa-link"></i>
-                            </span>
-                            Navigasi
-                        </h5>
-                        <ul class="space-y-4 text-sm font-medium">
-                            <li><a href="/" class="hover:text-teal-400 transition-colors flex items-center gap-3 group">
-                                    <span
-                                        class="w-1.5 h-1.5 rounded-full bg-slate-700 group-hover:bg-teal-500 transition-colors"></span>
-                                    Beranda</a></li>
-                            <li><a href="#layanan"
-                                    class="hover:text-teal-400 transition-colors flex items-center gap-3 group">
-                                    <span
-                                        class="w-1.5 h-1.5 rounded-full bg-slate-700 group-hover:bg-teal-500 transition-colors"></span>
-                                    Layanan Publik</a></li>
-                            <li><a href="#berita"
-                                    class="hover:text-teal-400 transition-colors flex items-center gap-3 group">
-                                    <span
-                                        class="w-1.5 h-1.5 rounded-full bg-slate-700 group-hover:bg-teal-500 transition-colors"></span>
-                                    Berita Terbaru</a></li>
-                            <li><a href="#umkm"
-                                    class="hover:text-teal-400 transition-colors flex items-center gap-3 group">
-                                    <span
-                                        class="w-1.5 h-1.5 rounded-full bg-slate-700 group-hover:bg-teal-500 transition-colors"></span>
-                                    Ekonomi Kreatif</a></li>
-                            <li><a href="{{ route('kerja.index') }}"
-                                    class="hover:text-teal-400 transition-colors flex items-center gap-3 group">
-                                    <span
-                                        class="w-1.5 h-1.5 rounded-full bg-slate-700 group-hover:bg-teal-500 transition-colors"></span>
-                                    Direktori Kerja</a></li>
-                        </ul>
-                    </div>
-
-                    <!-- Col 3: Contact Details (3 cols) -->
-                    <div class="lg:col-span-3">
-                        <h5 class="text-white font-bold mb-8 flex items-center gap-3">
-                            <span
-                                class="w-6 h-6 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center text-xs">
-                                <i class="fas fa-headset"></i>
-                            </span>
-                            Hubungi Kami
-                        </h5>
-                        <ul class="space-y-8 text-sm">
-                            <li class="flex gap-4">
-                                <div
-                                    class="w-12 h-12 shrink-0 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-teal-500 shadow-inner">
-                                    <i class="fas fa-map-marker-alt text-xl"></i>
-                                </div>
-                                <div class="min-w-0">
-                                    <span
-                                        class="block text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1.5">Kantor
-                                        Pemerintahan</span>
-                                    <p class="text-white font-bold leading-snug">
-                                        {{ appProfile()->address ?? 'Alamat Belum Diatur' }}
-                                    </p>
-                                </div>
-                            </li>
-                            <li class="flex gap-4">
-                                <div
-                                    class="w-12 h-12 shrink-0 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-blue-500 shadow-inner">
-                                    <i class="fas fa-phone-alt text-xl"></i>
-                                </div>
-                                <div>
-                                    <span
-                                        class="block text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1.5">Hotline
-                                        Resmi</span>
-                                    <p class="text-white font-bold text-lg leading-none">
-                                        {{ appProfile()->phone ?? '(0335) 123456' }}
-                                    </p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <!-- Col 4: Operations (3 cols) -->
-                    <div class="lg:col-span-3">
-                        <h5 class="text-white font-bold mb-8 flex items-center gap-3">
-                            <span
-                                class="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs">
-                                <i class="fas fa-clock"></i>
-                            </span>
-                            Waktu Pelayanan
-                        </h5>
-                        <div
-                            class="bg-gradient-to-br from-slate-800 to-slate-900 p-7 rounded-[2.5rem] border border-slate-700/50 shadow-2xl relative">
-                            <div
-                                class="absolute -top-3 -right-3 w-10 h-10 bg-teal-500 rounded-2xl flex items-center justify-center text-white shadow-lg animate-pulse">
-                                <i class="fas fa-door-open"></i>
+                        <div class="pt-4 space-y-4">
+                            <h6
+                                class="text-white font-black text-[10px] uppercase tracking-[0.3em] flex items-center gap-3">
+                                Ikuti Media Sosial
+                                <span class="flex-grow h-px bg-white/5"></span>
+                            </h6>
+                            <div class="flex gap-4">
+                                @if(appProfile()->facebook_url)
+                                    <a href="{{ appProfile()->facebook_url }}" target="_blank"
+                                        class="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:bg-[#1877F2] hover:text-white hover:-translate-y-1.5 transition-all duration-300 shadow-xl group"
+                                        aria-label="Facebook">
+                                        <i class="fab fa-facebook-f text-lg"></i>
+                                    </a>
+                                @endif
+                                @if(appProfile()->instagram_url)
+                                    <a href="{{ appProfile()->instagram_url }}" target="_blank"
+                                        class="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:bg-gradient-to-tr hover:from-[#f9ce34] hover:via-[#ee2a7b] hover:to-[#6228d7] hover:text-white hover:-translate-y-1.5 transition-all duration-300 shadow-xl group"
+                                        aria-label="Instagram">
+                                        <i class="fab fa-instagram text-lg"></i>
+                                    </a>
+                                @endif
+                                @if(appProfile()->youtube_url)
+                                    <a href="{{ appProfile()->youtube_url }}" target="_blank"
+                                        class="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:bg-[#FF0000] hover:text-white hover:-translate-y-1.5 transition-all duration-300 shadow-xl group"
+                                        aria-label="YouTube">
+                                        <i class="fab fa-youtube text-lg"></i>
+                                    </a>
+                                @endif
+                                @if(appProfile()->x_url)
+                                    <a href="{{ appProfile()->x_url }}" target="_blank"
+                                        class="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:bg-black hover:text-white hover:-translate-y-1.5 transition-all duration-300 shadow-xl group"
+                                        aria-label="X">
+                                        <i class="fab fa-x-twitter text-lg"></i>
+                                    </a>
+                                @endif
                             </div>
-                            <ul class="space-y-5">
-                                <li class="flex flex-col">
-                                    <span class="text-xs text-slate-500 font-bold mb-1 uppercase tracking-tighter">Senin
-                                        s/d
-                                        Kamis</span>
-                                    <span
-                                        class="text-white font-black text-lg">{{ appProfile()->office_hours_mon_thu ?? '08:00 - 15:30 WIB' }}</span>
-                                </li>
-                                <li class="flex flex-col">
-                                    <span
-                                        class="text-xs text-slate-500 font-bold mb-1 uppercase tracking-tighter">Jumat</span>
-                                    <span
-                                        class="text-white font-black text-lg">{{ appProfile()->office_hours_fri ?? '08:00 - 11:30 WIB' }}</span>
-                                </li>
-                                <li class="flex items-center gap-3 pt-2">
-                                    <span class="w-10 h-0.5 bg-rose-500/30"></span>
-                                    <span class="text-[10px] font-black text-rose-500 uppercase tracking-[0.2em]">Sabtu
-                                        -
-                                        Minggu Libur</span>
-                                    <span class="w-10 h-0.5 bg-rose-500/30"></span>
-                                </li>
-                            </ul>
                         </div>
                     </div>
                 </div>
 
-                {{-- Bottom Attribution Bar --}}
-                <div
-                    class="pt-10 border-t border-slate-800/80 flex flex-col lg:flex-row justify-between items-center gap-8">
+                <!-- Col 2: Navigation (2 cols) -->
+                <div class="lg:col-span-2">
+                    <h5 class="text-white font-black text-xs uppercase tracking-[0.2em] mb-10 flex items-center gap-3">
+                        <span class="w-8 h-px bg-teal-500"></span>
+                        Navigasi
+                    </h5>
+                    <ul class="space-y-5">
+                        <li>
+                            <a href="/"
+                                class="text-slate-400 hover:text-white transition-all flex items-center gap-3 group">
+                                <i
+                                    class="fas fa-chevron-right text-[10px] text-teal-500 group-hover:translate-x-1 transition-transform"></i>
+                                <span class="font-bold text-sm">Beranda</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#layanan"
+                                class="text-slate-400 hover:text-white transition-all flex items-center gap-3 group">
+                                <i
+                                    class="fas fa-chevron-right text-[10px] text-teal-500 group-hover:translate-x-1 transition-transform"></i>
+                                <span class="font-bold text-sm">Layanan Publik</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#berita"
+                                class="text-slate-400 hover:text-white transition-all flex items-center gap-3 group">
+                                <i
+                                    class="fas fa-chevron-right text-[10px] text-teal-500 group-hover:translate-x-1 transition-transform"></i>
+                                <span class="font-bold text-sm">Berita & Informasi</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#umkm"
+                                class="text-slate-400 hover:text-white transition-all flex items-center gap-3 group">
+                                <i
+                                    class="fas fa-chevron-right text-[10px] text-teal-500 group-hover:translate-x-1 transition-transform"></i>
+                                <span class="font-bold text-sm">UMKM Rakyat</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('kerja.index') }}"
+                                class="text-slate-400 hover:text-white transition-all flex items-center gap-3 group">
+                                <i
+                                    class="fas fa-chevron-right text-[10px] text-teal-500 group-hover:translate-x-1 transition-transform"></i>
+                                <span class="font-bold text-sm">Direktori Kerja</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Contact Details (3 cols) -->
+                <div class="lg:col-span-3">
+                    <h5 class="text-white font-black text-xs uppercase tracking-[0.2em] mb-10 flex items-center gap-3">
+                        <span class="w-8 h-px bg-blue-500"></span>
+                        Hubungi Kami
+                    </h5>
+                    <div class="space-y-8">
+                        <div class="flex gap-5 group">
+                            <div
+                                class="w-12 h-12 shrink-0 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-teal-500 group-hover:bg-teal-500/10 group-hover:border-teal-500/30 transition-all duration-300">
+                                <i class="fas fa-map-marked-alt text-xl"></i>
+                            </div>
+                            <div class="space-y-1">
+                                <span
+                                    class="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Alamat
+                                    Kantor</span>
+                                <p
+                                    class="text-white font-bold leading-relaxed text-sm group-hover:text-teal-400 transition-colors">
+                                    {{ appProfile()->address ?? 'Alamat Belum Diatur' }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex gap-5 group">
+                            <div
+                                class="w-12 h-12 shrink-0 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-blue-500 group-hover:bg-blue-500/10 group-hover:border-blue-500/30 transition-all duration-300">
+                                <i class="fas fa-phone-volume text-xl"></i>
+                            </div>
+                            <div class="space-y-1">
+                                <span
+                                    class="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Hotline
+                                    Resmi</span>
+                                <p class="text-white font-black text-lg group-hover:text-blue-400 transition-colors">
+                                    {{ appProfile()->phone ?? '(0335) 123456' }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Col 4: Time of Service (3 cols) -->
+                <div class="lg:col-span-3">
+                    <h5 class="text-white font-black text-xs uppercase tracking-[0.2em] mb-10 flex items-center gap-3">
+                        <span class="w-8 h-px bg-amber-500"></span>
+                        Jam Operasional
+                    </h5>
                     <div
-                        class="flex flex-col md:flex-row items-center gap-4 md:gap-8 order-2 lg:order-1 text-center md:text-left">
-                        <p class="text-sm text-slate-500">
-                            Copyright &copy; {{ date('Y') }} <span
-                                class="text-white font-black uppercase">{{ appProfile()->region_name }}</span>.
-                            <span class="hidden md:inline text-slate-700 mx-2">|</span>
-                            Seluruh Hak Cipta Dilindungi.
-                        </p>
-                    </div>
-
-                    <div class="flex flex-wrap justify-center items-center gap-3 order-1 lg:order-2">
+                        class="p-6 rounded-3xl bg-slate-900/50 border border-slate-800/80 backdrop-blur-sm relative group overflow-hidden">
                         <div
-                            class="flex items-center gap-2 px-4 py-2 bg-slate-800/50 rounded-xl border border-slate-700/50">
-                            <i class="fas fa-shield-alt text-teal-500 text-xs"></i>
-                            <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest">Portal Resmi
-                                Pemerintah</span>
+                            class="absolute -top-10 -right-10 w-32 h-32 bg-amber-500/5 blur-3xl rounded-full group-hover:bg-amber-500/10 transition-all">
                         </div>
-                        <div
-                            class="flex items-center gap-2 px-4 py-2 bg-slate-800/50 rounded-xl border border-slate-700/50">
-                            <i class="fas fa-bolt text-amber-500 text-xs"></i>
-                            <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest">Powered by
-                                Sae-Digital</span>
+
+                        <div class="space-y-6 relative z-10">
+                            <div>
+                                <span
+                                    class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Senin
+                                    — Kamis</span>
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-clock text-amber-500/50"></i>
+                                    <span class="text-white font-black tracking-tight text-base">
+                                        {{ appProfile()->office_hours_mon_thu ?? '08:00 - 15:30' }} WIB
+                                    </span>
+                                </div>
+                            </div>
+                            <div>
+                                <span
+                                    class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Jumat</span>
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-clock text-amber-500/50"></i>
+                                    <span class="text-white font-black tracking-tight text-base">
+                                        {{ appProfile()->office_hours_fri ?? '08:00 - 11:30' }} WIB
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="pt-2">
+                                <div
+                                    class="inline-flex items-center gap-2 px-3 py-1 bg-rose-500/10 rounded-full border border-rose-500/20">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+                                    <span class="text-[9px] font-black text-rose-500 uppercase tracking-widest">Sabtu &
+                                        Minggu Libur</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                {{-- Essential SEO Keywords (Visually Hidden but indexable) --}}
-                <div class="sr-only">
-                    Layanan publik {{ appProfile()->region_name }}, Pemerintahan {{ appProfile()->region_level }}
-                    {{ appProfile()->region_name }},
-                    UMKM {{ appProfile()->region_name }}, Pengaduan Masyarakat, Berita {{ appProfile()->region_name }},
-                    Kabupaten Probolinggo, Jawa Timur, Indonesia.
                 </div>
             </div>
+
+            {{-- Bottom Attribution Bar --}}
+            <div
+                class="pt-10 border-t border-slate-800/80 flex flex-col lg:flex-row justify-between items-center gap-8">
+                <div class="order-2 lg:order-1 text-center lg:text-left space-y-2">
+                    <p class="text-sm text-slate-500 font-medium">
+                        &copy; {{ date('Y') }} <span
+                            class="text-white font-black uppercase tracking-tighter">{{ appProfile()->region_name }}</span>.
+                        Seluruh Hak Cipta Dilindungi.
+                    </p>
+                    <div
+                        class="flex flex-wrap justify-center lg:justify-start gap-x-6 gap-y-2 text-[11px] font-bold uppercase tracking-widest text-slate-600">
+                        <a href="#" class="hover:text-teal-400 transition-colors">Kebijakan Privasi</a>
+                        <a href="#" class="hover:text-teal-400 transition-colors">Syarat & Ketentuan</a>
+                        <a href="#" class="hover:text-teal-400 transition-colors">Peta Situs</a>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap justify-center items-center gap-4 order-1 lg:order-2">
+                    <div
+                        class="group flex items-center gap-3 px-5 py-2.5 bg-slate-900 border border-slate-800 rounded-2xl hover:border-teal-500/30 transition-all duration-300">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-teal-500/10 flex items-center justify-center text-teal-400 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-shield-alt text-sm"></i>
+                        </div>
+                        <span
+                            class="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-slate-200 transition-colors">Portal
+                            Resmi Pemerintah</span>
+                    </div>
+                    <div
+                        class="group flex items-center gap-3 px-5 py-2.5 bg-slate-900 border border-slate-800 rounded-2xl hover:border-amber-500/30 transition-all duration-300">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-bolt text-sm"></i>
+                        </div>
+                        <span
+                            class="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-slate-200 transition-colors">Powered
+                            by Sae-Digital</span>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Essential SEO Keywords (Visually Hidden) --}}
+            <div class="sr-only text-slate-900 opacity-0 pointer-events-none">
+                Pemerintahan {{ appProfile()->region_level }} {{ appProfile()->region_name }},
+                Layanan publik {{ appProfile()->region_name }},
+                Kantor Kecamatan {{ appProfile()->region_name }},
+                Informasi Desa di {{ appProfile()->region_name }},
+                UMKM Rakyat {{ appProfile()->region_name }},
+                Berita terkini {{ appProfile()->region_name }} Probolinggo.
+            </div>
+        </div>
     </footer>
+
 
     <!-- Accessibility Assets -->
     <link rel="stylesheet" href="{{ asset('css/accessibility.css') }}">
     <script src="{{ asset('js/accessibility.js') }}" defer></script>
 
     <!-- Accessibility & Voice Floating Buttons -->
-    <div class="fixed bottom-5 left-5 z-40 flex items-center gap-3">
+    <div class="fixed bottom-5 left-5 z-[60] flex items-center gap-3">
         <!-- Voice Guide Toggle (Accessibility Orange) -->
         <button id="btnVoiceGuideToggle" onclick="activateVoiceGuide()"
             class="btn btn-circle bg-orange-600 hover:bg-orange-700 border-0 shadow-lg w-14 h-14 relative group transition-all duration-300"
@@ -1545,7 +1619,7 @@
     </div>
 
     <!-- Floating Action Button -->
-    <div class="fixed bottom-5 right-5 z-40 group">
+    <div class="fixed bottom-5 right-5 z-[60] group">
         <div class="absolute bottom-full right-0 mb-3 hidden group-hover:block transition-all animate-bounce">
             <span
                 class="bg-teal-600 text-white text-xs px-3 py-1 rounded-full shadow-lg whitespace-nowrap italic">Hubungi
@@ -2299,7 +2373,40 @@
             zoomDelta: 0.5
         });
 
-        L.control.zoom({ position: 'topright' }).addTo(map);
+        L.control.zoom({
+            position: 'topright'
+        }).addTo(map);
+
+        // --- RESET VIEW CONTROL ---
+        let initialBounds = null;
+
+        const ResetControl = L.Control.extend({
+            options: {
+                position: 'topright'
+            },
+            onAdd: function (map) {
+                const container = L.DomUtil.create('div', 'leaflet-control-reset');
+                container.title = "Reset Zoom & Posisi";
+                container.innerHTML = '<i class="fas fa-sync-alt"></i>';
+
+                L.DomEvent.on(container, 'click', function (e) {
+                    L.DomEvent.stopPropagation(e);
+                    if (initialBounds) {
+                        map.flyToBounds(initialBounds, {
+                            padding: [100, 100],
+                            duration: 1.5,
+                            easeLinearity: 0.25
+                        });
+                    } else {
+                        map.flyTo([-7.78, 113.47], 13.5, {
+                            duration: 1.5
+                        });
+                    }
+                });
+                return container;
+            }
+        });
+        map.addControl(new ResetControl());
 
         // Cleanest Basemap (Voyager style)
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
@@ -2361,7 +2468,10 @@
                 // If we have a specific region, adjust initial zoom to it
                 if (filteredFeatures.length > 0) {
                     const bounds = L.geoJSON(renderData).getBounds();
-                    map.fitBounds(bounds, { padding: [100, 100] });
+                    initialBounds = bounds;
+                    map.fitBounds(bounds, {
+                        padding: [100, 100]
+                    });
                 }
             })
             .catch(err => console.error("Error loading Kecamatan layer:", err));
@@ -2452,7 +2562,10 @@
 
                 // Initial fit to villages if no kecamatan bounds set yet
                 if (!desaLayer.getBounds().isEmpty()) {
-                    map.fitBounds(desaLayer.getBounds(), { padding: [60, 60] });
+                    if (!initialBounds) initialBounds = desaLayer.getBounds();
+                    map.fitBounds(desaLayer.getBounds(), {
+                        padding: [60, 60]
+                    });
                 }
             })
             .catch(err => console.error("Error loading Desa layer:", err));

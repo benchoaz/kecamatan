@@ -75,101 +75,132 @@
         @yield('content')
     </main>
 
-    {{-- Premium SEO Optimized Footer --}}
-    <footer class="bg-slate-900 text-slate-400 pt-16 pb-8 border-t border-slate-800">
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-                <!-- Col 1: Brand -->
+    <!-- Premium Footer Section -->
+    <footer class="bg-[#020617] text-slate-400 pt-20 pb-10 border-t border-slate-800/60 relative overflow-hidden">
+        {{-- Background Accents --}}
+        <div
+            class="absolute top-0 right-0 w-96 h-96 bg-teal-500/5 blur-[100px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/2">
+        </div>
+        <div
+            class="absolute bottom-0 left-0 w-72 h-72 bg-blue-500/5 blur-[100px] rounded-full pointer-events-none translate-y-1/2 -translate-x-1/2">
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+                <!-- Branding -->
                 <div class="space-y-6">
-                    <div class="flex items-center gap-3">
-                        <img src="{{ appProfile()->logo_path ? asset('storage/' . appProfile()->logo_path) : '' }}"
-                            alt="Logo" class="h-10 w-auto brightness-110">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="p-2.5 bg-white rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.05)] border border-white/10">
+                            <img src="{{ appProfile()->logo_path ? asset('storage/' . appProfile()->logo_path) : asset('img/logo-default.png') }}"
+                                alt="Logo" class="h-9 w-auto">
+                        </div>
                         <div>
-                            <h4 class="text-white font-black text-lg leading-none uppercase tracking-tighter">
-                                {{ appProfile()->region_name }}
-                            </h4>
-                            <p class="text-[10px] text-teal-500 font-bold uppercase tracking-widest mt-1">
-                                {{ appProfile()->tagline }}
-                            </p>
+                            <h5 class="text-white font-black text-lg uppercase tracking-tight">
+                                {{ appProfile()->region_name }}</h5>
+                            <p class="text-[9px] text-teal-500 font-bold uppercase tracking-[0.3em]">
+                                {{ appProfile()->tagline }}</p>
                         </div>
                     </div>
-                    <p class="text-sm leading-relaxed">
-                        Portal layanan informasi and administrasi terpadu untuk masyarakat.
-                        Mewujudkan tata kelola wilayah yang efisien and transparan.
+                    <p class="text-sm leading-relaxed max-w-xs">
+                        Portal informasi dan pelayanan publik digital resmi {{ appProfile()->region_level }}
+                        {{ appProfile()->region_name }}.
+                        Membangun tata kelola mandiri dan transparan.
                     </p>
                 </div>
 
-                <!-- Col 2: Navigation -->
-                <div>
-                    <h5 class="text-white font-bold mb-6">Tautan Cepat</h5>
-                    <ul class="space-y-3 text-sm">
-                        <li><a href="/" class="hover:text-teal-400 transition-colors">Beranda</a></li>
-                        <li><a href="{{ route('kerja.index') }}" class="hover:text-teal-400 transition-colors">Lowongan
-                                Kerja</a></li>
-                        <li><a href="/#umkm" class="hover:text-teal-400 transition-colors">Produk UMKM</a></li>
-                        <li><a href="/#layanan" class="hover:text-teal-400 transition-colors">Layanan Publik</a></li>
+                <!-- Navigation -->
+                <div class="space-y-6">
+                    <h6 class="text-white font-black text-[10px] uppercase tracking-[0.3em] flex items-center gap-3">
+                        Navigasi Cepat
+                        <span class="flex-grow h-px bg-white/5"></span>
+                    </h6>
+                    <ul class="space-y-3.5 text-sm">
+                        <li><a href="/" class="hover:text-teal-400 transition-colors flex items-center gap-2 group"><i
+                                    class="fas fa-angle-right text-[10px] text-teal-400 group-hover:translate-x-1 transition-transform"></i>
+                                Beranda Utama</a></li>
+                        <li><a href="/layanan"
+                                class="hover:text-teal-400 transition-colors flex items-center gap-2 group"><i
+                                    class="fas fa-angle-right text-[10px] text-teal-400 group-hover:translate-x-1 transition-transform"></i>
+                                Portal Layanan</a></li>
+                        <li><a href="/umkm"
+                                class="hover:text-teal-400 transition-colors flex items-center gap-2 group"><i
+                                    class="fas fa-angle-right text-[10px] text-teal-400 group-hover:translate-x-1 transition-transform"></i>
+                                Produk UMKM</a></li>
+                        <li><a href="/lacak-berkas"
+                                class="hover:text-teal-400 transition-colors flex items-center gap-2 group"><i
+                                    class="fas fa-angle-right text-[10px] text-teal-400 group-hover:translate-x-1 transition-transform"></i>
+                                Tracking Berkas</a></li>
                     </ul>
                 </div>
 
-                <!-- Col 3: Contact Info -->
-                <div>
-                    <h5 class="text-white font-bold mb-6">Hubungi Kami</h5>
+                <!-- Contact -->
+                <div class="space-y-6">
+                    <h6 class="text-white font-black text-[10px] uppercase tracking-[0.3em] flex items-center gap-3">
+                        Hubungi Kami
+                        <span class="flex-grow h-px bg-white/5"></span>
+                    </h6>
                     <ul class="space-y-4 text-sm">
                         <li class="flex gap-3">
-                            <i class="fas fa-map-marker-alt mt-1 text-teal-500"></i>
-                            <span>{{ appProfile()->address ?? 'Jl. Raya Utama, Kec. Besuk, Kab. Probolinggo' }}</span>
+                            <i class="fas fa-map-marker-alt text-teal-500 mt-1"></i>
+                            <span class="leading-relaxed">{{ appProfile()->address ?? 'Alamat Belum Diatur' }}</span>
                         </li>
                         <li class="flex gap-3">
-                            <i class="fas fa-phone-alt mt-1 text-teal-500"></i>
-                            <span>{{ appProfile()->phone ?? '(0335) 123456' }}</span>
+                            <i class="fas fa-phone-alt text-teal-500"></i>
+                            <span
+                                class="font-bold text-white tracking-wide">{{ appProfile()->phone ?? '(0335) 123456' }}</span>
                         </li>
                     </ul>
                 </div>
 
-                <!-- Col 4: Office Hours -->
-                <div>
-                    <h5 class="text-white font-bold mb-6">Jam Operasional</h5>
-                    <ul class="space-y-2 text-sm">
-                        <li class="flex justify-between">
-                            <span>Senin - Kamis:</span>
-                            <span
-                                class="text-white font-medium">{{ appProfile()->office_hours_mon_thu ?? '08:00 - 15:30' }}</span>
-                        </li>
-                        <li class="flex justify-between">
-                            <span>Jumat:</span>
-                            <span
-                                class="text-white font-medium">{{ appProfile()->office_hours_fri ?? '08:00 - 11:30' }}</span>
-                        </li>
-                        <li class="flex justify-between text-rose-500 font-bold">
-                            <span>Sabtu - Minggu:</span>
-                            <span>TUTUP</span>
-                        </li>
-                    </ul>
+                <!-- Hours -->
+                <div class="space-y-6">
+                    <h6 class="text-white font-black text-[10px] uppercase tracking-[0.3em] flex items-center gap-3">
+                        Jam Pelayanan
+                        <span class="flex-grow h-px bg-white/5"></span>
+                    </h6>
+                    <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800/80">
+                        <ul class="space-y-3 text-sm">
+                            <li class="flex justify-between items-center pb-3 border-b border-white/5">
+                                <span class="text-slate-500 font-medium">Senin - Kamis:</span>
+                                <span
+                                    class="text-white font-bold">{{ appProfile()->office_hours_mon_thu ?? '08:00 - 15:30' }}</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <span class="text-slate-500 font-medium">Jumat:</span>
+                                <span
+                                    class="text-white font-bold">{{ appProfile()->office_hours_fri ?? '08:00 - 11:30' }}</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
-            <!-- Bottom Bar -->
-            <div class="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-xs text-slate-500">
-                    &copy; {{ date('Y') }} Pemerintah {{ appProfile()->region_parent ?? 'Kabupaten' }}. Seluruh Hak
-                    Cipta Dilindungi.
+            <!-- Social & Bottom Bar -->
+            <div class="pt-8 border-t border-slate-800/80 flex flex-col md:flex-row justify-between items-center gap-6">
+                <p class="text-[11px] font-bold text-slate-600 uppercase tracking-widest text-center md:text-left">
+                    &copy; {{ date('Y') }} {{ appProfile()->region_name }}. Seluruh Hak Cipta Dilindungi.
                 </p>
-                <div class="flex gap-4">
+                <div class="flex items-center gap-4">
                     @if(appProfile()->facebook_url)
                         <a href="{{ appProfile()->facebook_url }}"
-                            class="text-slate-500 hover:text-white transition-colors"><i class="fab fa-facebook-f"></i></a>
+                            class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500 hover:bg-white hover:text-black hover:-translate-y-1 transition-all duration-300"><i
+                                class="fab fa-facebook-f text-sm"></i></a>
                     @endif
                     @if(appProfile()->instagram_url)
                         <a href="{{ appProfile()->instagram_url }}"
-                            class="text-slate-500 hover:text-white transition-colors"><i class="fab fa-instagram"></i></a>
+                            class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500 hover:bg-white hover:text-black hover:-translate-y-1 transition-all duration-300"><i
+                                class="fab fa-instagram text-sm"></i></a>
                     @endif
                     @if(appProfile()->youtube_url)
                         <a href="{{ appProfile()->youtube_url }}"
-                            class="text-slate-500 hover:text-white transition-colors"><i class="fab fa-youtube"></i></a>
+                            class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500 hover:bg-white hover:text-black hover:-translate-y-1 transition-all duration-300"><i
+                                class="fab fa-youtube text-sm"></i></a>
                     @endif
                     @if(appProfile()->x_url)
-                        <a href="{{ appProfile()->x_url }}" class="text-slate-500 hover:text-white transition-colors"><i
-                                class="fab fa-x-twitter"></i></a>
+                        <a href="{{ appProfile()->x_url }}"
+                            class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500 hover:bg-white hover:text-black hover:-translate-y-1 transition-all duration-300"><i
+                                class="fab fa-x-twitter text-sm"></i></a>
                     @endif
                 </div>
             </div>
